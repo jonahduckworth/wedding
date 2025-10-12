@@ -1,0 +1,38 @@
+@import "tailwindcss";
+
+@theme {
+  /* Wedding Color Palette - Sam & Jonah */
+  --color-sage: #c4d7a4;        /* Light sage green */
+  --color-olive: #7d9456;       /* Olive green */
+  --color-blush: #ecd5e8;       /* Soft pink/lavender */
+  --color-rose: #c78ba4;        /* Dusty rose */
+  --color-mauve: #9a4e72;       /* Deep mauve/burgundy */
+
+  /* Semantic color names for easier use */
+  --color-primary: #9a4e72;     /* Deep mauve - primary brand color */
+  --color-secondary: #7d9456;   /* Olive - secondary actions */
+  --color-accent: #c78ba4;      /* Dusty rose - accents and highlights */
+  --color-light: #ecd5e8;       /* Soft blush - backgrounds */
+  --color-muted: #c4d7a4;       /* Light sage - muted elements */
+
+  /* Typography */
+  --font-display: "Playfair Display", Georgia, serif;
+  --font-sans: system-ui, -apple-system, sans-serif;
+
+  /* Spacing & Radius */
+  --radius-lg: 1rem;
+  --radius-md: 0.75rem;
+  --radius-sm: 0.5rem;
+}
+
+@layer base {
+  body {
+    @apply bg-white text-gray-900;
+    font-family: var(--font-sans);
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-display);
+    font-weight: 700;
+  }
+}
