@@ -10,6 +10,7 @@ interface Guest {
   maybe: boolean;
   unique_code: string;
   invite_type: string;
+  removed: boolean;
   created_at: string;
 }
 
@@ -17,6 +18,9 @@ export default function GuestManagement() {
   const [importFile, setImportFile] = useState<File | null>(null);
   const [importResult, setImportResult] = useState<any>(null);
   const [editingGuest, setEditingGuest] = useState<Guest | null>(null);
+  const [addingGuest, setAddingGuest] = useState(false);
+  const [deletingGuestId, setDeletingGuestId] = useState<string | null>(null);
+  const [showRemoved, setShowRemoved] = useState(false);
   const queryClient = useQueryClient();
 
   const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8081';
@@ -48,6 +52,23 @@ export default function GuestManagement() {
     },
   });
 
+  // Create guest mutation
+  const createMutation = useMutation({
+    mutationFn: async (guest: Omit<Guest, 'id' | 'unique_code' | 'created_at' | 'removed'>) => {
+      const response = await fetch(`${apiUrl}/api/admin/guests`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(guest),
+      });
+      if (!response.ok) throw new Error('Failed to create guest');
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['guests'] });
+      setAddingGuest(false);
+    },
+  });
+
   // Update guest mutation
   const updateMutation = useMutation({
     mutationFn: async (guest: Guest) => {
@@ -69,6 +90,36 @@ export default function GuestManagement() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['guests'] });
       setEditingGuest(null);
+    },
+  });
+
+  // Delete guest mutation
+  const deleteMutation = useMutation({
+    mutationFn: async (id: string) => {
+      const response = await fetch(`${apiUrl}/api/admin/guests/${id}`, {
+        method: 'DELETE',
+      });
+      if (!response.ok) throw new Error('Failed to delete guest');
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['guests'] });
+      setDeletingGuestId(null);
+    },
+  });
+
+  // Mark guest as removed mutation
+  const markRemovedMutation = useMutation({
+    mutationFn: async ({ id, removed }: { id: string; removed: boolean }) => {
+      const response = await fetch(`${apiUrl}/api/admin/guests/${id}/removed`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ removed }),
+      });
+      if (!response.ok) throw new Error('Failed to update guest');
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['guests'] });
     },
   });
 
@@ -151,10 +202,29 @@ export default function GuestManagement() {
 
       {/* Guest List */}
       <div className="bg-white rounded-xl shadow-md border-t-4 border-rose">
-        <div className="p-6 border-b">
-          <h3 className="text-xl font-display font-semibold text-primary">
-            Guest List ({guests?.length || 0})
-          </h3>
+        <div className="p-6 border-b flex justify-between items-center">
+          <div>
+            <h3 className="text-xl font-display font-semibold text-primary">
+              Guest List ({guests?.filter(g => showRemoved || !g.removed).length || 0})
+            </h3>
+          </div>
+          <div className="flex gap-3 items-center">
+            <label className="flex items-center gap-2 text-sm text-gray-700">
+              <input
+                type="checkbox"
+                checked={showRemoved}
+                onChange={(e) => setShowRemoved(e.target.checked)}
+                className="w-4 h-4 text-primary border-gray-300 rounded focus:ring-primary"
+              />
+              Show removed
+            </label>
+            <button
+              onClick={() => setAddingGuest(true)}
+              className="bg-primary text-white px-4 py-2 rounded-lg hover:bg-mauve transition-colors"
+            >
+              + Add Guest
+            </button>
+          </div>
         </div>
 
         {isLoading ? (
@@ -180,13 +250,16 @@ export default function GuestManagement() {
                     RSVP Code
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Status
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Actions
                   </th>
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
-                {guests.map((guest) => (
-                  <tr key={guest.id} className="hover:bg-gray-50">
+                {guests.filter(g => showRemoved || !g.removed).map((guest) => (
+                  <tr key={guest.id} className={`hover:bg-gray-50 ${guest.removed ? 'opacity-60' : ''}`}>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="text-sm font-medium text-gray-900">{guest.name}</div>
                     </td>
@@ -209,12 +282,37 @@ export default function GuestManagement() {
                       </code>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <button
-                        onClick={() => setEditingGuest(guest)}
-                        className="text-primary hover:text-mauve font-semibold text-sm"
-                      >
-                        Edit
-                      </button>
+                      {guest.removed ? (
+                        <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">
+                          Removed
+                        </span>
+                      ) : (
+                        <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                          Active
+                        </span>
+                      )}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="flex gap-3">
+                        <button
+                          onClick={() => setEditingGuest(guest)}
+                          className="text-primary hover:text-mauve font-semibold text-sm"
+                        >
+                          Edit
+                        </button>
+                        <button
+                          onClick={() => markRemovedMutation.mutate({ id: guest.id, removed: !guest.removed })}
+                          className="text-yellow-600 hover:text-yellow-800 font-semibold text-sm"
+                        >
+                          {guest.removed ? 'Restore' : 'Remove'}
+                        </button>
+                        <button
+                          onClick={() => setDeletingGuestId(guest.id)}
+                          className="text-red-600 hover:text-red-800 font-semibold text-sm"
+                        >
+                          Delete
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 ))}
@@ -223,7 +321,7 @@ export default function GuestManagement() {
           </div>
         ) : (
           <div className="p-6 text-center text-gray-600">
-            No guests yet. Import a CSV file to get started.
+            No guests yet. Import a CSV file or add a guest to get started.
           </div>
         )}
       </div>
@@ -331,6 +429,152 @@ export default function GuestManagement() {
               >
                 {updateMutation.isPending ? 'Saving...' : 'Save Changes'}
               </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Add Guest Modal */}
+      {addingGuest && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+          <div className="bg-white rounded-xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+            <div className="p-6 border-b border-gray-200">
+              <h3 className="text-2xl font-display font-bold text-primary">Add New Guest</h3>
+            </div>
+
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                const formData = new FormData(e.currentTarget);
+                createMutation.mutate({
+                  name: formData.get('name') as string,
+                  email: formData.get('email') as string,
+                  relationship: formData.get('relationship') as string,
+                  sam_or_jonah: formData.get('sam_or_jonah') as string,
+                  maybe: formData.get('maybe') === 'on',
+                  invite_type: formData.get('invite_type') as string,
+                });
+              }}
+              className="p-6 space-y-4"
+            >
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Name *</label>
+                <input
+                  type="text"
+                  name="name"
+                  required
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
+                  placeholder="John Doe"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Email *</label>
+                <input
+                  type="email"
+                  name="email"
+                  required
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
+                  placeholder="guest@example.com"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Relationship *</label>
+                <select
+                  name="relationship"
+                  required
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
+                >
+                  <option value="Friend">Friend</option>
+                  <option value="Family">Family</option>
+                  <option value="+1">+1</option>
+                  <option value="1">1</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Sam/Jonah *</label>
+                <select
+                  name="sam_or_jonah"
+                  required
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
+                >
+                  <option value="Sam">Sam</option>
+                  <option value="Jonah">Jonah</option>
+                  <option value="Both">Both</option>
+                  <option value="Maybe">Maybe</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Invite Type *</label>
+                <select
+                  name="invite_type"
+                  required
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
+                >
+                  <option value="single">Single</option>
+                  <option value="couple">Couple</option>
+                  <option value="plus_one">Plus One</option>
+                </select>
+              </div>
+
+              <div className="flex items-center">
+                <input
+                  type="checkbox"
+                  name="maybe"
+                  id="add-maybe"
+                  className="w-4 h-4 text-primary border-gray-300 rounded focus:ring-primary"
+                />
+                <label htmlFor="add-maybe" className="ml-2 text-sm text-gray-700">Maybe</label>
+              </div>
+
+              <div className="pt-4 border-t border-gray-200 flex justify-end gap-3">
+                <button
+                  type="button"
+                  onClick={() => setAddingGuest(false)}
+                  className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={createMutation.isPending}
+                  className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-mauve transition-colors disabled:opacity-50"
+                >
+                  {createMutation.isPending ? 'Adding...' : 'Add Guest'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Delete Confirmation Modal */}
+      {deletingGuestId && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+          <div className="bg-white rounded-xl shadow-2xl max-w-md w-full">
+            <div className="p-6">
+              <h3 className="text-xl font-display font-bold text-red-600 mb-4">Delete Guest</h3>
+              <p className="text-gray-700 mb-6">
+                Are you sure you want to permanently delete this guest? This action cannot be undone.
+              </p>
+              <div className="flex justify-end gap-3">
+                <button
+                  onClick={() => setDeletingGuestId(null)}
+                  className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={() => deleteMutation.mutate(deletingGuestId)}
+                  disabled={deleteMutation.isPending}
+                  className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors disabled:opacity-50"
+                >
+                  {deleteMutation.isPending ? 'Deleting...' : 'Delete'}
+                </button>
+              </div>
             </div>
           </div>
         </div>

@@ -45,11 +45,17 @@ pub struct CreateGuestRequest {
     pub invite_type: String,
 }
 
+#[derive(Debug, Serialize, Deserialize)]
+pub struct MarkRemovedRequest {
+    pub removed: bool,
+}
+
 pub fn admin_routes() -> Router<AppState> {
     Router::new()
         .route("/guests", get(list_guests).post(create_guest))
         .route("/guests/import", post(import_guests_csv))
         .route("/guests/:id", get(get_guest).put(update_guest).delete(delete_guest))
+        .route("/guests/:id/removed", axum::routing::patch(mark_guest_removed))
 }
 
 // List all guests
@@ -144,6 +150,27 @@ async fn delete_guest(
         .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
 
     Ok(StatusCode::NO_CONTENT)
+}
+
+// Mark guest as removed
+async fn mark_guest_removed(
+    State(state): State<AppState>,
+    Path(id): Path<Uuid>,
+    Json(req): Json<MarkRemovedRequest>,
+) -> Result<Json<Guest>, StatusCode> {
+    let guest = sqlx::query_as::<_, Guest>(
+        "UPDATE guests
+         SET removed = $1, updated_at = NOW()
+         WHERE id = $2
+         RETURNING *"
+    )
+    .bind(req.removed)
+    .bind(id)
+    .fetch_one(&state.db)
+    .await
+    .map_err(|_| StatusCode::NOT_FOUND)?;
+
+    Ok(Json(guest))
 }
 
 // Import guests from CSV

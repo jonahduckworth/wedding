@@ -13,6 +13,7 @@ pub struct Guest {
     pub maybe: bool,
     pub unique_code: String,
     pub invite_type: String,
+    pub removed: bool,
     pub created_at: Option<time::OffsetDateTime>,
     pub updated_at: Option<time::OffsetDateTime>,
 }
