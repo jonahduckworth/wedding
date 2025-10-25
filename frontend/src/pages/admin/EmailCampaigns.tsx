@@ -48,7 +48,7 @@ export default function EmailCampaigns() {
 
   const apiUrl = window.location.hostname === 'localhost'
     ? 'http://localhost:8081'
-    : window.location.origin;
+    : 'https://api.samandjonah.com';
 
   // Fetch campaigns
   const { data: campaigns, isLoading } = useQuery<Campaign[]>({

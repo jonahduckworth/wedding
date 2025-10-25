@@ -25,10 +25,10 @@ export default function GuestManagement() {
   const [selectedSamOrJonah, setSelectedSamOrJonah] = useState<string[]>([]);
   const queryClient = useQueryClient();
 
-  // API URL: use localhost in development, same origin in production
+  // API URL: use localhost in development, api subdomain in production
   const apiUrl = window.location.hostname === 'localhost'
     ? 'http://localhost:8081'
-    : window.location.origin;
+    : 'https://api.samandjonah.com';
 
   // Fetch guests
   const { data: guests, isLoading } = useQuery<Guest[]>({

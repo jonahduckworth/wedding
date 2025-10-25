@@ -34,7 +34,7 @@ export default function InviteManagement() {
 
   const apiUrl = window.location.hostname === 'localhost'
     ? 'http://localhost:8081'
-    : window.location.origin;
+    : 'https://api.samandjonah.com';
 
   // Fetch all invites
   const { data: invites, isLoading: invitesLoading } = useQuery<InviteWithGuests[]>({
