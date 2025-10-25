@@ -25,7 +25,10 @@ export default function GuestManagement() {
   const [selectedSamOrJonah, setSelectedSamOrJonah] = useState<string[]>([]);
   const queryClient = useQueryClient();
 
-  const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8081';
+  // API URL: use localhost in development, same origin in production
+  const apiUrl = window.location.hostname === 'localhost'
+    ? 'http://localhost:8081'
+    : window.location.origin;
 
   // Fetch guests
   const { data: guests, isLoading } = useQuery<Guest[]>({

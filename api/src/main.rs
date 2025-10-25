@@ -9,6 +9,7 @@ use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
 mod models;
 mod routes;
 mod db;
+mod email;
 
 #[tokio::main]
 async fn main() {
@@ -50,6 +51,7 @@ async fn main() {
         .route("/", get(root_handler))
         .route("/health", get(health_handler))
         .nest("/api/admin", routes::admin_routes())
+        .nest("/api", routes::public_routes())
         .with_state(state)
         .layer(cors)
         .layer(tower_http::trace::TraceLayer::new_for_http());

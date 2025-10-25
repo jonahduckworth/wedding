@@ -1,5 +1,7 @@
 import { Routes, Route, Link } from 'react-router-dom';
 import GuestManagement from './GuestManagement';
+import InviteManagement from './InviteManagement';
+import EmailCampaigns from './EmailCampaigns';
 
 export default function AdminDashboard() {
   return (
@@ -28,6 +30,12 @@ export default function AdminDashboard() {
                 Guest List
               </Link>
               <Link
+                to="/admin/invites"
+                className="block px-4 py-2 rounded hover:bg-gray-100"
+              >
+                Invites
+              </Link>
+              <Link
                 to="/admin/emails"
                 className="block px-4 py-2 rounded hover:bg-gray-100"
               >
@@ -53,7 +61,8 @@ export default function AdminDashboard() {
             <Routes>
               <Route index element={<AdminOverview />} />
               <Route path="guests" element={<GuestManagement />} />
-              <Route path="emails" element={<div>Email Campaigns (Coming Soon)</div>} />
+              <Route path="invites" element={<InviteManagement />} />
+              <Route path="emails" element={<EmailCampaigns />} />
               <Route path="rsvps" element={<div>RSVP Management (Coming Soon)</div>} />
               <Route path="registry" element={<div>Registry Management (Coming Soon)</div>} />
             </Routes>

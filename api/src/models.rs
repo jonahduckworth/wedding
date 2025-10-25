@@ -4,6 +4,22 @@ use uuid::Uuid;
 use rust_decimal::Decimal;
 
 #[derive(Debug, Clone, Serialize, Deserialize, FromRow)]
+pub struct Invite {
+    pub id: Uuid,
+    pub unique_code: String,
+    pub invite_type: String,
+    pub created_at: Option<time::OffsetDateTime>,
+    pub updated_at: Option<time::OffsetDateTime>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct InviteWithGuests {
+    #[serde(flatten)]
+    pub invite: Invite,
+    pub guests: Vec<Guest>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, FromRow)]
 pub struct Guest {
     pub id: Uuid,
     pub name: String,
@@ -14,6 +30,7 @@ pub struct Guest {
     pub unique_code: String,
     pub invite_type: String,
     pub removed: bool,
+    pub invite_id: Option<Uuid>,
     pub created_at: Option<time::OffsetDateTime>,
     pub updated_at: Option<time::OffsetDateTime>,
 }
@@ -34,6 +51,7 @@ pub struct EmailSend {
     pub id: Uuid,
     pub campaign_id: Option<Uuid>,
     pub guest_id: Option<Uuid>,
+    pub invite_id: Option<Uuid>,
     pub sent_at: Option<time::OffsetDateTime>,
     pub opened_at: Option<time::OffsetDateTime>,
     pub opened_count: i32,
