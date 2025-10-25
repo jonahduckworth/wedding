@@ -1,4 +1,5 @@
 import { Routes, Route, Link } from 'react-router-dom';
+import GuestManagement from './GuestManagement';
 
 export default function AdminDashboard() {
   return (
@@ -51,7 +52,7 @@ export default function AdminDashboard() {
           <main className="flex-1">
             <Routes>
               <Route index element={<AdminOverview />} />
-              <Route path="guests" element={<div>Guest Management (Coming Soon)</div>} />
+              <Route path="guests" element={<GuestManagement />} />
               <Route path="emails" element={<div>Email Campaigns (Coming Soon)</div>} />
               <Route path="rsvps" element={<div>RSVP Management (Coming Soon)</div>} />
               <Route path="registry" element={<div>Registry Management (Coming Soon)</div>} />

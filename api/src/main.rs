@@ -24,6 +24,21 @@ async fn main() {
     // Load environment variables
     dotenvy::dotenv().ok();
 
+    // Connect to database
+    let database_url = std::env::var("DATABASE_URL")
+        .expect("DATABASE_URL must be set");
+
+    let db = sqlx::postgres::PgPoolOptions::new()
+        .max_connections(5)
+        .connect(&database_url)
+        .await
+        .expect("Failed to connect to database");
+
+    tracing::info!("Connected to database");
+
+    // Create app state
+    let state = routes::AppState { db };
+
     // Set up CORS
     let cors = CorsLayer::new()
         .allow_origin(Any)
@@ -34,6 +49,8 @@ async fn main() {
     let app = Router::new()
         .route("/", get(root_handler))
         .route("/health", get(health_handler))
+        .nest("/api/admin", routes::admin_routes())
+        .with_state(state)
         .layer(cors)
         .layer(tower_http::trace::TraceLayer::new_for_http());
 
