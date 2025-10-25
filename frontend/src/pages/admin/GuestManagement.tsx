@@ -21,6 +21,8 @@ export default function GuestManagement() {
   const [addingGuest, setAddingGuest] = useState(false);
   const [deletingGuestId, setDeletingGuestId] = useState<string | null>(null);
   const [showRemoved, setShowRemoved] = useState(false);
+  const [selectedRelationships, setSelectedRelationships] = useState<string[]>([]);
+  const [selectedSamOrJonah, setSelectedSamOrJonah] = useState<string[]>([]);
   const queryClient = useQueryClient();
 
   const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8081';
@@ -141,6 +143,33 @@ export default function GuestManagement() {
     reader.readAsText(importFile);
   };
 
+  // Get unique values for filters
+  const relationships = Array.from(new Set(guests?.map(g => g.relationship) || []));
+  const samOrJonahOptions = Array.from(new Set(guests?.map(g => g.sam_or_jonah) || []));
+
+  // Filter and sort guests
+  const filteredAndSortedGuests = guests
+    ?.filter(g => showRemoved || !g.removed)
+    .filter(g => selectedRelationships.length === 0 || selectedRelationships.includes(g.relationship))
+    .filter(g => selectedSamOrJonah.length === 0 || selectedSamOrJonah.includes(g.sam_or_jonah))
+    .sort((a, b) => a.name.localeCompare(b.name)) || [];
+
+  const toggleRelationship = (relationship: string) => {
+    setSelectedRelationships(prev =>
+      prev.includes(relationship)
+        ? prev.filter(r => r !== relationship)
+        : [...prev, relationship]
+    );
+  };
+
+  const toggleSamOrJonah = (value: string) => {
+    setSelectedSamOrJonah(prev =>
+      prev.includes(value)
+        ? prev.filter(v => v !== value)
+        : [...prev, value]
+    );
+  };
+
   return (
     <div className="space-y-8">
       <div>
@@ -202,28 +231,88 @@ export default function GuestManagement() {
 
       {/* Guest List */}
       <div className="bg-white rounded-xl shadow-md border-t-4 border-rose">
-        <div className="p-6 border-b flex justify-between items-center">
-          <div>
-            <h3 className="text-xl font-display font-semibold text-primary">
-              Guest List ({guests?.filter(g => showRemoved || !g.removed).length || 0})
-            </h3>
+        <div className="p-6 border-b">
+          <div className="flex justify-between items-center mb-4">
+            <div>
+              <h3 className="text-xl font-display font-semibold text-primary">
+                Guest List ({filteredAndSortedGuests.length})
+              </h3>
+            </div>
+            <div className="flex gap-3 items-center">
+              <label className="flex items-center gap-2 text-sm text-gray-700">
+                <input
+                  type="checkbox"
+                  checked={showRemoved}
+                  onChange={(e) => setShowRemoved(e.target.checked)}
+                  className="w-4 h-4 text-primary border-gray-300 rounded focus:ring-primary"
+                />
+                Show removed
+              </label>
+              <button
+                onClick={() => setAddingGuest(true)}
+                className="bg-primary text-white px-4 py-2 rounded-lg hover:bg-mauve transition-colors"
+              >
+                + Add Guest
+              </button>
+            </div>
           </div>
-          <div className="flex gap-3 items-center">
-            <label className="flex items-center gap-2 text-sm text-gray-700">
-              <input
-                type="checkbox"
-                checked={showRemoved}
-                onChange={(e) => setShowRemoved(e.target.checked)}
-                className="w-4 h-4 text-primary border-gray-300 rounded focus:ring-primary"
-              />
-              Show removed
-            </label>
-            <button
-              onClick={() => setAddingGuest(true)}
-              className="bg-primary text-white px-4 py-2 rounded-lg hover:bg-mauve transition-colors"
-            >
-              + Add Guest
-            </button>
+
+          {/* Filters */}
+          <div className="flex gap-6 flex-wrap">
+            {/* Relationship Filter */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Relationship</label>
+              <div className="flex gap-2 flex-wrap">
+                {relationships.map(rel => (
+                  <button
+                    key={rel}
+                    onClick={() => toggleRelationship(rel)}
+                    className={`px-3 py-1 rounded-full text-sm font-semibold transition-colors ${
+                      selectedRelationships.includes(rel)
+                        ? 'bg-sage text-olive'
+                        : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                    }`}
+                  >
+                    {rel}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Sam/Jonah Filter */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Sam/Jonah</label>
+              <div className="flex gap-2 flex-wrap">
+                {samOrJonahOptions.map(option => (
+                  <button
+                    key={option}
+                    onClick={() => toggleSamOrJonah(option)}
+                    className={`px-3 py-1 rounded-full text-sm font-semibold transition-colors ${
+                      selectedSamOrJonah.includes(option)
+                        ? 'bg-rose text-mauve'
+                        : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                    }`}
+                  >
+                    {option}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Clear Filters */}
+            {(selectedRelationships.length > 0 || selectedSamOrJonah.length > 0) && (
+              <div className="flex items-end">
+                <button
+                  onClick={() => {
+                    setSelectedRelationships([]);
+                    setSelectedSamOrJonah([]);
+                  }}
+                  className="px-3 py-1 text-sm text-red-600 hover:text-red-800 font-semibold"
+                >
+                  Clear filters
+                </button>
+              </div>
+            )}
           </div>
         </div>
 
@@ -258,7 +347,7 @@ export default function GuestManagement() {
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
-                {guests.filter(g => showRemoved || !g.removed).map((guest) => (
+                {filteredAndSortedGuests.map((guest) => (
                   <tr key={guest.id} className={`hover:bg-gray-50 ${guest.removed ? 'opacity-60' : ''}`}>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="text-sm font-medium text-gray-900">{guest.name}</div>
