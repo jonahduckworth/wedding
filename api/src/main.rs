@@ -50,6 +50,23 @@ async fn main() {
 
     tracing::info!("Connected to database");
 
+    // Run database migrations
+    eprintln!("Running database migrations...");
+    match sqlx::migrate!("./migrations")
+        .run(&db)
+        .await
+    {
+        Ok(_) => {
+            eprintln!("Migrations completed successfully!");
+            tracing::info!("Database migrations applied");
+        }
+        Err(e) => {
+            eprintln!("WARNING: Migration failed: {}", e);
+            eprintln!("Continuing anyway - this might be okay if migrations were already applied");
+            tracing::warn!("Migration error (continuing): {}", e);
+        }
+    }
+
     // Create app state
     let state = routes::AppState { db };
 
