@@ -24,17 +24,26 @@ FROM debian:bookworm-slim
 
 # Install required runtime dependencies
 RUN apt-get update && \
-    apt-get install -y libpq5 ca-certificates && \
-    rm -rf /var/lib/apt/lists/*
+    apt-get install -y \
+        libpq5 \
+        ca-certificates \
+        libssl3 \
+    && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
 
 # Copy the binary from builder
 COPY --from=builder /app/target/release/wedding-api /usr/local/bin/wedding-api
+RUN chmod +x /usr/local/bin/wedding-api && \
+    ls -lh /usr/local/bin/wedding-api
 
 # Copy migrations
 COPY --from=builder /app/migrations ./migrations
 
+# Copy entrypoint script
+COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
+RUN chmod +x /usr/local/bin/docker-entrypoint.sh
+
 EXPOSE 8080
 
-CMD ["wedding-api"]
+ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
