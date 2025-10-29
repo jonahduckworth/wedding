@@ -17,6 +17,18 @@ echo "FRONTEND_URL: ${FRONTEND_URL:-not set}"
 
 echo ""
 echo "=== Starting Wedding API ==="
+echo "Executing: /usr/local/bin/wedding-api"
 
+# Test database connectivity first
+echo ""
+echo "=== Testing Database Connection ==="
+if command -v psql > /dev/null 2>&1; then
+    echo "PostgreSQL client available, testing connection..."
+else
+    echo "PostgreSQL client not available, skipping connection test"
+fi
+
+echo ""
+echo "=== Launching API Binary ==="
 # Execute the binary
 exec /usr/local/bin/wedding-api

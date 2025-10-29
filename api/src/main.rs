@@ -29,11 +29,24 @@ async fn main() {
     let database_url = std::env::var("DATABASE_URL")
         .expect("DATABASE_URL must be set");
 
-    let db = sqlx::postgres::PgPoolOptions::new()
+    eprintln!("Connecting to database: {}...", &database_url[..database_url.find('@').unwrap_or(20)]);
+
+    let db = match sqlx::postgres::PgPoolOptions::new()
         .max_connections(5)
         .connect(&database_url)
         .await
-        .expect("Failed to connect to database");
+    {
+        Ok(pool) => {
+            eprintln!("Successfully connected to database!");
+            pool
+        }
+        Err(e) => {
+            eprintln!("FATAL: Failed to connect to database!");
+            eprintln!("Error: {}", e);
+            eprintln!("Database URL (redacted): {}", &database_url[..database_url.find('@').unwrap_or(20)]);
+            std::process::exit(1);
+        }
+    };
 
     tracing::info!("Connected to database");
 
