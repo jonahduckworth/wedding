@@ -25,6 +25,7 @@ FROM debian:bookworm-slim
 # Install required runtime dependencies
 RUN apt-get update && \
     apt-get install -y \
+        bash \
         libpq5 \
         ca-certificates \
         libssl3 \
