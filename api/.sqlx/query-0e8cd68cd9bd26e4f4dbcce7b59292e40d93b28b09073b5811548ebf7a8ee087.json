@@ -1,0 +1,44 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "SELECT DISTINCT i.* FROM invites i\n             INNER JOIN guests g ON g.invite_id = i.id\n             WHERE g.removed = false",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "id",
+        "type_info": "Uuid"
+      },
+      {
+        "ordinal": 1,
+        "name": "unique_code",
+        "type_info": "Varchar"
+      },
+      {
+        "ordinal": 2,
+        "name": "invite_type",
+        "type_info": "Varchar"
+      },
+      {
+        "ordinal": 3,
+        "name": "created_at",
+        "type_info": "Timestamptz"
+      },
+      {
+        "ordinal": 4,
+        "name": "updated_at",
+        "type_info": "Timestamptz"
+      }
+    ],
+    "parameters": {
+      "Left": []
+    },
+    "nullable": [
+      false,
+      false,
+      true,
+      true,
+      true
+    ]
+  },
+  "hash": "0e8cd68cd9bd26e4f4dbcce7b59292e40d93b28b09073b5811548ebf7a8ee087"
+}

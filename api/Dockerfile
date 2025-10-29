@@ -15,8 +15,10 @@ RUN mkdir src && \
 # Copy the actual source code
 COPY src ./src
 COPY migrations ./migrations
+COPY .sqlx ./.sqlx
 
-# Build the application
+# Build the application with offline mode (uses pre-generated query cache)
+ENV SQLX_OFFLINE=true
 RUN cargo build --release
 
 # Production stage
