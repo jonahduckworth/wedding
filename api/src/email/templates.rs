@@ -2,9 +2,9 @@
 
 pub fn save_the_date_html(
     guest_names: &[String],
-    wedding_date: &str,
-    venue: &str,
     website_url: &str,
+    venue_map_url: &str,
+    hotel_info_url: &str,
     tracking_pixel_url: &str,
 ) -> String {
     let names_display = if guest_names.len() == 1 {
@@ -14,7 +14,7 @@ pub fn save_the_date_html(
     };
 
     // Hero image URL - update this to your hosted image URL
-    let hero_image_url = format!("{}/wedding-hero.jpg", website_url);
+    let hero_image_url = format!("{}/save-the-date-hero.png", website_url);
 
     format!(
         r#"<!DOCTYPE html>
@@ -37,15 +37,6 @@ pub fn save_the_date_html(
                         </td>
                     </tr>
 
-                    <!-- Header -->
-                    <tr>
-                        <td style="padding: 50px 40px 30px; text-align: center; background-color: #ffffff;">
-                            <h1 style="margin: 0; color: #8b7355; font-size: 42px; font-weight: 300; letter-spacing: 4px; text-transform: uppercase;">
-                                Save the Date
-                            </h1>
-                        </td>
-                    </tr>
-
                     <!-- Main content -->
                     <tr>
                         <td style="padding: 0 40px 40px; color: #4a4a4a;">
@@ -57,45 +48,29 @@ pub fn save_the_date_html(
                                 We're getting married and would love for you to celebrate with us!
                             </p>
 
-                            <!-- Date Box -->
-                            <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="margin: 40px 0; background: linear-gradient(135deg, #f5ebe1 0%, #e8ddd1 100%); border-left: 4px solid #c9a88a; padding: 35px;">
-                                <tr>
-                                    <td align="center">
-                                        <h2 style="margin: 0 0 15px 0; color: #8b7355; font-size: 38px; font-weight: 300; letter-spacing: 2px;">
-                                            Sam & Jonah
-                                        </h2>
-                                        <div style="width: 60px; height: 2px; background-color: #c9a88a; margin: 20px auto;"></div>
-                                        <p style="margin: 20px 0 0 0; font-size: 24px; color: #a0826d; font-weight: 400; letter-spacing: 1px;">
-                                            {}
-                                        </p>
-                                        <p style="margin: 12px 0 0 0; font-size: 18px; color: #8b7355; font-weight: 300;">
-                                            {}
-                                        </p>
-                                    </td>
-                                </tr>
-                            </table>
-
-                            <p style="margin: 35px 0; font-size: 16px; line-height: 1.7; color: #6b6b6b; text-align: center;">
-                                Formal invitation with RSVP details to follow.<br>
-                                Please mark your calendars and visit our website for more information.
-                            </p>
-
-                            <!-- CTA Button -->
+                            <!-- Action Links -->
                             <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="margin: 40px 0;">
                                 <tr>
-                                    <td align="center">
-                                        <a href="{}" style="display: inline-block; background-color: #a0826d; color: #ffffff; text-decoration: none; padding: 18px 45px; font-size: 16px; font-weight: 400; letter-spacing: 2px; text-transform: uppercase; transition: background-color 0.3s;">
-                                            Visit Our Website
+                                    <td align="center" style="padding: 0 0 15px 0;">
+                                        <a href="{}" style="display: inline-block; background-color: #a0826d; color: #ffffff; text-decoration: none; padding: 16px 40px; font-size: 15px; font-weight: 400; letter-spacing: 1.5px; text-transform: uppercase; min-width: 200px; text-align: center;">
+                                            View Venue Map
+                                        </a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td align="center" style="padding: 0;">
+                                        <a href="{}" style="display: inline-block; background-color: #c9a88a; color: #ffffff; text-decoration: none; padding: 16px 40px; font-size: 15px; font-weight: 400; letter-spacing: 1.5px; text-transform: uppercase; min-width: 200px; text-align: center;">
+                                            Hotel Information
                                         </a>
                                     </td>
                                 </tr>
                             </table>
 
-                            <p style="margin: 35px 0 0 0; font-size: 16px; line-height: 1.7; color: #6b6b6b; text-align: center;">
-                                We can't wait to celebrate with you!
+                            <p style="margin: 40px 0 0 0; font-size: 16px; line-height: 1.7; color: #6b6b6b; text-align: center;">
+                                Formal invitation with RSVP details to follow.
                             </p>
 
-                            <p style="margin: 25px 0 0 0; font-size: 16px; line-height: 1.7; color: #8b7355; text-align: center; font-style: italic;">
+                            <p style="margin: 30px 0 0 0; font-size: 16px; line-height: 1.7; color: #8b7355; text-align: center; font-style: italic;">
                                 With love,<br>
                                 <span style="font-weight: 400; font-style: normal; letter-spacing: 1px;">Sam & Jonah</span>
                             </p>
@@ -125,9 +100,8 @@ pub fn save_the_date_html(
 </html>"#,
         hero_image_url,
         names_display,
-        wedding_date,
-        venue,
-        website_url,
+        venue_map_url,
+        hotel_info_url,
         website_url,
         tracking_pixel_url
     )

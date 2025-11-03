@@ -613,7 +613,11 @@ async fn preview_campaign(
         .unwrap_or_else(|_| "".to_string());
     let from_email = std::env::var("FROM_EMAIL")
         .unwrap_or_else(|_| "contact@samandjonah.com".to_string());
-    let email_service = EmailService::new(state.db.clone(), frontend_url, api_url, resend_api_key, from_email);
+    let venue_map_url = std::env::var("VENUE_MAP_URL")
+        .unwrap_or_else(|_| "https://maps.google.com".to_string());
+    let hotel_info_url = std::env::var("HOTEL_INFO_URL")
+        .unwrap_or_else(|_| "http://localhost:3000".to_string());
+    let email_service = EmailService::new(state.db.clone(), frontend_url, api_url, resend_api_key, from_email, venue_map_url, hotel_info_url);
 
     // Generate preview HTML
     let tracking_pixel_url = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7";
@@ -638,8 +642,12 @@ async fn send_campaign(
         })?;
     let from_email = std::env::var("FROM_EMAIL")
         .unwrap_or_else(|_| "contact@samandjonah.com".to_string());
+    let venue_map_url = std::env::var("VENUE_MAP_URL")
+        .unwrap_or_else(|_| "https://maps.google.com".to_string());
+    let hotel_info_url = std::env::var("HOTEL_INFO_URL")
+        .unwrap_or_else(|_| "http://localhost:3000".to_string());
 
-    let email_service = EmailService::new(state.db.clone(), frontend_url, api_url, resend_api_key, from_email);
+    let email_service = EmailService::new(state.db.clone(), frontend_url, api_url, resend_api_key, from_email, venue_map_url, hotel_info_url);
 
     match email_service.send_campaign(id).await {
         Ok(sent_count) => Ok(Json(SendCampaignResponse {

@@ -24,16 +24,20 @@ pub struct EmailService {
     pub api_url: String,
     pub resend_api_key: String,
     pub from_email: String,
+    pub venue_map_url: String,
+    pub hotel_info_url: String,
 }
 
 impl EmailService {
-    pub fn new(db: PgPool, frontend_url: String, api_url: String, resend_api_key: String, from_email: String) -> Self {
+    pub fn new(db: PgPool, frontend_url: String, api_url: String, resend_api_key: String, from_email: String, venue_map_url: String, hotel_info_url: String) -> Self {
         Self {
             db,
             frontend_url,
             api_url,
             resend_api_key,
             from_email,
+            venue_map_url,
+            hotel_info_url,
         }
     }
 
@@ -43,9 +47,9 @@ impl EmailService {
 
         templates::save_the_date_html(
             &guest_names,
-            "August 15, 2026",
-            "Rouge, Calgary, Alberta",
             &self.frontend_url,
+            &self.venue_map_url,
+            &self.hotel_info_url,
             tracking_pixel_url,
         )
     }
