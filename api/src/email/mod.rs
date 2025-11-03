@@ -21,15 +21,17 @@ struct ResendResponse {
 pub struct EmailService {
     pub db: PgPool,
     pub frontend_url: String,
+    pub api_url: String,
     pub resend_api_key: String,
     pub from_email: String,
 }
 
 impl EmailService {
-    pub fn new(db: PgPool, frontend_url: String, resend_api_key: String, from_email: String) -> Self {
+    pub fn new(db: PgPool, frontend_url: String, api_url: String, resend_api_key: String, from_email: String) -> Self {
         Self {
             db,
             frontend_url,
+            api_url,
             resend_api_key,
             from_email,
         }
@@ -57,7 +59,7 @@ impl EmailService {
     ) -> Result<Uuid, String> {
         // Generate tracking pixel URL
         let email_send_id = Uuid::new_v4();
-        let tracking_pixel_url = format!("{}/api/track/{}/open.png", self.frontend_url, email_send_id);
+        let tracking_pixel_url = format!("{}/api/track/{}/open.png", self.api_url, email_send_id);
 
         // Render HTML
         let html = self.render_save_the_date(invite, &tracking_pixel_url);
