@@ -177,12 +177,6 @@ export default function EmailCampaigns() {
                       {campaign.name}
                     </h3>
                     <p className="text-sm text-gray-600 mt-1">{campaign.subject}</p>
-                    <div className="flex gap-3 mt-2 text-xs text-gray-500">
-                      <span>Created: {new Date(campaign.created_at).toLocaleDateString()}</span>
-                      {campaign.sent_at && (
-                        <span>Sent: {new Date(campaign.sent_at).toLocaleDateString()}</span>
-                      )}
-                    </div>
                   </div>
                   <div className="flex gap-2">
                     <button
@@ -446,12 +440,6 @@ export default function EmailCampaigns() {
                 This will send the save-the-date email to all active invites. This action cannot be
                 undone.
               </p>
-              <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-6">
-                <p className="text-sm text-yellow-800">
-                  <strong>Note:</strong> Email sending is currently stubbed. Check the API logs to
-                  see what would have been sent.
-                </p>
-              </div>
               <div className="flex justify-end gap-3">
                 <button
                   onClick={() => setSendingCampaignId(null)}

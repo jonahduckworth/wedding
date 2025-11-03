@@ -604,10 +604,14 @@ async fn preview_campaign(
         guests,
     };
 
-    // Create email service
+    // Create email service (API key not needed for preview)
     let frontend_url = std::env::var("FRONTEND_URL")
         .unwrap_or_else(|_| "http://localhost:3000".to_string());
-    let email_service = EmailService::new(state.db.clone(), frontend_url);
+    let resend_api_key = std::env::var("RESEND_API_KEY")
+        .unwrap_or_else(|_| "".to_string());
+    let from_email = std::env::var("FROM_EMAIL")
+        .unwrap_or_else(|_| "contact@samandjonah.com".to_string());
+    let email_service = EmailService::new(state.db.clone(), frontend_url, resend_api_key, from_email);
 
     // Generate preview HTML
     let tracking_pixel_url = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7";
@@ -623,13 +627,21 @@ async fn send_campaign(
 ) -> Result<Json<SendCampaignResponse>, StatusCode> {
     let frontend_url = std::env::var("FRONTEND_URL")
         .unwrap_or_else(|_| "http://localhost:3000".to_string());
-    let email_service = EmailService::new(state.db.clone(), frontend_url);
+    let resend_api_key = std::env::var("RESEND_API_KEY")
+        .map_err(|_| {
+            tracing::error!("RESEND_API_KEY environment variable not set");
+            StatusCode::INTERNAL_SERVER_ERROR
+        })?;
+    let from_email = std::env::var("FROM_EMAIL")
+        .unwrap_or_else(|_| "contact@samandjonah.com".to_string());
+
+    let email_service = EmailService::new(state.db.clone(), frontend_url, resend_api_key, from_email);
 
     match email_service.send_campaign(id).await {
         Ok(sent_count) => Ok(Json(SendCampaignResponse {
             success: true,
             sent_count,
-            message: format!("Successfully sent {} emails (stubbed - check logs)", sent_count),
+            message: format!("Successfully sent {} emails via Resend", sent_count),
         })),
         Err(e) => {
             tracing::error!("Failed to send campaign: {}", e);

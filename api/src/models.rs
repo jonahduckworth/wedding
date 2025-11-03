@@ -42,7 +42,9 @@ pub struct EmailCampaign {
     pub subject: String,
     pub template_type: String,
     pub sent_count: i32,
+    #[serde(with = "time::serde::rfc3339::option")]
     pub created_at: Option<time::OffsetDateTime>,
+    #[serde(with = "time::serde::rfc3339::option")]
     pub sent_at: Option<time::OffsetDateTime>,
 }
 

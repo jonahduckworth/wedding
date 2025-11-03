@@ -3,15 +3,36 @@ pub mod templates;
 use crate::models::InviteWithGuests;
 use sqlx::PgPool;
 use uuid::Uuid;
+use serde::{Deserialize, Serialize};
+
+#[derive(Debug, Serialize)]
+struct ResendEmail {
+    from: String,
+    to: Vec<String>,
+    subject: String,
+    html: String,
+}
+
+#[derive(Debug, Deserialize)]
+struct ResendResponse {
+    id: String,
+}
 
 pub struct EmailService {
     pub db: PgPool,
     pub frontend_url: String,
+    pub resend_api_key: String,
+    pub from_email: String,
 }
 
 impl EmailService {
-    pub fn new(db: PgPool, frontend_url: String) -> Self {
-        Self { db, frontend_url }
+    pub fn new(db: PgPool, frontend_url: String, resend_api_key: String, from_email: String) -> Self {
+        Self {
+            db,
+            frontend_url,
+            resend_api_key,
+            from_email,
+        }
     }
 
     /// Render save-the-date email HTML
@@ -27,11 +48,12 @@ impl EmailService {
         )
     }
 
-    /// Send save-the-date email (stubbed for now - logs instead of sending)
+    /// Send save-the-date email via Resend API
     pub async fn send_save_the_date(
         &self,
         campaign_id: Uuid,
         invite: &InviteWithGuests,
+        subject: &str,
     ) -> Result<Uuid, String> {
         // Generate tracking pixel URL
         let email_send_id = Uuid::new_v4();
@@ -40,13 +62,47 @@ impl EmailService {
         // Render HTML
         let html = self.render_save_the_date(invite, &tracking_pixel_url);
 
-        // STUBBED: In production, this would send via Resend API
+        // Get recipient email (use first guest's email)
+        let recipient_email = invite.guests.first()
+            .ok_or_else(|| "No guests found for invite".to_string())?
+            .email.clone();
+
+        // Prepare email payload for Resend
+        let email_payload = ResendEmail {
+            from: self.from_email.clone(),
+            to: vec![recipient_email.clone()],
+            subject: subject.to_string(),
+            html,
+        };
+
+        // Send via Resend API
+        let client = reqwest::Client::new();
+        let response = client
+            .post("https://api.resend.com/emails")
+            .header("Authorization", format!("Bearer {}", self.resend_api_key))
+            .header("Content-Type", "application/json")
+            .json(&email_payload)
+            .send()
+            .await
+            .map_err(|e| format!("Failed to send email via Resend: {}", e))?;
+
+        if !response.status().is_success() {
+            let status = response.status();
+            let error_body = response.text().await.unwrap_or_else(|_| "Unknown error".to_string());
+            return Err(format!("Resend API error ({}): {}", status, error_body));
+        }
+
+        let resend_response: ResendResponse = response
+            .json()
+            .await
+            .map_err(|e| format!("Failed to parse Resend response: {}", e))?;
+
         tracing::info!(
-            "📧 [STUBBED] Would send save-the-date email to invite {} ({} guests)",
+            "📧 Sent save-the-date email to {} (invite: {}, resend_id: {})",
+            recipient_email,
             invite.invite.unique_code,
-            invite.guests.len()
+            resend_response.id
         );
-        tracing::debug!("Email HTML length: {} bytes", html.len());
 
         // Record the email send in database
         sqlx::query(
@@ -65,6 +121,15 @@ impl EmailService {
 
     /// Send campaign to all invites
     pub async fn send_campaign(&self, campaign_id: Uuid) -> Result<usize, String> {
+        // Get campaign details for subject
+        let campaign = sqlx::query!(
+            "SELECT subject FROM email_campaigns WHERE id = $1",
+            campaign_id
+        )
+        .fetch_one(&self.db)
+        .await
+        .map_err(|e| format!("Failed to fetch campaign: {}", e))?;
+
         // Get all invites with non-removed guests
         let invites = sqlx::query!(
             "SELECT DISTINCT i.* FROM invites i
@@ -99,7 +164,7 @@ impl EmailService {
             };
 
             // Send email
-            self.send_save_the_date(campaign_id, &invite).await?;
+            self.send_save_the_date(campaign_id, &invite, &campaign.subject).await?;
             sent_count += 1;
         }
 
