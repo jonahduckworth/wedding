@@ -13,6 +13,9 @@ pub fn save_the_date_html(
         format!("{} and {}", guest_names[0], guest_names[1])
     };
 
+    // Hero image URL - update this to your hosted image URL
+    let hero_image_url = format!("{}/wedding-hero.jpg", website_url);
+
     format!(
         r#"<!DOCTYPE html>
 <html lang="en">
@@ -21,16 +24,23 @@ pub fn save_the_date_html(
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Save the Date - Sam & Jonah</title>
 </head>
-<body style="margin: 0; padding: 0; font-family: Georgia, 'Times New Roman', serif; background-color: #f5f5f5;">
-    <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="background-color: #f5f5f5;">
+<body style="margin: 0; padding: 0; font-family: 'Palatino Linotype', 'Book Antiqua', Palatino, Georgia, serif; background-color: #f7f3f0;">
+    <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="background-color: #f7f3f0;">
         <tr>
-            <td align="center" style="padding: 40px 20px;">
-                <table role="presentation" width="600" cellspacing="0" cellpadding="0" border="0" style="max-width: 600px; background-color: #ffffff; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+            <td align="center" style="padding: 30px 20px;">
+                <table role="presentation" width="600" cellspacing="0" cellpadding="0" border="0" style="max-width: 600px; background-color: #ffffff; box-shadow: 0 8px 24px rgba(0,0,0,0.08);">
 
-                    <!-- Header with wedding colors -->
+                    <!-- Hero Image -->
                     <tr>
-                        <td style="background: linear-gradient(135deg, #c4d7a4 0%, #7d9456 100%); padding: 60px 40px; text-align: center; border-radius: 12px 12px 0 0;">
-                            <h1 style="margin: 0; color: #ffffff; font-size: 48px; font-weight: normal; letter-spacing: 2px; text-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                        <td style="padding: 0;">
+                            <img src="{}" alt="Sam and Jonah" width="600" style="width: 100%; height: auto; display: block; border: none;" />
+                        </td>
+                    </tr>
+
+                    <!-- Header -->
+                    <tr>
+                        <td style="padding: 50px 40px 30px; text-align: center; background-color: #ffffff;">
+                            <h1 style="margin: 0; color: #8b7355; font-size: 42px; font-weight: 300; letter-spacing: 4px; text-transform: uppercase;">
                                 Save the Date
                             </h1>
                         </td>
@@ -38,65 +48,68 @@ pub fn save_the_date_html(
 
                     <!-- Main content -->
                     <tr>
-                        <td style="padding: 50px 40px; color: #333333;">
-                            <p style="margin: 0 0 30px 0; font-size: 18px; line-height: 1.6; color: #555555;">
-                                Dear <strong>{}</strong>,
+                        <td style="padding: 0 40px 40px; color: #4a4a4a;">
+                            <p style="margin: 0 0 30px 0; font-size: 17px; line-height: 1.7; color: #6b6b6b; text-align: center;">
+                                Dear {},
                             </p>
 
-                            <p style="margin: 0 0 30px 0; font-size: 18px; line-height: 1.8; color: #555555;">
+                            <p style="margin: 0 0 40px 0; font-size: 17px; line-height: 1.8; color: #6b6b6b; text-align: center;">
                                 We're getting married and would love for you to celebrate with us!
                             </p>
 
-                            <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="margin: 40px 0; background-color: #ecd5e8; border-radius: 8px; padding: 30px;">
+                            <!-- Date Box -->
+                            <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="margin: 40px 0; background: linear-gradient(135deg, #f5ebe1 0%, #e8ddd1 100%); border-left: 4px solid #c9a88a; padding: 35px;">
                                 <tr>
                                     <td align="center">
-                                        <h2 style="margin: 0 0 20px 0; color: #9a4e72; font-size: 36px; font-weight: normal;">
+                                        <h2 style="margin: 0 0 15px 0; color: #8b7355; font-size: 38px; font-weight: 300; letter-spacing: 2px;">
                                             Sam & Jonah
                                         </h2>
-                                        <p style="margin: 0; font-size: 22px; color: #c78ba4; font-weight: bold;">
+                                        <div style="width: 60px; height: 2px; background-color: #c9a88a; margin: 20px auto;"></div>
+                                        <p style="margin: 20px 0 0 0; font-size: 24px; color: #a0826d; font-weight: 400; letter-spacing: 1px;">
                                             {}
                                         </p>
-                                        <p style="margin: 15px 0 0 0; font-size: 18px; color: #9a4e72;">
+                                        <p style="margin: 12px 0 0 0; font-size: 18px; color: #8b7355; font-weight: 300;">
                                             {}
                                         </p>
                                     </td>
                                 </tr>
                             </table>
 
-                            <p style="margin: 30px 0; font-size: 16px; line-height: 1.6; color: #555555;">
-                                Formal invitation with RSVP details to follow. In the meantime, please mark your calendars and visit our website for more information.
+                            <p style="margin: 35px 0; font-size: 16px; line-height: 1.7; color: #6b6b6b; text-align: center;">
+                                Formal invitation with RSVP details to follow.<br>
+                                Please mark your calendars and visit our website for more information.
                             </p>
 
                             <!-- CTA Button -->
                             <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="margin: 40px 0;">
                                 <tr>
                                     <td align="center">
-                                        <a href="{}" style="display: inline-block; background-color: #9a4e72; color: #ffffff; text-decoration: none; padding: 16px 40px; border-radius: 8px; font-size: 18px; font-weight: bold; box-shadow: 0 4px 6px rgba(154, 78, 114, 0.3);">
+                                        <a href="{}" style="display: inline-block; background-color: #a0826d; color: #ffffff; text-decoration: none; padding: 18px 45px; font-size: 16px; font-weight: 400; letter-spacing: 2px; text-transform: uppercase; transition: background-color 0.3s;">
                                             Visit Our Website
                                         </a>
                                     </td>
                                 </tr>
                             </table>
 
-                            <p style="margin: 30px 0 0 0; font-size: 16px; line-height: 1.6; color: #555555; text-align: center;">
+                            <p style="margin: 35px 0 0 0; font-size: 16px; line-height: 1.7; color: #6b6b6b; text-align: center;">
                                 We can't wait to celebrate with you!
                             </p>
 
-                            <p style="margin: 20px 0 0 0; font-size: 16px; line-height: 1.6; color: #555555; text-align: center; font-style: italic;">
+                            <p style="margin: 25px 0 0 0; font-size: 16px; line-height: 1.7; color: #8b7355; text-align: center; font-style: italic;">
                                 With love,<br>
-                                <strong style="color: #9a4e72;">Sam & Jonah</strong>
+                                <span style="font-weight: 400; font-style: normal; letter-spacing: 1px;">Sam & Jonah</span>
                             </p>
                         </td>
                     </tr>
 
                     <!-- Footer -->
                     <tr>
-                        <td style="padding: 30px 40px; background-color: #f9f9f9; border-radius: 0 0 12px 12px; text-align: center;">
-                            <p style="margin: 0; font-size: 14px; color: #999999;">
+                        <td style="padding: 35px 40px; background-color: #f7f3f0; text-align: center; border-top: 1px solid #e8ddd1;">
+                            <p style="margin: 0; font-size: 14px; color: #999999; letter-spacing: 0.5px;">
                                 August 15, 2026 • Rouge, Calgary, Alberta
                             </p>
-                            <p style="margin: 10px 0 0 0; font-size: 12px; color: #999999;">
-                                <a href="{}" style="color: #9a4e72; text-decoration: none;">samandjonah.com</a>
+                            <p style="margin: 12px 0 0 0; font-size: 13px;">
+                                <a href="{}" style="color: #a0826d; text-decoration: none; letter-spacing: 0.5px;">samandjonah.com</a>
                             </p>
                         </td>
                     </tr>
@@ -110,6 +123,7 @@ pub fn save_the_date_html(
     <img src="{}" width="1" height="1" alt="" style="display:block;" />
 </body>
 </html>"#,
+        hero_image_url,
         names_display,
         wedding_date,
         venue,

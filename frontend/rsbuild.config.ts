@@ -8,6 +8,9 @@ export default defineConfig({
   },
   output: {
     assetPrefix: '/',
+    copy: [
+      { from: 'public', to: '.' }
+    ],
   },
   server: {
     port: 3000,
