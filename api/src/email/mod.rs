@@ -11,6 +11,14 @@ struct ResendEmail {
     to: Vec<String>,
     subject: String,
     html: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    tags: Option<Vec<ResendTag>>,
+}
+
+#[derive(Debug, Serialize)]
+struct ResendTag {
+    name: String,
+    value: String,
 }
 
 #[derive(Debug, Deserialize)]
@@ -21,7 +29,6 @@ struct ResendResponse {
 pub struct EmailService {
     pub db: PgPool,
     pub frontend_url: String,
-    pub api_url: String,
     pub resend_api_key: String,
     pub from_email: String,
     pub venue_map_url: String,
@@ -29,11 +36,10 @@ pub struct EmailService {
 }
 
 impl EmailService {
-    pub fn new(db: PgPool, frontend_url: String, api_url: String, resend_api_key: String, from_email: String, venue_map_url: String, hotel_info_url: String) -> Self {
+    pub fn new(db: PgPool, frontend_url: String, resend_api_key: String, from_email: String, venue_map_url: String, hotel_info_url: String) -> Self {
         Self {
             db,
             frontend_url,
-            api_url,
             resend_api_key,
             from_email,
             venue_map_url,
@@ -42,7 +48,7 @@ impl EmailService {
     }
 
     /// Render save-the-date email HTML
-    pub fn render_save_the_date(&self, invite: &InviteWithGuests, tracking_pixel_url: &str) -> String {
+    pub fn render_save_the_date(&self, invite: &InviteWithGuests) -> String {
         let guest_names: Vec<String> = invite.guests.iter().map(|g| g.name.clone()).collect();
 
         templates::save_the_date_html(
@@ -50,7 +56,6 @@ impl EmailService {
             &self.frontend_url,
             &self.venue_map_url,
             &self.hotel_info_url,
-            tracking_pixel_url,
         )
     }
 
@@ -61,24 +66,33 @@ impl EmailService {
         invite: &InviteWithGuests,
         subject: &str,
     ) -> Result<Uuid, String> {
-        // Generate tracking pixel URL
+        // Generate email send ID for tracking
         let email_send_id = Uuid::new_v4();
-        let tracking_pixel_url = format!("{}/api/track/{}/open.png", self.api_url, email_send_id);
 
         // Render HTML
-        let html = self.render_save_the_date(invite, &tracking_pixel_url);
+        let html = self.render_save_the_date(invite);
 
         // Get recipient email (use first guest's email)
         let recipient_email = invite.guests.first()
             .ok_or_else(|| "No guests found for invite".to_string())?
             .email.clone();
 
-        // Prepare email payload for Resend
+        // Prepare email payload for Resend with tags for tracking
         let email_payload = ResendEmail {
             from: format!("Sam & Jonah <{}>", self.from_email),
             to: vec![recipient_email.clone()],
             subject: subject.to_string(),
             html,
+            tags: Some(vec![
+                ResendTag {
+                    name: "campaign_id".to_string(),
+                    value: campaign_id.to_string(),
+                },
+                ResendTag {
+                    name: "invite_id".to_string(),
+                    value: invite.invite.id.to_string(),
+                },
+            ]),
         };
 
         // Send via Resend API

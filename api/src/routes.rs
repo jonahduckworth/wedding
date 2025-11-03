@@ -1,7 +1,7 @@
 use axum::{
     extract::{Path, State},
-    http::{StatusCode, header},
-    response::{Html, IntoResponse, Response},
+    http::StatusCode,
+    response::Html,
     routing::{get, post},
     Json, Router,
 };
@@ -113,7 +113,6 @@ pub fn admin_routes() -> Router<AppState> {
 
 pub fn public_routes() -> Router<AppState> {
     Router::new()
-        .route("/track/:email_send_id/open.png", get(track_email_open))
 }
 
 // List all guests
@@ -607,8 +606,6 @@ async fn preview_campaign(
     // Create email service (API key not needed for preview)
     let frontend_url = std::env::var("FRONTEND_URL")
         .unwrap_or_else(|_| "http://localhost:3000".to_string());
-    let api_url = std::env::var("API_URL")
-        .unwrap_or_else(|_| "http://localhost:8081".to_string());
     let resend_api_key = std::env::var("RESEND_API_KEY")
         .unwrap_or_else(|_| "".to_string());
     let from_email = std::env::var("FROM_EMAIL")
@@ -617,11 +614,10 @@ async fn preview_campaign(
         .unwrap_or_else(|_| "https://maps.google.com".to_string());
     let hotel_info_url = std::env::var("HOTEL_INFO_URL")
         .unwrap_or_else(|_| "http://localhost:3000".to_string());
-    let email_service = EmailService::new(state.db.clone(), frontend_url, api_url, resend_api_key, from_email, venue_map_url, hotel_info_url);
+    let email_service = EmailService::new(state.db.clone(), frontend_url, resend_api_key, from_email, venue_map_url, hotel_info_url);
 
     // Generate preview HTML
-    let tracking_pixel_url = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7";
-    let html = email_service.render_save_the_date(&invite_with_guests, tracking_pixel_url);
+    let html = email_service.render_save_the_date(&invite_with_guests);
 
     Ok(Html(html))
 }
@@ -633,8 +629,6 @@ async fn send_campaign(
 ) -> Result<Json<SendCampaignResponse>, StatusCode> {
     let frontend_url = std::env::var("FRONTEND_URL")
         .unwrap_or_else(|_| "http://localhost:3000".to_string());
-    let api_url = std::env::var("API_URL")
-        .unwrap_or_else(|_| "http://localhost:8081".to_string());
     let resend_api_key = std::env::var("RESEND_API_KEY")
         .map_err(|_| {
             tracing::error!("RESEND_API_KEY environment variable not set");
@@ -647,7 +641,7 @@ async fn send_campaign(
     let hotel_info_url = std::env::var("HOTEL_INFO_URL")
         .unwrap_or_else(|_| "http://localhost:3000".to_string());
 
-    let email_service = EmailService::new(state.db.clone(), frontend_url, api_url, resend_api_key, from_email, venue_map_url, hotel_info_url);
+    let email_service = EmailService::new(state.db.clone(), frontend_url, resend_api_key, from_email, venue_map_url, hotel_info_url);
 
     match email_service.send_campaign(id).await {
         Ok(sent_count) => Ok(Json(SendCampaignResponse {
@@ -763,47 +757,3 @@ async fn campaign_recipients(
 
 // ============ TRACKING ROUTES ============
 
-// Track email open via 1x1 pixel
-async fn track_email_open(
-    State(state): State<AppState>,
-    Path(email_send_id): Path<Uuid>,
-) -> Result<Response, StatusCode> {
-    // Record the open
-    let now = time::OffsetDateTime::now_utc();
-    
-    let result = sqlx::query(
-        "UPDATE email_sends
-         SET opened_at = COALESCE(opened_at, $1),
-             opened_count = opened_count + 1
-         WHERE id = $2"
-    )
-    .bind(now)
-    .bind(email_send_id)
-    .execute(&state.db)
-    .await;
-
-    if let Err(e) = result {
-        tracing::warn!("Failed to track email open: {}", e);
-    } else {
-        tracing::info!("📬 Email opened: {}", email_send_id);
-    }
-
-    // Return 1x1 transparent PNG
-    let png_bytes: Vec<u8> = vec![
-        0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A, // PNG header
-        0x00, 0x00, 0x00, 0x0D, 0x49, 0x48, 0x44, 0x52, // IHDR chunk
-        0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x01, // 1x1 dimensions
-        0x08, 0x06, 0x00, 0x00, 0x00, 0x1F, 0x15, 0xC4,
-        0x89, 0x00, 0x00, 0x00, 0x0A, 0x49, 0x44, 0x41, // IDAT chunk
-        0x54, 0x78, 0x9C, 0x63, 0x00, 0x01, 0x00, 0x00,
-        0x05, 0x00, 0x01, 0x0D, 0x0A, 0x2D, 0xB4, 0x00,
-        0x00, 0x00, 0x00, 0x49, 0x45, 0x4E, 0x44, 0xAE, // IEND chunk
-        0x42, 0x60, 0x82,
-    ];
-
-    Ok((
-        StatusCode::OK,
-        [(header::CONTENT_TYPE, "image/png")],
-        png_bytes,
-    ).into_response())
-}

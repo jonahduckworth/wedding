@@ -5,7 +5,6 @@ pub fn save_the_date_html(
     website_url: &str,
     venue_map_url: &str,
     hotel_info_url: &str,
-    tracking_pixel_url: &str,
 ) -> String {
     let names_display = if guest_names.len() == 1 {
         guest_names[0].clone()
@@ -105,15 +104,11 @@ pub fn save_the_date_html(
             </td>
         </tr>
     </table>
-
-    <!-- Tracking pixel -->
-    <img src="{}" width="1" height="1" alt="" style="display:block;" />
 </body>
 </html>"#,
         hero_image_url,
         names_display,
         venue_map_url,
-        hotel_info_url,
-        tracking_pixel_url
+        hotel_info_url
     )
 }
