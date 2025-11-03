@@ -39,7 +39,7 @@ pub fn save_the_date_html(
 
                     <!-- Main content -->
                     <tr>
-                        <td style="padding: 0 40px 40px; color: #4a4a4a;">
+                        <td style="padding: 40px; color: #4a4a4a;">
                             <p style="margin: 0 0 30px 0; font-size: 17px; line-height: 1.7; color: #6b6b6b; text-align: center;">
                                 Dear {},
                             </p>
@@ -53,7 +53,7 @@ pub fn save_the_date_html(
                                 <tr>
                                     <td align="center" style="padding: 0 0 15px 0;">
                                         <a href="{}" style="display: inline-block; background-color: #a0826d; color: #ffffff; text-decoration: none; padding: 16px 40px; font-size: 15px; font-weight: 400; letter-spacing: 1.5px; text-transform: uppercase; min-width: 200px; text-align: center;">
-                                            View Venue Map
+                                            View Venue
                                         </a>
                                     </td>
                                 </tr>
@@ -83,9 +83,6 @@ pub fn save_the_date_html(
                             <p style="margin: 0; font-size: 14px; color: #999999; letter-spacing: 0.5px;">
                                 August 15, 2026 • Rouge, Calgary, Alberta
                             </p>
-                            <p style="margin: 12px 0 0 0; font-size: 13px;">
-                                <a href="{}" style="color: #a0826d; text-decoration: none; letter-spacing: 0.5px;">samandjonah.com</a>
-                            </p>
                         </td>
                     </tr>
 
@@ -102,7 +99,6 @@ pub fn save_the_date_html(
         names_display,
         venue_map_url,
         hotel_info_url,
-        website_url,
         tracking_pixel_url
     )
 }
