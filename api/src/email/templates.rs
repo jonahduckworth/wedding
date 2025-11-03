@@ -22,7 +22,22 @@ pub fn save_the_date_html(
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="light only">
+    <meta name="supported-color-schemes" content="light">
     <title>Save the Date - Sam & Jonah</title>
+    <style>
+        /* Force light mode */
+        :root {{
+            color-scheme: light only;
+            supported-color-schemes: light;
+        }}
+        @media (prefers-color-scheme: dark) {{
+            body, table, td, p, a, span {{
+                background-color: #ffffff !important;
+                color: #4a4a4a !important;
+            }}
+        }}
+    </style>
 </head>
 <body style="margin: 0; padding: 0; font-family: 'Palatino Linotype', 'Book Antiqua', Palatino, Georgia, serif; background-color: #f7f3f0;">
     <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="background-color: #f7f3f0;">

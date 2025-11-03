@@ -75,7 +75,7 @@ impl EmailService {
 
         // Prepare email payload for Resend
         let email_payload = ResendEmail {
-            from: self.from_email.clone(),
+            from: format!("Sam & Jonah <{}>", self.from_email),
             to: vec![recipient_email.clone()],
             subject: subject.to_string(),
             html,
