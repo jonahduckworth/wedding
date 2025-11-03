@@ -21,22 +21,7 @@ pub fn save_the_date_html(
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="color-scheme" content="light only">
-    <meta name="supported-color-schemes" content="light">
     <title>Save the Date - Sam & Jonah</title>
-    <style>
-        /* Force light mode */
-        :root {{
-            color-scheme: light only;
-            supported-color-schemes: light;
-        }}
-        @media (prefers-color-scheme: dark) {{
-            body, table, td, p, a, span {{
-                background-color: #ffffff !important;
-                color: #4a4a4a !important;
-            }}
-        }}
-    </style>
 </head>
 <body style="margin: 0; padding: 0; font-family: 'Palatino Linotype', 'Book Antiqua', Palatino, Georgia, serif; background-color: #f7f3f0;">
     <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="background-color: #f7f3f0;">
@@ -53,12 +38,12 @@ pub fn save_the_date_html(
 
                     <!-- Main content -->
                     <tr>
-                        <td style="padding: 40px; color: #4a4a4a;">
-                            <p style="margin: 0 0 30px 0; font-size: 17px; line-height: 1.7; color: #6b6b6b; text-align: center;">
+                        <td style="padding: 40px; background-color: #ffffff; color: #4a4a4a;">
+                            <p style="margin: 0 0 30px 0; font-size: 17px; line-height: 1.7; color: #6b6b6b; text-align: center; background-color: transparent;">
                                 Dear {},
                             </p>
 
-                            <p style="margin: 0 0 40px 0; font-size: 17px; line-height: 1.8; color: #6b6b6b; text-align: center;">
+                            <p style="margin: 0 0 40px 0; font-size: 17px; line-height: 1.8; color: #6b6b6b; text-align: center; background-color: transparent;">
                                 We're getting married and would love for you to celebrate with us!
                             </p>
 
@@ -80,21 +65,21 @@ pub fn save_the_date_html(
                                 </tr>
                             </table>
 
-                            <p style="margin: 40px 0 0 0; font-size: 16px; line-height: 1.7; color: #6b6b6b; text-align: center;">
+                            <p style="margin: 40px 0 0 0; font-size: 16px; line-height: 1.7; color: #6b6b6b; text-align: center; background-color: transparent;">
                                 Formal invitation with RSVP details to follow.
                             </p>
 
-                            <p style="margin: 30px 0 0 0; font-size: 16px; line-height: 1.7; color: #8b7355; text-align: center; font-style: italic;">
+                            <p style="margin: 30px 0 0 0; font-size: 16px; line-height: 1.7; color: #8b7355; text-align: center; font-style: italic; background-color: transparent;">
                                 With love,<br>
-                                <span style="font-weight: 400; font-style: normal; letter-spacing: 1px;">Sam & Jonah</span>
+                                <span style="font-weight: 400; font-style: normal; letter-spacing: 1px; background-color: transparent;">Sam & Jonah</span>
                             </p>
                         </td>
                     </tr>
 
                     <!-- Footer -->
                     <tr>
-                        <td style="padding: 35px 40px; background-color: #f7f3f0; text-align: center; border-top: 1px solid #e8ddd1;">
-                            <p style="margin: 0; font-size: 14px; color: #999999; letter-spacing: 0.5px;">
+                        <td style="padding: 35px 40px; background-color: #faf8f5; text-align: center; border-top: 1px solid #e8ddd1;">
+                            <p style="margin: 0; font-size: 14px; color: #8b7355; letter-spacing: 0.5px; background-color: transparent;">
                                 August 15, 2026 • Rouge, Calgary, Alberta
                             </p>
                         </td>
