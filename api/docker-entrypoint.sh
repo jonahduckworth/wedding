@@ -56,20 +56,6 @@ ldd /usr/local/bin/wedding-api || echo "Failed to check dependencies"
 export RUST_BACKTRACE=full
 export RUST_LOG=debug
 
-# Test if binary can run at all
-echo "Testing binary execution..."
-/usr/local/bin/wedding-api --version 2>&1 || echo "Binary failed to execute. Exit code: $?"
-
-# Try running with timeout to catch any issues
-echo "Executing binary with RUST_BACKTRACE=full..."
-timeout 5 /usr/local/bin/wedding-api 2>&1 || {
-    EXIT_CODE=$?
-    echo "Binary exited with code: $EXIT_CODE"
-    if [ $EXIT_CODE -eq 124 ]; then
-        echo "Binary is running but timed out (this is good, server might be starting)"
-        exec /usr/local/bin/wedding-api 2>&1
-    else
-        echo "Binary failed to start properly"
-        exit $EXIT_CODE
-    fi
-}
+# Execute the binary and capture all output
+echo "Starting wedding-api..."
+exec /usr/local/bin/wedding-api
