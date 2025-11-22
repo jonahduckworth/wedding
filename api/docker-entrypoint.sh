@@ -30,5 +30,21 @@ fi
 
 echo ""
 echo "=== Launching API Binary ==="
-# Execute the binary
-exec /usr/local/bin/wedding-api
+
+# Check if binary exists and is executable
+if [ ! -f /usr/local/bin/wedding-api ]; then
+    echo "ERROR: Binary not found at /usr/local/bin/wedding-api"
+    exit 1
+fi
+
+if [ ! -x /usr/local/bin/wedding-api ]; then
+    echo "ERROR: Binary is not executable"
+    exit 1
+fi
+
+# Force unbuffered output
+export RUST_BACKTRACE=1
+
+# Execute the binary with debugging
+echo "Executing binary with RUST_BACKTRACE=1..."
+exec /usr/local/bin/wedding-api 2>&1
