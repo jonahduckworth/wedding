@@ -18,9 +18,9 @@ COPY migrations ./migrations
 COPY .sqlx ./.sqlx
 
 # Build the application with offline mode (uses pre-generated query cache)
-# Remove the old dummy binary first to force a rebuild
+# Force rebuild by removing entire target directory
 ENV SQLX_OFFLINE=true
-RUN rm -f /app/target/release/wedding-api && \
+RUN rm -rf /app/target/release && \
     cargo build --release && \
     echo "Binary built successfully" && \
     ls -lh /app/target/release/wedding-api && \
