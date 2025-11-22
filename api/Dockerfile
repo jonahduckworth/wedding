@@ -31,6 +31,8 @@ RUN apt-get update && \
         libpq5 \
         ca-certificates \
         libssl3 \
+        libgcc-s1 \
+        ldd \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app

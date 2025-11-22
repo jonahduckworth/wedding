@@ -42,9 +42,14 @@ if [ ! -x /usr/local/bin/wedding-api ]; then
     exit 1
 fi
 
+# Check library dependencies
+echo "Checking binary dependencies..."
+ldd /usr/local/bin/wedding-api || echo "Failed to check dependencies"
+
 # Force unbuffered output
-export RUST_BACKTRACE=1
+export RUST_BACKTRACE=full
+export RUST_LOG=debug
 
 # Execute the binary with debugging
-echo "Executing binary with RUST_BACKTRACE=1..."
+echo "Executing binary with RUST_BACKTRACE=full..."
 exec /usr/local/bin/wedding-api 2>&1
