@@ -19,7 +19,10 @@ COPY .sqlx ./.sqlx
 
 # Build the application with offline mode (uses pre-generated query cache)
 ENV SQLX_OFFLINE=true
-RUN cargo build --release
+RUN cargo build --release && \
+    echo "Binary built successfully" && \
+    ls -lh /app/target/release/wedding-api && \
+    file /app/target/release/wedding-api
 
 # Production stage
 FROM debian:bookworm-slim
@@ -34,6 +37,8 @@ RUN apt-get update && \
         libgcc-s1 \
         libc-bin \
         coreutils \
+        strace \
+        procps \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app

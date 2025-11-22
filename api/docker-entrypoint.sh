@@ -58,4 +58,4 @@ export RUST_LOG=debug
 
 # Execute the binary and capture all output
 echo "Starting wedding-api..."
-exec /usr/local/bin/wedding-api
+/usr/local/bin/wedding-api 2>&1
