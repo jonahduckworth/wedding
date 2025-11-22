@@ -32,7 +32,7 @@ RUN apt-get update && \
         ca-certificates \
         libssl3 \
         libgcc-s1 \
-        ldd \
+        libc-bin \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
