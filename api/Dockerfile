@@ -18,8 +18,10 @@ COPY migrations ./migrations
 COPY .sqlx ./.sqlx
 
 # Build the application with offline mode (uses pre-generated query cache)
+# Remove the old dummy binary first to force a rebuild
 ENV SQLX_OFFLINE=true
-RUN cargo build --release && \
+RUN rm -f /app/target/release/wedding-api && \
+    cargo build --release && \
     echo "Binary built successfully" && \
     ls -lh /app/target/release/wedding-api && \
     file /app/target/release/wedding-api
@@ -39,6 +41,8 @@ RUN apt-get update && \
         coreutils \
         strace \
         procps \
+        binutils \
+        file \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
@@ -46,7 +50,11 @@ WORKDIR /app
 # Copy the binary from builder
 COPY --from=builder /app/target/release/wedding-api /usr/local/bin/wedding-api
 RUN chmod +x /usr/local/bin/wedding-api && \
-    ls -lh /usr/local/bin/wedding-api
+    ls -lh /usr/local/bin/wedding-api && \
+    echo "Binary file details:" && \
+    file /usr/local/bin/wedding-api && \
+    echo "Binary strings (looking for main):" && \
+    strings /usr/local/bin/wedding-api | grep -i "wedding\|connecting" | head -5 || echo "No matching strings found"
 
 # Copy migrations
 COPY --from=builder /app/migrations ./migrations
