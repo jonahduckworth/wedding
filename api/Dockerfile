@@ -33,6 +33,7 @@ RUN apt-get update && \
         libssl3 \
         libgcc-s1 \
         libc-bin \
+        coreutils \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app

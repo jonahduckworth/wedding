@@ -3,6 +3,12 @@ set -e
 
 echo "=== Wedding API Docker Entrypoint ==="
 echo "Current directory: $(pwd)"
+echo "Contents of current directory:"
+ls -la
+echo ""
+echo "Migrations directory check:"
+ls -la ./migrations 2>&1 || echo "No migrations directory in $(pwd)"
+echo ""
 echo "Binary location check:"
 ls -la /usr/local/bin/ | grep wedding || echo "Binary not found in /usr/local/bin/"
 
@@ -50,6 +56,20 @@ ldd /usr/local/bin/wedding-api || echo "Failed to check dependencies"
 export RUST_BACKTRACE=full
 export RUST_LOG=debug
 
-# Execute the binary with debugging
+# Test if binary can run at all
+echo "Testing binary execution..."
+/usr/local/bin/wedding-api --version 2>&1 || echo "Binary failed to execute. Exit code: $?"
+
+# Try running with timeout to catch any issues
 echo "Executing binary with RUST_BACKTRACE=full..."
-exec /usr/local/bin/wedding-api 2>&1
+timeout 5 /usr/local/bin/wedding-api 2>&1 || {
+    EXIT_CODE=$?
+    echo "Binary exited with code: $EXIT_CODE"
+    if [ $EXIT_CODE -eq 124 ]; then
+        echo "Binary is running but timed out (this is good, server might be starting)"
+        exec /usr/local/bin/wedding-api 2>&1
+    else
+        echo "Binary failed to start properly"
+        exit $EXIT_CODE
+    fi
+}
