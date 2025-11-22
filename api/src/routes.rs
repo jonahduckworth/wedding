@@ -680,24 +680,13 @@ async fn campaign_stats(
     .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?
     .unwrap_or(0);
 
-    // Count opened emails
-    let opened_count: i64 = sqlx::query_scalar!(
-        "SELECT COUNT(*) FROM email_sends WHERE campaign_id = $1 AND opened_at IS NOT NULL",
-        id
-    )
-    .fetch_one(&state.db)
-    .await
-    .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?
-    .unwrap_or(0);
-
-    let not_opened_count = sent_count - opened_count;
     let pending_count = total_invites - sent_count;
 
     Ok(Json(CampaignStats {
         total_invites,
         sent_count,
-        opened_count,
-        not_opened_count,
+        opened_count: 0, // Tracking now done via Resend dashboard
+        not_opened_count: 0, // Tracking now done via Resend dashboard
         pending_count,
     }))
 }
@@ -745,8 +734,8 @@ async fn campaign_recipients(
                         guests,
                     },
                     sent_at: send.sent_at,
-                    opened_at: send.opened_at,
-                    opened_count: send.opened_count,
+                    opened_at: None, // Tracking now done via Resend dashboard
+                    opened_count: 0, // Tracking now done via Resend dashboard
                 });
             }
         }

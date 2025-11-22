@@ -13,6 +13,8 @@ struct ResendEmail {
     html: String,
     #[serde(skip_serializing_if = "Option::is_none")]
     tags: Option<Vec<ResendTag>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    reply_to: Option<Vec<String>>,
 }
 
 #[derive(Debug, Serialize)]
@@ -72,15 +74,23 @@ impl EmailService {
         // Render HTML
         let html = self.render_save_the_date(invite);
 
-        // Get recipient email (use first guest's email)
-        let recipient_email = invite.guests.first()
-            .ok_or_else(|| "No guests found for invite".to_string())?
-            .email.clone();
+        // Get all valid recipient emails from guests in this invite
+        let recipient_emails: Vec<String> = invite.guests.iter()
+            .filter(|guest| {
+                // Valid email must contain @ and . after the @
+                guest.email.contains('@') && guest.email.split('@').nth(1).map_or(false, |domain| domain.contains('.'))
+            })
+            .map(|guest| guest.email.clone())
+            .collect();
+
+        if recipient_emails.is_empty() {
+            return Err("No valid email addresses found for invite".to_string());
+        }
 
         // Prepare email payload for Resend with tags for tracking
         let email_payload = ResendEmail {
             from: format!("Sam & Jonah <{}>", self.from_email),
-            to: vec![recipient_email.clone()],
+            to: recipient_emails.clone(),
             subject: subject.to_string(),
             html,
             tags: Some(vec![
@@ -93,6 +103,7 @@ impl EmailService {
                     value: invite.invite.id.to_string(),
                 },
             ]),
+            reply_to: Some(vec![self.from_email.clone()]),
         };
 
         // Send via Resend API
@@ -119,7 +130,7 @@ impl EmailService {
 
         tracing::info!(
             "📧 Sent save-the-date email to {} (invite: {}, resend_id: {})",
-            recipient_email,
+            recipient_emails.join(", "),
             invite.invite.unique_code,
             resend_response.id
         );
