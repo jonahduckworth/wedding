@@ -58,12 +58,36 @@ export RUST_LOG=debug
 
 # Execute the binary and capture all output
 echo "Starting wedding-api..."
-/usr/local/bin/wedding-api 2>&1 || {
+echo "Will run for 10 seconds to test..."
+
+# Run in background and monitor
+timeout 10 /usr/local/bin/wedding-api 2>&1 &
+BINARY_PID=$!
+echo "Binary started with PID: $BINARY_PID"
+
+# Wait for it
+sleep 11
+
+# Check if still running
+if ps -p $BINARY_PID > /dev/null 2>&1; then
+    echo "Binary is still running after 10 seconds - looks healthy!"
+    echo "Killing test run and starting for real..."
+    kill $BINARY_PID 2>/dev/null
+    sleep 1
+    exec /usr/local/bin/wedding-api
+else
+    wait $BINARY_PID
     EXIT_CODE=$?
     echo "========================================="
-    echo "BINARY CRASHED WITH EXIT CODE: $EXIT_CODE"
+    echo "BINARY EXITED WITH CODE: $EXIT_CODE"
     echo "========================================="
-    echo "Keeping container alive for 300 seconds to allow log inspection..."
-    sleep 300
-    exit $EXIT_CODE
-}
+    if [ $EXIT_CODE -eq 124 ]; then
+        echo "Timeout - binary was running successfully!"
+        exec /usr/local/bin/wedding-api
+    else
+        echo "Binary failed to start"
+        echo "Keeping container alive for 300 seconds..."
+        sleep 300
+        exit $EXIT_CODE
+    fi
+fi
