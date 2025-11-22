@@ -21,10 +21,7 @@ COPY .sqlx ./.sqlx
 # Force rebuild by removing entire target directory
 ENV SQLX_OFFLINE=true
 RUN rm -rf /app/target/release && \
-    cargo build --release && \
-    echo "Binary built successfully" && \
-    ls -lh /app/target/release/wedding-api && \
-    file /app/target/release/wedding-api
+    cargo build --release
 
 # Production stage
 FROM debian:bookworm-slim
@@ -36,25 +33,13 @@ RUN apt-get update && \
         libpq5 \
         ca-certificates \
         libssl3 \
-        libgcc-s1 \
-        libc-bin \
-        coreutils \
-        strace \
-        procps \
-        binutils \
-        file \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
 
 # Copy the binary from builder
 COPY --from=builder /app/target/release/wedding-api /usr/local/bin/wedding-api
-RUN chmod +x /usr/local/bin/wedding-api && \
-    ls -lh /usr/local/bin/wedding-api && \
-    echo "Binary file details:" && \
-    file /usr/local/bin/wedding-api && \
-    echo "Binary strings (looking for main):" && \
-    strings /usr/local/bin/wedding-api | grep -i "wedding\|connecting" | head -5 || echo "No matching strings found"
+RUN chmod +x /usr/local/bin/wedding-api
 
 # Copy migrations
 COPY --from=builder /app/migrations ./migrations
