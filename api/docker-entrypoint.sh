@@ -58,4 +58,12 @@ export RUST_LOG=debug
 
 # Execute the binary and capture all output
 echo "Starting wedding-api..."
-/usr/local/bin/wedding-api 2>&1
+/usr/local/bin/wedding-api 2>&1 || {
+    EXIT_CODE=$?
+    echo "========================================="
+    echo "BINARY CRASHED WITH EXIT CODE: $EXIT_CODE"
+    echo "========================================="
+    echo "Keeping container alive for 300 seconds to allow log inspection..."
+    sleep 300
+    exit $EXIT_CODE
+}
