@@ -185,14 +185,13 @@ export default function EmailCampaigns() {
                     >
                       Preview
                     </button>
-                    {!campaign.sent_at ? (
-                      <button
-                        onClick={() => handleSendCampaign(campaign.id)}
-                        className="px-3 py-1 bg-primary text-white rounded-lg text-sm hover:bg-mauve"
-                      >
-                        Send
-                      </button>
-                    ) : (
+                    <button
+                      onClick={() => handleSendCampaign(campaign.id)}
+                      className="px-3 py-1 bg-primary text-white rounded-lg text-sm hover:bg-mauve"
+                    >
+                      {campaign.sent_at ? 'Send to Remaining' : 'Send'}
+                    </button>
+                    {campaign.sent_at && (
                       <button
                         onClick={() => setViewingCampaignId(campaign.id)}
                         className="px-3 py-1 bg-olive text-white rounded-lg text-sm hover:bg-sage"
@@ -437,8 +436,10 @@ export default function EmailCampaigns() {
             <div className="p-6">
               <h3 className="text-xl font-display font-bold text-primary mb-4">Send Campaign</h3>
               <p className="text-gray-700 mb-6">
-                This will send the save-the-date email to all active invites. This action cannot be
-                undone.
+                {campaigns?.find(c => c.id === sendingCampaignId)?.sent_at
+                  ? 'This will send emails to all invites that haven\'t received this campaign yet. Already-sent invites will be automatically skipped.'
+                  : 'This will send the save-the-date email to all active invites.'
+                }
               </p>
               <div className="flex justify-end gap-3">
                 <button
