@@ -161,17 +161,23 @@ impl EmailService {
         .await
         .map_err(|e| format!("Failed to fetch campaign: {}", e))?;
 
-        // Get all invites with non-removed guests
+        // Get all invites with non-removed guests that haven't been sent yet
         let invites = sqlx::query!(
             "SELECT DISTINCT i.* FROM invites i
              INNER JOIN guests g ON g.invite_id = i.id
-             WHERE g.removed = false"
+             WHERE g.removed = false
+             AND NOT EXISTS (
+                 SELECT 1 FROM email_sends es
+                 WHERE es.invite_id = i.id AND es.campaign_id = $1
+             )",
+            campaign_id
         )
         .fetch_all(&self.db)
         .await
         .map_err(|e| format!("Failed to fetch invites: {}", e))?;
 
         let mut sent_count = 0;
+        let mut errors = Vec::new();
 
         for invite_row in invites {
             // Get guests for this invite
@@ -183,6 +189,7 @@ impl EmailService {
             .await
             .map_err(|e| format!("Failed to fetch guests: {}", e))?;
 
+            let unique_code = invite_row.unique_code.clone();
             let invite = InviteWithGuests {
                 invite: crate::models::Invite {
                     id: invite_row.id,
@@ -194,9 +201,18 @@ impl EmailService {
                 guests,
             };
 
-            // Send email
-            self.send_save_the_date(campaign_id, &invite, &campaign.subject).await?;
-            sent_count += 1;
+            // Send email - continue on error instead of stopping
+            match self.send_save_the_date(campaign_id, &invite, &campaign.subject).await {
+                Ok(_) => {
+                    sent_count += 1;
+                    tracing::info!("✓ Successfully sent email for invite {}", unique_code);
+                }
+                Err(e) => {
+                    let error_msg = format!("Failed to send to invite {}: {}", unique_code, e);
+                    tracing::error!("✗ {}", error_msg);
+                    errors.push(error_msg);
+                }
+            }
         }
 
         // Update campaign
@@ -211,6 +227,14 @@ impl EmailService {
         .await
         .map_err(|e| format!("Failed to update campaign: {}", e))?;
 
-        Ok(sent_count)
+        // Return success if at least some emails were sent, or error if all failed
+        if sent_count == 0 && !errors.is_empty() {
+            Err(format!("Failed to send all emails. Errors: {}", errors.join("; ")))
+        } else if !errors.is_empty() {
+            tracing::warn!("Campaign completed with {} successes and {} errors", sent_count, errors.len());
+            Ok(sent_count)
+        } else {
+            Ok(sent_count)
+        }
     }
 }
