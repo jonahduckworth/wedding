@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "SELECT DISTINCT i.* FROM invites i\n             INNER JOIN guests g ON g.invite_id = i.id\n             WHERE g.removed = false",
+  "query": "SELECT DISTINCT i.* FROM invites i\n             INNER JOIN guests g ON g.invite_id = i.id\n             WHERE g.removed = false\n             AND NOT EXISTS (\n                 SELECT 1 FROM email_sends es\n                 WHERE es.invite_id = i.id AND es.campaign_id = $1\n             )",
   "describe": {
     "columns": [
       {
@@ -30,7 +30,9 @@
       }
     ],
     "parameters": {
-      "Left": []
+      "Left": [
+        "Uuid"
+      ]
     },
     "nullable": [
       false,
@@ -40,5 +42,5 @@
       true
     ]
   },
-  "hash": "0e8cd68cd9bd26e4f4dbcce7b59292e40d93b28b09073b5811548ebf7a8ee087"
+  "hash": "5e480459caa69fb212282ce45924c2be92da17bc2e88189eae2477fd4c6ab85e"
 }
