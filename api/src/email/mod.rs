@@ -78,13 +78,18 @@ impl EmailService {
         let recipient_emails: Vec<String> = invite.guests.iter()
             .filter(|guest| {
                 // Valid email must contain @ and . after the @
-                guest.email.contains('@') && guest.email.split('@').nth(1).map_or(false, |domain| domain.contains('.'))
+                let is_valid = guest.email.contains('@') && guest.email.split('@').nth(1).map_or(false, |domain| domain.contains('.'));
+                if !is_valid {
+                    tracing::debug!("Skipping invalid email for {}: {}", guest.name, guest.email);
+                }
+                is_valid
             })
             .map(|guest| guest.email.clone())
             .collect();
 
         if recipient_emails.is_empty() {
-            return Err("No valid email addresses found for invite".to_string());
+            let guest_names: Vec<String> = invite.guests.iter().map(|g| format!("{} ({})", g.name, g.email)).collect();
+            return Err(format!("No valid email addresses found for invite with guests: {}", guest_names.join(", ")));
         }
 
         // Prepare email payload for Resend with tags for tracking
