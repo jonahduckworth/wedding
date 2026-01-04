@@ -1,53 +1,318 @@
+import { motion } from 'framer-motion';
+import { useState } from 'react';
 import Layout from '../components/Layout';
+import FloralDivider from '../components/decorative/FloralDivider';
+import SketchFilter from '../components/decorative/SketchFilter';
 
 export default function StoryPage() {
+  const [selectedPhoto, setSelectedPhoto] = useState<string | null>(null);
+
+  const fadeInUp = {
+    hidden: { opacity: 0, y: 30 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.8 }
+    }
+  };
+
+  const timelineEvents = [
+    {
+      date: 'January 2021',
+      title: 'The First Date',
+      description: 'They matched on Hinge a couple months earlier, but Covid restrictions delayed their first meeting. Their skating/pond hockey date quickly turned into a 12-hour adventure that included coffee, building furniture, and ordering sushi. Sam thought Jonah was "kinda funny", and Jonah loved Sam\'s stories.',
+      icon: '⛸️'
+    },
+    {
+      date: '2021-2022',
+      title: 'Inseparable',
+      description: 'They originally agreed to only see each other a couple times per week due to busy schedules with Jonah taking his B.Sc. in Computer Science and Sam taking her M.Ed. in School and Applied Child Psychology. This plan quickly went out the window after the 2nd date!',
+      icon: '💫'
+    },
+    {
+      date: '2022',
+      title: 'Long Distance',
+      description: 'When Jonah had to live in Kamloops for 4 months to finish his degree, they proved their love could withstand the distance.',
+      icon: '✈️'
+    },
+    {
+      date: '2022-2024',
+      title: 'Adventures Together',
+      description: 'They traveled to Arizona, Seattle, and throughout B.C., supported each other through the early days of their careers, and enjoyed bike rides (on the bike Jonah refurbished for Sam), getting burgers, hanging with friends, and playing sports together.',
+      icon: '🚴'
+    },
+    {
+      date: 'November 2024',
+      title: 'Moose Joins the Family',
+      description: 'They adopted their sweet puppy, Moose, and now enjoy daily walks together as a family.',
+      icon: '🐕'
+    },
+    {
+      date: 'Future',
+      title: 'Dreams Ahead',
+      description: 'Sam and Jonah aspire to travel to Italy, Germany, and Japan, while expanding their family and building a beautiful life together.',
+      icon: '🌟'
+    }
+  ];
+
+  // Curated selection of engagement photos
+  const galleryPhotos = [
+    'NoraHanakoPhotographyS&JEngagement-5429.jpg',
+    'NoraHanakoPhotographyS&JEngagement-5481.jpg',
+    'NoraHanakoPhotographyS&JEngagement-5500-2.jpg',
+    'NoraHanakoPhotographyS&JEngagement-5521-2.jpg',
+    'NoraHanakoPhotographyS&JEngagement-5537.jpg',
+    'NoraHanakoPhotographyS&JEngagement-5571.jpg',
+    'NoraHanakoPhotographyS&JEngagement-5590-2.jpg',
+    'NoraHanakoPhotographyS&JEngagement-5635.jpg',
+    'NoraHanakoPhotographyS&JEngagement-5671-2.jpg',
+    'NoraHanakoPhotographyS&JEngagement-5718-2.jpg',
+    'NoraHanakoPhotographyS&JEngagement-5750-2.jpg',
+    'NoraHanakoPhotographyS&JEngagement-5786.jpg',
+    'NoraHanakoPhotographyS&JEngagement-5815.jpg',
+    'NoraHanakoPhotographyS&JEngagement-5852-2.jpg',
+    'NoraHanakoPhotographyS&JEngagement-5880-2.jpg',
+    'NoraHanakoPhotographyS&JEngagement-5925-2.jpg',
+    'NoraHanakoPhotographyS&JEngagement-5963-2.jpg',
+    'NoraHanakoPhotographyS&JEngagement-5995-2.jpg',
+    'NoraHanakoPhotographyS&JEngagement-6057.jpg',
+    'NoraHanakoPhotographyS&JEngagement-6089-2.jpg',
+    'NoraHanakoPhotographyS&JEngagement-6165-2.jpg',
+    'NoraHanakoPhotographyS&JEngagement-6183-2.jpg',
+    'NoraHanakoPhotographyS&JEngagement-6203-2.jpg',
+    'NoraHanakoPhotographyS&JEngagement-6223.jpg',
+  ];
+
   return (
     <Layout>
-      <div className="container mx-auto px-4 py-12">
-        <h1 className="text-4xl font-serif font-bold text-center mb-12">Our Story</h1>
+      <SketchFilter />
 
-        <div className="max-w-3xl mx-auto space-y-12">
-          {/* How We Met */}
-          <section>
-            <h2 className="text-2xl font-semibold mb-4">How We Met</h2>
-            <p className="text-gray-700 leading-relaxed">
-              [Story content to be added]
-            </p>
-          </section>
-
-          {/* Photo Placeholder */}
-          <div className="bg-gray-200 h-96 rounded-lg flex items-center justify-center">
-            <p className="text-gray-500">Photo Placeholder</p>
-          </div>
-
-          {/* Our Journey */}
-          <section>
-            <h2 className="text-2xl font-semibold mb-4">Our Journey</h2>
-            <div className="space-y-6">
-              <div className="border-l-4 border-primary pl-6 py-2">
-                <h3 className="font-semibold text-lg">First Date</h3>
-                <p className="text-gray-600">[Date and story]</p>
-              </div>
-              <div className="border-l-4 border-primary pl-6 py-2">
-                <h3 className="font-semibold text-lg">The Proposal</h3>
-                <p className="text-gray-600">[Proposal story]</p>
-              </div>
-            </div>
-          </section>
-
-          {/* Photo Gallery Placeholder */}
-          <section>
-            <h2 className="text-2xl font-semibold mb-6">Photo Gallery</h2>
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-              {[1, 2, 3, 4, 5, 6].map((i) => (
-                <div key={i} className="bg-gray-200 aspect-square rounded-lg flex items-center justify-center">
-                  <p className="text-gray-500">Photo {i}</p>
-                </div>
-              ))}
-            </div>
-          </section>
+      {/* Hero Section with Photo */}
+      <motion.section
+        initial="hidden"
+        animate="visible"
+        variants={fadeInUp}
+        className="relative min-h-[60vh] flex items-center justify-center overflow-hidden"
+      >
+        {/* Background Image */}
+        <div className="absolute inset-0">
+          <img
+            src="/Gallery/NoraHanakoPhotographyS&JEngagement-5590.jpg"
+            alt="Sam & Jonah"
+            className="w-full h-full object-cover"
+          />
+          <div className="absolute inset-0 bg-gradient-to-b from-cream/70 via-cream/50 to-cream/90" />
         </div>
-      </div>
+
+        <div className="container mx-auto max-w-4xl text-center relative z-10 px-4 py-24">
+          <motion.h1
+            variants={fadeInUp}
+            className="font-display text-5xl md:text-7xl mb-6 text-charcoal"
+          >
+            Our Love Story
+          </motion.h1>
+          <motion.p
+            variants={fadeInUp}
+            className="text-xl text-warm-gray italic mb-8"
+          >
+            From a first date that lasted 12 hours to a lifetime together
+          </motion.p>
+          <motion.div variants={fadeInUp}>
+            <FloralDivider className="text-dusty-rose" />
+          </motion.div>
+        </div>
+      </motion.section>
+
+      {/* The Full Story */}
+      <motion.section
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, margin: '-100px' }}
+        variants={fadeInUp}
+        className="py-20 px-4 bg-off-white"
+      >
+        <div className="container mx-auto max-w-3xl">
+          <div className="bg-cream/50 rounded-3xl p-8 md:p-12 border-2 border-dusty-rose/20 shadow-lg">
+            <p className="text-lg text-charcoal leading-relaxed mb-6 font-light">
+              Jonah and Sam met in <strong className="font-medium text-dusty-rose">January 2021</strong>. They matched on the dating app, Hinge, a couple of months earlier. They delayed their first date due to Covid restrictions, and the fact that Sam would be travelling home for Christmas.
+            </p>
+            <p className="text-lg text-charcoal leading-relaxed mb-6 font-light">
+              Their first date was skating/playing pond hockey. Sam thought Jonah was <em className="font-display">"kinda funny"</em>, Jonah loved Sam's stories, and their skating date quickly turned into a <strong className="font-medium text-dusty-rose">12-hour day</strong> which also included having coffee, building some furniture, and ordering sushi.
+            </p>
+            <p className="text-lg text-charcoal leading-relaxed mb-6 font-light">
+              They were both students at the time, with Jonah taking his B.Sc. in Computer Science, and Sam taking her M.Ed. in School and Applied Child Psychology. They had originally agreed that with their busy schedules, they should only plan to see each other a couple of times per week. This plan quickly went out the window (after the 2nd date), and they have been inseparable ever since.
+            </p>
+            <p className="text-lg text-charcoal leading-relaxed mb-6 font-light">
+              Over the course of their relationship, they have spent some time long-distance (Jonah had to live in Kamloops for 4 months to finish his degree), lived together, done some travels (Arizona, Seattle, and throughout B.C.), and have supported each other through the early days/years of their professional careers.
+            </p>
+            <p className="text-lg text-charcoal leading-relaxed mb-6 font-light">
+              In their free time, they enjoy going for bike rides (on the bike that Jonah refurbished for Sam), getting burgers, hanging out with friends, and playing a variety of different sports (e.g., soccer, tennis, golf, pickleball). They adopted their sweet puppy, <strong className="font-medium text-sage">Moose</strong>, in November 2024, and enjoy taking him for daily walks as well.
+            </p>
+            <p className="text-lg text-charcoal leading-relaxed font-light">
+              Jonah and Sam aspire to do some bigger travels, including Italy, Germany, and Japan, as well as expanding their family. They are <strong className="font-medium text-dusty-rose">thrilled to be able to celebrate their love story and marriage</strong> with all of their favourite people.
+            </p>
+          </div>
+        </div>
+      </motion.section>
+
+      {/* Featured Photo Strip */}
+      <motion.section
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true }}
+        className="py-8 bg-off-white overflow-hidden"
+      >
+        <div className="flex gap-4 animate-scroll">
+          {[...galleryPhotos.slice(0, 8), ...galleryPhotos.slice(0, 8)].map((photo, index) => (
+            <motion.div
+              key={index}
+              initial={{ opacity: 0, scale: 0.9 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.5, delay: (index % 8) * 0.05 }}
+              className="flex-shrink-0 w-64 h-64 md:w-80 md:h-80"
+            >
+              <img
+                src={`/Gallery/${photo}`}
+                alt={`Sam & Jonah engagement photo ${index + 1}`}
+                className="w-full h-full object-cover rounded-2xl shadow-lg"
+              />
+            </motion.div>
+          ))}
+        </div>
+      </motion.section>
+
+      {/* Timeline */}
+      <motion.section
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, margin: '-100px' }}
+        className="py-20 px-4 bg-gradient-to-b from-off-white via-blush/20 to-cream"
+      >
+        <div className="container mx-auto max-w-4xl">
+          <motion.h2
+            variants={fadeInUp}
+            className="font-display text-4xl md:text-5xl text-center mb-16 text-charcoal"
+          >
+            Our Journey
+          </motion.h2>
+
+          <div className="relative">
+            {/* Timeline line */}
+            <div className="absolute left-8 md:left-1/2 top-0 bottom-0 w-0.5 bg-dusty-rose/30" />
+
+            {timelineEvents.map((event, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, x: index % 2 === 0 ? -50 : 50 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true, margin: '-50px' }}
+                transition={{ duration: 0.6, delay: index * 0.1 }}
+                className={`relative mb-16 md:mb-12 ${
+                  index % 2 === 0 ? 'md:pr-1/2 md:text-right' : 'md:pl-1/2 md:ml-auto'
+                } md:w-1/2`}
+              >
+                {/* Timeline dot */}
+                <div className={`absolute top-6 ${index % 2 === 0 ? 'md:right-[-1.5rem]' : 'md:left-[-1.5rem]'} left-[1.75rem] w-12 h-12 bg-dusty-rose rounded-full border-4 border-off-white flex items-center justify-center text-xl shadow-lg`}>
+                  {event.icon}
+                </div>
+
+                {/* Content card */}
+                <div className="ml-20 md:ml-0 md:mr-0">
+                  <div className={`bg-off-white rounded-2xl p-6 shadow-lg border-2 border-dusty-rose/20 hover:shadow-xl transition-shadow ${
+                    index % 2 === 0 ? 'md:mr-8' : 'md:ml-8'
+                  }`}>
+                    <span className="inline-block text-sm font-medium text-dusty-rose mb-2">
+                      {event.date}
+                    </span>
+                    <h3 className="font-display text-2xl mb-3 text-charcoal">
+                      {event.title}
+                    </h3>
+                    <p className="text-warm-gray leading-relaxed font-light">
+                      {event.description}
+                    </p>
+                  </div>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </motion.section>
+
+      {/* Photo Gallery */}
+      <motion.section
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, margin: '-100px' }}
+        variants={fadeInUp}
+        className="py-20 px-4 bg-off-white"
+      >
+        <div className="container mx-auto max-w-6xl">
+          <h2 className="font-display text-4xl md:text-5xl mb-4 text-charcoal text-center">
+            Our Memories
+          </h2>
+          <p className="text-warm-gray mb-12 text-center">
+            A glimpse into our journey together
+          </p>
+
+          {/* Masonry Grid */}
+          <div className="columns-2 md:columns-3 lg:columns-4 gap-4 space-y-4">
+            {galleryPhotos.map((photo, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: index * 0.03 }}
+                className="break-inside-avoid cursor-pointer group"
+                onClick={() => setSelectedPhoto(photo)}
+              >
+                <div className="relative overflow-hidden rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300">
+                  <img
+                    src={`/Gallery/${photo}`}
+                    alt={`Sam & Jonah engagement photo ${index + 1}`}
+                    className="w-full h-auto object-cover group-hover:scale-105 transition-transform duration-500"
+                    loading="lazy"
+                  />
+                  <div className="absolute inset-0 bg-dusty-rose/0 group-hover:bg-dusty-rose/10 transition-colors duration-300" />
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </motion.section>
+
+      {/* Photo Lightbox */}
+      {selectedPhoto && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          className="fixed inset-0 z-50 bg-charcoal/90 flex items-center justify-center p-4"
+          onClick={() => setSelectedPhoto(null)}
+        >
+          <motion.div
+            initial={{ scale: 0.9, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ duration: 0.3 }}
+            className="relative max-w-5xl max-h-[90vh]"
+          >
+            <img
+              src={`/Gallery/${selectedPhoto}`}
+              alt="Sam & Jonah"
+              className="max-w-full max-h-[90vh] object-contain rounded-lg shadow-2xl"
+            />
+            <button
+              onClick={() => setSelectedPhoto(null)}
+              className="absolute -top-4 -right-4 w-10 h-10 bg-off-white rounded-full shadow-lg flex items-center justify-center text-charcoal hover:bg-dusty-rose hover:text-off-white transition-colors"
+            >
+              <svg width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2">
+                <line x1="4" y1="4" x2="16" y2="16" />
+                <line x1="16" y1="4" x2="4" y2="16" />
+              </svg>
+            </button>
+          </motion.div>
+        </motion.div>
+      )}
     </Layout>
   );
 }

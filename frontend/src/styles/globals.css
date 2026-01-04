@@ -1,38 +1,146 @@
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400&family=Montserrat:wght@300;400;500;600&display=swap');
 @import "tailwindcss";
 
 @theme {
-  /* Wedding Color Palette - Sam & Jonah */
-  --color-sage: #c4d7a4;        /* Light sage green */
-  --color-olive: #7d9456;       /* Olive green */
-  --color-blush: #ecd5e8;       /* Soft pink/lavender */
-  --color-rose: #c78ba4;        /* Dusty rose */
-  --color-mauve: #9a4e72;       /* Deep mauve/burgundy */
+  /* Elegant Wedding Palette - Pencil Sketch Aesthetic */
+  --color-cream: #FAF7F2;           /* Warm cream - main background */
+  --color-blush: #E8D5D0;          /* Soft blush - accents */
+  --color-dusty-rose: #D4A5A5;     /* Dusty rose - primary */
+  --color-sage: #B8C5B0;           /* Soft sage - secondary */
+  --color-terracotta: #C89F91;     /* Warm terracotta - highlights */
+  --color-charcoal: #3D3D3D;       /* Charcoal - text */
+  --color-warm-gray: #8B8680;      /* Warm gray - muted text */
+  --color-off-white: #FFFEFB;      /* Off-white - pure backgrounds */
 
-  /* Semantic color names for easier use */
-  --color-primary: #9a4e72;     /* Deep mauve - primary brand color */
-  --color-secondary: #7d9456;   /* Olive - secondary actions */
-  --color-accent: #c78ba4;      /* Dusty rose - accents and highlights */
-  --color-light: #ecd5e8;       /* Soft blush - backgrounds */
-  --color-muted: #c4d7a4;       /* Light sage - muted elements */
+  /* Semantic colors */
+  --color-primary: #D4A5A5;        /* Dusty rose */
+  --color-secondary: #B8C5B0;      /* Sage */
+  --color-accent: #C89F91;         /* Terracotta */
+  --color-text: #3D3D3D;           /* Charcoal */
+  --color-text-light: #8B8680;     /* Warm gray */
 
-  /* Typography */
-  --font-display: "Playfair Display", Georgia, serif;
-  --font-sans: system-ui, -apple-system, sans-serif;
+  /* Typography - Elegant & Romantic */
+  --font-display: "Cormorant Garamond", Georgia, serif;
+  --font-body: "Montserrat", system-ui, -apple-system, sans-serif;
 
-  /* Spacing & Radius */
-  --radius-lg: 1rem;
-  --radius-md: 0.75rem;
-  --radius-sm: 0.5rem;
+  /* Hand-drawn effect */
+  --sketch-color: rgba(61, 61, 61, 0.15);
+
+  /* Spacing & Radius - Softer, more organic */
+  --radius-xl: 2rem;
+  --radius-lg: 1.5rem;
+  --radius-md: 1rem;
+  --radius-sm: 0.75rem;
 }
 
 @layer base {
+  * {
+    @apply border-charcoal/10;
+  }
+
   body {
-    @apply bg-white text-gray-900;
-    font-family: var(--font-sans);
+    @apply bg-cream text-charcoal antialiased;
+    font-family: var(--font-body);
+    font-weight: 300;
+    letter-spacing: 0.01em;
   }
 
   h1, h2, h3, h4, h5, h6 {
     font-family: var(--font-display);
-    font-weight: 700;
+    font-weight: 400;
+    letter-spacing: 0.02em;
+  }
+
+  h1 {
+    @apply text-5xl md:text-7xl;
+    font-weight: 300;
+  }
+
+  h2 {
+    @apply text-4xl md:text-5xl;
+  }
+
+  h3 {
+    @apply text-3xl md:text-4xl;
+  }
+
+  /* Smooth scrolling */
+  html {
+    scroll-behavior: smooth;
+  }
+
+  /* Selection color */
+  ::selection {
+    background-color: var(--color-blush);
+    color: var(--color-charcoal);
+  }
+}
+
+@layer utilities {
+  /* Hand-drawn sketch border effect */
+  .sketch-border {
+    position: relative;
+    border: none;
+  }
+
+  .sketch-border::before {
+    content: '';
+    position: absolute;
+    inset: -2px;
+    border: 2px solid currentColor;
+    border-radius: inherit;
+    opacity: 0.3;
+    filter: url(#sketch);
+  }
+
+  /* Floating animation */
+  @keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
+  }
+
+  .animate-float {
+    animation: float 3s ease-in-out infinite;
+  }
+
+  /* Draw-in animation */
+  @keyframes draw {
+    to { stroke-dashoffset: 0; }
+  }
+
+  .animate-draw {
+    stroke-dasharray: 1000;
+    stroke-dashoffset: 1000;
+    animation: draw 2s ease-in-out forwards;
+  }
+
+  /* Fade-in-up */
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .animate-fade-in-up {
+    animation: fadeInUp 0.8s ease-out forwards;
+  }
+
+  /* Horizontal scroll animation for photo strips */
+  @keyframes scroll {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+
+  .animate-scroll {
+    animation: scroll 40s linear infinite;
+  }
+
+  .animate-scroll:hover {
+    animation-play-state: paused;
   }
 }
