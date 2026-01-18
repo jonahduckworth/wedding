@@ -12,9 +12,6 @@ RUN mkdir src && \
     cargo build --release && \
     rm -rf src
 
-# Install sqlx-cli for migrations
-RUN cargo install sqlx-cli --no-default-features --features postgres
-
 # Copy the actual source code
 COPY src ./src
 COPY migrations ./migrations
@@ -44,11 +41,7 @@ WORKDIR /app
 COPY --from=builder /app/target/release/wedding-api /usr/local/bin/wedding-api
 RUN chmod +x /usr/local/bin/wedding-api
 
-# Copy sqlx-cli for migrations
-COPY --from=builder /usr/local/cargo/bin/sqlx /usr/local/bin/sqlx
-RUN chmod +x /usr/local/bin/sqlx
-
-# Copy migrations
+# Copy migrations (needed for sqlx::migrate! macro at runtime)
 COPY --from=builder /app/migrations ./migrations
 
 # Create uploads directory for registry images

@@ -53,7 +53,14 @@ async fn main() {
 
     tracing::info!("Connected to database");
 
-    // Create app state (migrations are run by docker-entrypoint.sh)
+    // Run migrations
+    eprintln!("Running database migrations...");
+    match sqlx::migrate!("./migrations").run(&db).await {
+        Ok(_) => eprintln!("Migrations completed successfully!"),
+        Err(e) => eprintln!("Migration warning: {} (may already be applied)", e),
+    }
+
+    // Create app state
     let state = routes::AppState { db };
 
     // Set up CORS - be explicit about allowed methods and headers for multipart uploads
