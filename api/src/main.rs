@@ -1,6 +1,7 @@
 use axum::{
     routing::get,
     Router,
+    extract::DefaultBodyLimit,
 };
 use std::net::SocketAddr;
 use tower_http::cors::{Any, CorsLayer};
@@ -112,6 +113,7 @@ async fn main() {
         .nest("/api", routes::public_routes())
         .nest_service("/uploads", ServeDir::new("./uploads"))
         .with_state(state)
+        .layer(DefaultBodyLimit::max(50 * 1024 * 1024)) // 50MB max upload size
         .layer(cors)
         .layer(tower_http::trace::TraceLayer::new_for_http());
 
