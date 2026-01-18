@@ -2,6 +2,7 @@ import { Routes, Route, Link } from 'react-router-dom';
 import GuestManagement from './GuestManagement';
 import InviteManagement from './InviteManagement';
 import EmailCampaigns from './EmailCampaigns';
+import RegistryManagement from './RegistryManagement';
 
 export default function AdminDashboard() {
   return (
@@ -64,7 +65,7 @@ export default function AdminDashboard() {
               <Route path="invites" element={<InviteManagement />} />
               <Route path="emails" element={<EmailCampaigns />} />
               <Route path="rsvps" element={<div>RSVP Management (Coming Soon)</div>} />
-              <Route path="registry" element={<div>Registry Management (Coming Soon)</div>} />
+              <Route path="registry" element={<RegistryManagement />} />
             </Routes>
           </main>
         </div>

@@ -10,7 +10,16 @@ use sqlx::PgPool;
 use uuid::Uuid;
 
 use crate::email::EmailService;
-use crate::models::{EmailCampaign, EmailSend, Guest, Invite, InviteWithGuests};
+use crate::models::{
+    EmailCampaign, EmailSend, Guest, Invite, InviteWithGuests,
+    HoneymoonCategory, HoneymoonItem, RegistryContribution,
+    CreateCategoryRequest, UpdateCategoryRequest,
+    CreateItemRequest, UpdateItemRequest,
+    CreateContributionRequest, UpdateContributionRequest,
+    CategoryWithItems, ItemWithContributions, PublicContribution, RegistryStats,
+};
+use axum_extra::extract::Multipart;
+use rust_decimal::Decimal;
 
 #[derive(Clone)]
 pub struct AppState {
@@ -109,10 +118,23 @@ pub fn admin_routes() -> Router<AppState> {
         .route("/campaigns/:id/send", post(send_campaign))
         .route("/campaigns/:id/stats", get(campaign_stats))
         .route("/campaigns/:id/recipients", get(campaign_recipients))
+        // Registry admin routes
+        .route("/registry/categories", get(admin_list_categories).post(admin_create_category))
+        .route("/registry/categories/:id", axum::routing::put(admin_update_category).delete(admin_delete_category))
+        .route("/registry/items", get(admin_list_items).post(admin_create_item))
+        .route("/registry/items/:id", axum::routing::put(admin_update_item).delete(admin_delete_item))
+        .route("/registry/items/:id/image", post(admin_upload_item_image))
+        .route("/registry/contributions", get(admin_list_contributions))
+        .route("/registry/contributions/:id", axum::routing::put(admin_update_contribution).delete(admin_delete_contribution))
+        .route("/registry/stats", get(admin_registry_stats))
 }
 
 pub fn public_routes() -> Router<AppState> {
     Router::new()
+        // Public registry routes
+        .route("/registry/categories", get(public_list_categories))
+        .route("/registry/items/:id", get(public_get_item))
+        .route("/registry/contributions", post(public_create_contribution))
 }
 
 // List all guests
@@ -745,4 +767,551 @@ async fn campaign_recipients(
 }
 
 // ============ TRACKING ROUTES ============
+
+// ============ REGISTRY PUBLIC ROUTES ============
+
+// List all categories with their items (public)
+async fn public_list_categories(State(state): State<AppState>) -> Result<Json<Vec<CategoryWithItems>>, StatusCode> {
+    let categories = sqlx::query_as::<_, HoneymoonCategory>(
+        "SELECT * FROM honeymoon_categories ORDER BY display_order, name"
+    )
+    .fetch_all(&state.db)
+    .await
+    .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
+
+    let mut result = Vec::new();
+    for category in categories {
+        let items = sqlx::query_as::<_, HoneymoonItem>(
+            "SELECT * FROM honeymoon_items WHERE category_id = $1 ORDER BY display_order, name"
+        )
+        .bind(category.id)
+        .fetch_all(&state.db)
+        .await
+        .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
+
+        result.push(CategoryWithItems {
+            category,
+            items,
+        });
+    }
+
+    // Also add items without a category
+    let uncategorized_items = sqlx::query_as::<_, HoneymoonItem>(
+        "SELECT * FROM honeymoon_items WHERE category_id IS NULL ORDER BY display_order, name"
+    )
+    .fetch_all(&state.db)
+    .await
+    .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
+
+    if !uncategorized_items.is_empty() {
+        result.push(CategoryWithItems {
+            category: HoneymoonCategory {
+                id: Uuid::nil(),
+                name: "Other".to_string(),
+                display_order: 9999,
+                created_at: None,
+            },
+            items: uncategorized_items,
+        });
+    }
+
+    Ok(Json(result))
+}
+
+// Get single item with public contributions
+async fn public_get_item(
+    State(state): State<AppState>,
+    Path(id): Path<Uuid>,
+) -> Result<Json<ItemWithContributions>, StatusCode> {
+    let item = sqlx::query_as::<_, HoneymoonItem>(
+        "SELECT * FROM honeymoon_items WHERE id = $1"
+    )
+    .bind(id)
+    .fetch_one(&state.db)
+    .await
+    .map_err(|_| StatusCode::NOT_FOUND)?;
+
+    // Get confirmed contributions for display
+    let contributions = sqlx::query_as::<_, RegistryContribution>(
+        "SELECT * FROM registry_contributions WHERE item_id = $1 AND status = 'confirmed' ORDER BY created_at DESC"
+    )
+    .bind(id)
+    .fetch_all(&state.db)
+    .await
+    .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
+
+    let public_contributions: Vec<PublicContribution> = contributions
+        .into_iter()
+        .map(|c| PublicContribution {
+            display_name: if c.is_anonymous {
+                "Anonymous".to_string()
+            } else {
+                c.contributor_name.unwrap_or("Anonymous".to_string())
+            },
+            amount: c.amount,
+            message: c.message,
+            created_at: c.created_at,
+        })
+        .collect();
+
+    Ok(Json(ItemWithContributions {
+        item,
+        contributions: public_contributions,
+    }))
+}
+
+// Create contribution (public)
+async fn public_create_contribution(
+    State(state): State<AppState>,
+    Json(req): Json<CreateContributionRequest>,
+) -> Result<Json<RegistryContribution>, StatusCode> {
+    // If item_id is provided, verify the item exists and isn't fully funded
+    if let Some(item_id) = req.item_id {
+        let item = sqlx::query_as::<_, HoneymoonItem>(
+            "SELECT * FROM honeymoon_items WHERE id = $1"
+        )
+        .bind(item_id)
+        .fetch_optional(&state.db)
+        .await
+        .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
+
+        if item.is_none() {
+            return Err(StatusCode::NOT_FOUND);
+        }
+
+        if item.unwrap().is_fully_funded {
+            return Err(StatusCode::BAD_REQUEST);
+        }
+    }
+
+    let contribution = sqlx::query_as::<_, RegistryContribution>(
+        "INSERT INTO registry_contributions (item_id, contributor_name, contributor_email, amount, is_anonymous, message, purpose)
+         VALUES ($1, $2, $3, $4, $5, $6, $7)
+         RETURNING *"
+    )
+    .bind(req.item_id)
+    .bind(&req.contributor_name)
+    .bind(&req.contributor_email)
+    .bind(req.amount)
+    .bind(req.is_anonymous)
+    .bind(&req.message)
+    .bind(&req.purpose)
+    .fetch_one(&state.db)
+    .await
+    .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
+
+    Ok(Json(contribution))
+}
+
+// ============ REGISTRY ADMIN ROUTES ============
+
+// List all categories (admin)
+async fn admin_list_categories(State(state): State<AppState>) -> Result<Json<Vec<HoneymoonCategory>>, StatusCode> {
+    let categories = sqlx::query_as::<_, HoneymoonCategory>(
+        "SELECT * FROM honeymoon_categories ORDER BY display_order, name"
+    )
+    .fetch_all(&state.db)
+    .await
+    .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
+
+    Ok(Json(categories))
+}
+
+// Create category (admin)
+async fn admin_create_category(
+    State(state): State<AppState>,
+    Json(req): Json<CreateCategoryRequest>,
+) -> Result<Json<HoneymoonCategory>, StatusCode> {
+    let display_order = req.display_order.unwrap_or(0);
+
+    let category = sqlx::query_as::<_, HoneymoonCategory>(
+        "INSERT INTO honeymoon_categories (name, display_order) VALUES ($1, $2) RETURNING *"
+    )
+    .bind(&req.name)
+    .bind(display_order)
+    .fetch_one(&state.db)
+    .await
+    .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
+
+    Ok(Json(category))
+}
+
+// Update category (admin)
+async fn admin_update_category(
+    State(state): State<AppState>,
+    Path(id): Path<Uuid>,
+    Json(req): Json<UpdateCategoryRequest>,
+) -> Result<Json<HoneymoonCategory>, StatusCode> {
+    let display_order = req.display_order.unwrap_or(0);
+
+    let category = sqlx::query_as::<_, HoneymoonCategory>(
+        "UPDATE honeymoon_categories SET name = $1, display_order = $2 WHERE id = $3 RETURNING *"
+    )
+    .bind(&req.name)
+    .bind(display_order)
+    .bind(id)
+    .fetch_one(&state.db)
+    .await
+    .map_err(|_| StatusCode::NOT_FOUND)?;
+
+    Ok(Json(category))
+}
+
+// Delete category (admin)
+async fn admin_delete_category(
+    State(state): State<AppState>,
+    Path(id): Path<Uuid>,
+) -> Result<StatusCode, StatusCode> {
+    sqlx::query("DELETE FROM honeymoon_categories WHERE id = $1")
+        .bind(id)
+        .execute(&state.db)
+        .await
+        .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
+
+    Ok(StatusCode::NO_CONTENT)
+}
+
+// List all items (admin)
+async fn admin_list_items(State(state): State<AppState>) -> Result<Json<Vec<HoneymoonItem>>, StatusCode> {
+    let items = sqlx::query_as::<_, HoneymoonItem>(
+        "SELECT * FROM honeymoon_items ORDER BY display_order, name"
+    )
+    .fetch_all(&state.db)
+    .await
+    .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
+
+    Ok(Json(items))
+}
+
+// Create item (admin)
+async fn admin_create_item(
+    State(state): State<AppState>,
+    Json(req): Json<CreateItemRequest>,
+) -> Result<Json<HoneymoonItem>, StatusCode> {
+    let display_order = req.display_order.unwrap_or(0);
+
+    let item = sqlx::query_as::<_, HoneymoonItem>(
+        "INSERT INTO honeymoon_items (category_id, name, description, price, display_order)
+         VALUES ($1, $2, $3, $4, $5)
+         RETURNING *"
+    )
+    .bind(req.category_id)
+    .bind(&req.name)
+    .bind(&req.description)
+    .bind(req.price)
+    .bind(display_order)
+    .fetch_one(&state.db)
+    .await
+    .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
+
+    Ok(Json(item))
+}
+
+// Update item (admin)
+async fn admin_update_item(
+    State(state): State<AppState>,
+    Path(id): Path<Uuid>,
+    Json(req): Json<UpdateItemRequest>,
+) -> Result<Json<HoneymoonItem>, StatusCode> {
+    let display_order = req.display_order.unwrap_or(0);
+
+    let item = sqlx::query_as::<_, HoneymoonItem>(
+        "UPDATE honeymoon_items
+         SET category_id = $1, name = $2, description = $3, price = $4, display_order = $5, updated_at = NOW()
+         WHERE id = $6
+         RETURNING *"
+    )
+    .bind(req.category_id)
+    .bind(&req.name)
+    .bind(&req.description)
+    .bind(req.price)
+    .bind(display_order)
+    .bind(id)
+    .fetch_one(&state.db)
+    .await
+    .map_err(|_| StatusCode::NOT_FOUND)?;
+
+    Ok(Json(item))
+}
+
+// Delete item (admin)
+async fn admin_delete_item(
+    State(state): State<AppState>,
+    Path(id): Path<Uuid>,
+) -> Result<StatusCode, StatusCode> {
+    sqlx::query("DELETE FROM honeymoon_items WHERE id = $1")
+        .bind(id)
+        .execute(&state.db)
+        .await
+        .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
+
+    Ok(StatusCode::NO_CONTENT)
+}
+
+// Upload image for item (admin)
+async fn admin_upload_item_image(
+    State(state): State<AppState>,
+    Path(id): Path<Uuid>,
+    mut multipart: Multipart,
+) -> Result<Json<HoneymoonItem>, StatusCode> {
+    // Verify item exists
+    let _item = sqlx::query_as::<_, HoneymoonItem>(
+        "SELECT * FROM honeymoon_items WHERE id = $1"
+    )
+    .bind(id)
+    .fetch_one(&state.db)
+    .await
+    .map_err(|_| StatusCode::NOT_FOUND)?;
+
+    // Process the upload
+    while let Some(field) = multipart.next_field().await.map_err(|_| StatusCode::BAD_REQUEST)? {
+        let filename = field.file_name()
+            .map(|s| s.to_string())
+            .unwrap_or_else(|| "image.jpg".to_string());
+
+        // Get file extension
+        let extension = filename.rsplit('.').next().unwrap_or("jpg");
+        let allowed_extensions = ["jpg", "jpeg", "png", "webp", "gif"];
+        if !allowed_extensions.contains(&extension.to_lowercase().as_str()) {
+            return Err(StatusCode::BAD_REQUEST);
+        }
+
+        // Generate unique filename
+        let new_filename = format!("{}.{}", Uuid::new_v4(), extension);
+        let file_path = format!("./uploads/registry/{}", new_filename);
+
+        // Save file
+        let data = field.bytes().await.map_err(|_| StatusCode::BAD_REQUEST)?;
+        tokio::fs::write(&file_path, &data).await.map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
+
+        // Update item with image URL
+        let image_url = format!("/uploads/registry/{}", new_filename);
+        let item = sqlx::query_as::<_, HoneymoonItem>(
+            "UPDATE honeymoon_items SET image_url = $1, updated_at = NOW() WHERE id = $2 RETURNING *"
+        )
+        .bind(&image_url)
+        .bind(id)
+        .fetch_one(&state.db)
+        .await
+        .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
+
+        return Ok(Json(item));
+    }
+
+    Err(StatusCode::BAD_REQUEST)
+}
+
+// List all contributions (admin)
+async fn admin_list_contributions(State(state): State<AppState>) -> Result<Json<Vec<RegistryContribution>>, StatusCode> {
+    let contributions = sqlx::query_as::<_, RegistryContribution>(
+        "SELECT * FROM registry_contributions ORDER BY created_at DESC"
+    )
+    .fetch_all(&state.db)
+    .await
+    .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
+
+    Ok(Json(contributions))
+}
+
+// Update contribution status (admin)
+async fn admin_update_contribution(
+    State(state): State<AppState>,
+    Path(id): Path<Uuid>,
+    Json(req): Json<UpdateContributionRequest>,
+) -> Result<Json<RegistryContribution>, StatusCode> {
+    // Get the contribution first to check item_id
+    let contribution = sqlx::query_as::<_, RegistryContribution>(
+        "SELECT * FROM registry_contributions WHERE id = $1"
+    )
+    .bind(id)
+    .fetch_one(&state.db)
+    .await
+    .map_err(|_| StatusCode::NOT_FOUND)?;
+
+    let confirmed_at = if req.status == "confirmed" {
+        Some(time::OffsetDateTime::now_utc())
+    } else {
+        None
+    };
+
+    // Update the contribution
+    let updated_contribution = sqlx::query_as::<_, RegistryContribution>(
+        "UPDATE registry_contributions SET status = $1, confirmed_at = $2 WHERE id = $3 RETURNING *"
+    )
+    .bind(&req.status)
+    .bind(confirmed_at)
+    .bind(id)
+    .fetch_one(&state.db)
+    .await
+    .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
+
+    // If confirming and has item_id, update the item's total_contributed
+    if req.status == "confirmed" && contribution.item_id.is_some() {
+        let item_id = contribution.item_id.unwrap();
+
+        // Recalculate total from all confirmed contributions
+        let total: Decimal = sqlx::query_scalar::<_, Decimal>(
+            "SELECT COALESCE(SUM(amount), 0) FROM registry_contributions WHERE item_id = $1 AND status = 'confirmed'"
+        )
+        .bind(item_id)
+        .fetch_one(&state.db)
+        .await
+        .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
+
+        // Get item price to check if fully funded
+        let item = sqlx::query_as::<_, HoneymoonItem>(
+            "SELECT * FROM honeymoon_items WHERE id = $1"
+        )
+        .bind(item_id)
+        .fetch_one(&state.db)
+        .await
+        .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
+
+        let is_fully_funded = total >= item.price;
+
+        // Update item
+        sqlx::query(
+            "UPDATE honeymoon_items SET total_contributed = $1, is_fully_funded = $2, updated_at = NOW() WHERE id = $3"
+        )
+        .bind(total)
+        .bind(is_fully_funded)
+        .bind(item_id)
+        .execute(&state.db)
+        .await
+        .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
+    }
+
+    // If rejecting a previously confirmed contribution, also update totals
+    if req.status != "confirmed" && contribution.status == "confirmed" && contribution.item_id.is_some() {
+        let item_id = contribution.item_id.unwrap();
+
+        let total: Decimal = sqlx::query_scalar::<_, Decimal>(
+            "SELECT COALESCE(SUM(amount), 0) FROM registry_contributions WHERE item_id = $1 AND status = 'confirmed'"
+        )
+        .bind(item_id)
+        .fetch_one(&state.db)
+        .await
+        .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
+
+        let item = sqlx::query_as::<_, HoneymoonItem>(
+            "SELECT * FROM honeymoon_items WHERE id = $1"
+        )
+        .bind(item_id)
+        .fetch_one(&state.db)
+        .await
+        .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
+
+        let is_fully_funded = total >= item.price;
+
+        sqlx::query(
+            "UPDATE honeymoon_items SET total_contributed = $1, is_fully_funded = $2, updated_at = NOW() WHERE id = $3"
+        )
+        .bind(total)
+        .bind(is_fully_funded)
+        .bind(item_id)
+        .execute(&state.db)
+        .await
+        .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
+    }
+
+    Ok(Json(updated_contribution))
+}
+
+// Delete contribution (admin)
+async fn admin_delete_contribution(
+    State(state): State<AppState>,
+    Path(id): Path<Uuid>,
+) -> Result<StatusCode, StatusCode> {
+    // Get contribution first to update item totals if needed
+    let contribution = sqlx::query_as::<_, RegistryContribution>(
+        "SELECT * FROM registry_contributions WHERE id = $1"
+    )
+    .bind(id)
+    .fetch_optional(&state.db)
+    .await
+    .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
+
+    sqlx::query("DELETE FROM registry_contributions WHERE id = $1")
+        .bind(id)
+        .execute(&state.db)
+        .await
+        .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
+
+    // Update item totals if this was a confirmed contribution
+    if let Some(contribution) = contribution {
+        if contribution.status == "confirmed" && contribution.item_id.is_some() {
+            let item_id = contribution.item_id.unwrap();
+
+            let total: Decimal = sqlx::query_scalar::<_, Decimal>(
+                "SELECT COALESCE(SUM(amount), 0) FROM registry_contributions WHERE item_id = $1 AND status = 'confirmed'"
+            )
+            .bind(item_id)
+            .fetch_one(&state.db)
+            .await
+            .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
+
+            let item = sqlx::query_as::<_, HoneymoonItem>(
+                "SELECT * FROM honeymoon_items WHERE id = $1"
+            )
+            .bind(item_id)
+            .fetch_one(&state.db)
+            .await
+            .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
+
+            let is_fully_funded = total >= item.price;
+
+            sqlx::query(
+                "UPDATE honeymoon_items SET total_contributed = $1, is_fully_funded = $2, updated_at = NOW() WHERE id = $3"
+            )
+            .bind(total)
+            .bind(is_fully_funded)
+            .bind(item_id)
+            .execute(&state.db)
+            .await
+            .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
+        }
+    }
+
+    Ok(StatusCode::NO_CONTENT)
+}
+
+// Get registry stats (admin)
+async fn admin_registry_stats(State(state): State<AppState>) -> Result<Json<RegistryStats>, StatusCode> {
+    let total_confirmed: Decimal = sqlx::query_scalar::<_, Decimal>(
+        "SELECT COALESCE(SUM(amount), 0) FROM registry_contributions WHERE status = 'confirmed'"
+    )
+    .fetch_one(&state.db)
+    .await
+    .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
+
+    let total_pending: Decimal = sqlx::query_scalar::<_, Decimal>(
+        "SELECT COALESCE(SUM(amount), 0) FROM registry_contributions WHERE status = 'pending'"
+    )
+    .fetch_one(&state.db)
+    .await
+    .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
+
+    let contribution_count: i64 = sqlx::query_scalar::<_, Option<i64>>(
+        "SELECT COUNT(*) FROM registry_contributions"
+    )
+    .fetch_one(&state.db)
+    .await
+    .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?
+    .unwrap_or(0);
+
+    let item_count: i64 = sqlx::query_scalar::<_, Option<i64>>(
+        "SELECT COUNT(*) FROM honeymoon_items"
+    )
+    .fetch_one(&state.db)
+    .await
+    .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?
+    .unwrap_or(0);
+
+    Ok(Json(RegistryStats {
+        total_confirmed,
+        total_pending,
+        contribution_count,
+        item_count,
+    }))
+}
 

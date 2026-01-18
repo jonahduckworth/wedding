@@ -101,6 +101,86 @@ pub struct RegistryContribution {
     pub contributor_email: Option<String>,
     pub amount: Decimal,
     pub status: String,
+    pub is_anonymous: bool,
+    pub message: Option<String>,
+    pub purpose: Option<String>,
     pub confirmed_at: Option<time::OffsetDateTime>,
     pub created_at: Option<time::OffsetDateTime>,
+}
+
+// Registry request/response types
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct CreateCategoryRequest {
+    pub name: String,
+    pub display_order: Option<i32>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct UpdateCategoryRequest {
+    pub name: String,
+    pub display_order: Option<i32>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct CreateItemRequest {
+    pub category_id: Option<Uuid>,
+    pub name: String,
+    pub description: Option<String>,
+    pub price: Decimal,
+    pub display_order: Option<i32>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct UpdateItemRequest {
+    pub category_id: Option<Uuid>,
+    pub name: String,
+    pub description: Option<String>,
+    pub price: Decimal,
+    pub display_order: Option<i32>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct CreateContributionRequest {
+    pub item_id: Option<Uuid>,
+    pub contributor_name: String,
+    pub contributor_email: String,
+    pub amount: Decimal,
+    pub is_anonymous: bool,
+    pub message: Option<String>,
+    pub purpose: Option<String>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct UpdateContributionRequest {
+    pub status: String,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct CategoryWithItems {
+    #[serde(flatten)]
+    pub category: HoneymoonCategory,
+    pub items: Vec<HoneymoonItem>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct ItemWithContributions {
+    #[serde(flatten)]
+    pub item: HoneymoonItem,
+    pub contributions: Vec<PublicContribution>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct PublicContribution {
+    pub display_name: String,
+    pub amount: Decimal,
+    pub message: Option<String>,
+    pub created_at: Option<time::OffsetDateTime>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct RegistryStats {
+    pub total_confirmed: Decimal,
+    pub total_pending: Decimal,
+    pub contribution_count: i64,
+    pub item_count: i64,
 }

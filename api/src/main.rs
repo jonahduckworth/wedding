@@ -4,6 +4,7 @@ use axum::{
 };
 use std::net::SocketAddr;
 use tower_http::cors::{Any, CorsLayer};
+use tower_http::services::ServeDir;
 use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
 
 mod models;
@@ -83,12 +84,16 @@ async fn main() {
         .allow_methods(Any)
         .allow_headers(Any);
 
+    // Create uploads directory if it doesn't exist
+    std::fs::create_dir_all("./uploads/registry").ok();
+
     // Build our application with routes
     let app = Router::new()
         .route("/", get(root_handler))
         .route("/health", get(health_handler))
         .nest("/api/admin", routes::admin_routes())
         .nest("/api", routes::public_routes())
+        .nest_service("/uploads", ServeDir::new("./uploads"))
         .with_state(state)
         .layer(cors)
         .layer(tower_http::trace::TraceLayer::new_for_http());
