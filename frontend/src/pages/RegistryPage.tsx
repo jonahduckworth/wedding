@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import Layout from '../components/Layout';
 import ContributionModal, { ContributionData } from '../components/ContributionModal';
+import ItemDetailModal from '../components/ItemDetailModal';
 
 interface HoneymoonItem {
   id: string;
@@ -31,6 +32,7 @@ interface CategoryWithItems {
 export default function RegistryPage() {
   const [selectedItem, setSelectedItem] = useState<HoneymoonItem | null>(null);
   const [showContributionModal, setShowContributionModal] = useState(false);
+  const [showDetailModal, setShowDetailModal] = useState(false);
   const [isGeneralContribution, setIsGeneralContribution] = useState(false);
   const queryClient = useQueryClient();
 
@@ -65,10 +67,24 @@ export default function RegistryPage() {
     },
   });
 
+  const handleViewDetails = (item: HoneymoonItem) => {
+    setSelectedItem(item);
+    setShowDetailModal(true);
+  };
+
   const handleContribute = (item: HoneymoonItem) => {
     setSelectedItem(item);
     setIsGeneralContribution(false);
+    setShowDetailModal(false);
     setShowContributionModal(true);
+  };
+
+  const handleContributeFromDetail = () => {
+    if (selectedItem) {
+      setShowDetailModal(false);
+      setIsGeneralContribution(false);
+      setShowContributionModal(true);
+    }
   };
 
   const handleGeneralContribution = () => {
@@ -141,26 +157,35 @@ export default function RegistryPage() {
                         key={item.id}
                         className="bg-white rounded-lg shadow-md overflow-hidden"
                       >
-                        {/* Image */}
-                        {item.image_url ? (
-                          <img
-                            src={`${apiUrl}${item.image_url}`}
-                            alt={item.name}
-                            className="w-full h-48 object-cover"
-                          />
-                        ) : (
-                          <div className="bg-gray-200 h-48 flex items-center justify-center">
-                            <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                            </svg>
-                          </div>
-                        )}
-
-                        <div className="p-6">
-                          <h3 className="text-xl font-semibold mb-2">{item.name}</h3>
-                          {item.description && (
-                            <p className="text-gray-600 mb-4 text-sm">{item.description}</p>
+                        {/* Clickable area for details */}
+                        <button
+                          onClick={() => handleViewDetails(item)}
+                          className="w-full text-left focus:outline-none focus:ring-2 focus:ring-primary focus:ring-inset"
+                        >
+                          {/* Image */}
+                          {item.image_url ? (
+                            <img
+                              src={`${apiUrl}${item.image_url}`}
+                              alt={item.name}
+                              className="w-full h-48 object-cover hover:opacity-90 transition-opacity"
+                            />
+                          ) : (
+                            <div className="bg-gray-200 h-48 flex items-center justify-center hover:bg-gray-300 transition-colors">
+                              <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                              </svg>
+                            </div>
                           )}
+
+                          <div className="p-6 pb-0">
+                            <h3 className="text-xl font-semibold mb-2 hover:text-primary transition-colors">{item.name}</h3>
+                            {item.description && (
+                              <p className="text-gray-600 mb-4 text-sm line-clamp-2">{item.description}</p>
+                            )}
+                          </div>
+                        </button>
+
+                        <div className="p-6 pt-0">
 
                           {/* Progress Bar */}
                           <div className="mb-4">
@@ -186,12 +211,22 @@ export default function RegistryPage() {
                             </div>
                           ) : (
                             <button
-                              onClick={() => handleContribute(item)}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleContribute(item);
+                              }}
                               className="w-full bg-primary text-white py-2 rounded-md hover:bg-primary/90 transition-colors"
                             >
                               Contribute
                             </button>
                           )}
+
+                          <button
+                            onClick={() => handleViewDetails(item)}
+                            className="w-full mt-2 text-sm text-gray-500 hover:text-primary transition-colors"
+                          >
+                            View Details & Contributors
+                          </button>
                         </div>
                       </div>
                     );
@@ -213,6 +248,16 @@ export default function RegistryPage() {
           </div>
         </div>
       </div>
+
+      {/* Item Detail Modal */}
+      {showDetailModal && selectedItem && (
+        <ItemDetailModal
+          item={selectedItem}
+          apiUrl={apiUrl}
+          onClose={() => setShowDetailModal(false)}
+          onContribute={handleContributeFromDetail}
+        />
+      )}
 
       {/* Contribution Modal */}
       {showContributionModal && (
