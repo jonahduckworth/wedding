@@ -5,6 +5,7 @@ use axum::{
 use std::net::SocketAddr;
 use tower_http::cors::{Any, CorsLayer};
 use tower_http::services::ServeDir;
+use axum::http::{Method, header};
 use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
 
 mod models;
@@ -78,11 +79,27 @@ async fn main() {
     // Create app state
     let state = routes::AppState { db };
 
-    // Set up CORS
+    // Set up CORS - be explicit about allowed methods and headers for multipart uploads
     let cors = CorsLayer::new()
         .allow_origin(Any)
-        .allow_methods(Any)
-        .allow_headers(Any);
+        .allow_methods([
+            Method::GET,
+            Method::POST,
+            Method::PUT,
+            Method::PATCH,
+            Method::DELETE,
+            Method::OPTIONS,
+        ])
+        .allow_headers([
+            header::CONTENT_TYPE,
+            header::AUTHORIZATION,
+            header::ACCEPT,
+            header::ORIGIN,
+            header::ACCESS_CONTROL_REQUEST_METHOD,
+            header::ACCESS_CONTROL_REQUEST_HEADERS,
+        ])
+        .expose_headers([header::CONTENT_TYPE])
+        .max_age(std::time::Duration::from_secs(3600));
 
     // Create uploads directory if it doesn't exist
     std::fs::create_dir_all("./uploads/registry").ok();
