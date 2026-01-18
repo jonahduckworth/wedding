@@ -44,6 +44,9 @@ RUN chmod +x /usr/local/bin/wedding-api
 # Copy migrations
 COPY --from=builder /app/migrations ./migrations
 
+# Create uploads directory for registry images
+RUN mkdir -p /app/uploads/registry
+
 # Copy entrypoint script
 COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
 RUN chmod +x /usr/local/bin/docker-entrypoint.sh
