@@ -831,9 +831,9 @@ async fn public_get_item(
     .await
     .map_err(|_| StatusCode::NOT_FOUND)?;
 
-    // Get confirmed contributions for display
+    // Get all contributions for display (pending shown as if confirmed)
     let contributions = sqlx::query_as::<_, RegistryContribution>(
-        "SELECT * FROM registry_contributions WHERE item_id = $1 AND status = 'confirmed' ORDER BY created_at DESC"
+        "SELECT * FROM registry_contributions WHERE item_id = $1 AND status != 'rejected' ORDER BY created_at DESC"
     )
     .bind(id)
     .fetch_all(&state.db)
@@ -899,6 +899,38 @@ async fn public_create_contribution(
     .fetch_one(&state.db)
     .await
     .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
+
+    // Immediately update item's total (treat pending as confirmed for display)
+    if let Some(item_id) = req.item_id {
+        let item = sqlx::query_as::<_, HoneymoonItem>(
+            "SELECT * FROM honeymoon_items WHERE id = $1"
+        )
+        .bind(item_id)
+        .fetch_one(&state.db)
+        .await
+        .ok();
+
+        if let Some(item) = item {
+            // Sum all non-rejected contributions
+            let total: Decimal = sqlx::query_scalar::<_, Decimal>(
+                "SELECT COALESCE(SUM(amount), 0) FROM registry_contributions WHERE item_id = $1 AND status != 'rejected'"
+            )
+            .bind(item_id)
+            .fetch_one(&state.db)
+            .await
+            .unwrap_or(Decimal::ZERO);
+
+            let is_fully_funded = total >= item.price;
+            let _ = sqlx::query(
+                "UPDATE honeymoon_items SET total_contributed = $1, is_fully_funded = $2, updated_at = NOW() WHERE id = $3"
+            )
+            .bind(total)
+            .bind(is_fully_funded)
+            .bind(item_id)
+            .execute(&state.db)
+            .await;
+        }
+    }
 
     Ok(Json(contribution))
 }
@@ -1145,13 +1177,13 @@ async fn admin_update_contribution(
     .await
     .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
 
-    // If confirming and has item_id, update the item's total_contributed
-    if req.status == "confirmed" && contribution.item_id.is_some() {
+    // Always recalculate totals when status changes (include all non-rejected)
+    if contribution.item_id.is_some() {
         let item_id = contribution.item_id.unwrap();
 
-        // Recalculate total from all confirmed contributions
+        // Recalculate total from all non-rejected contributions
         let total: Decimal = sqlx::query_scalar::<_, Decimal>(
-            "SELECT COALESCE(SUM(amount), 0) FROM registry_contributions WHERE item_id = $1 AND status = 'confirmed'"
+            "SELECT COALESCE(SUM(amount), 0) FROM registry_contributions WHERE item_id = $1 AND status != 'rejected'"
         )
         .bind(item_id)
         .fetch_one(&state.db)
@@ -1170,39 +1202,6 @@ async fn admin_update_contribution(
         let is_fully_funded = total >= item.price;
 
         // Update item
-        sqlx::query(
-            "UPDATE honeymoon_items SET total_contributed = $1, is_fully_funded = $2, updated_at = NOW() WHERE id = $3"
-        )
-        .bind(total)
-        .bind(is_fully_funded)
-        .bind(item_id)
-        .execute(&state.db)
-        .await
-        .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
-    }
-
-    // If rejecting a previously confirmed contribution, also update totals
-    if req.status != "confirmed" && contribution.status == "confirmed" && contribution.item_id.is_some() {
-        let item_id = contribution.item_id.unwrap();
-
-        let total: Decimal = sqlx::query_scalar::<_, Decimal>(
-            "SELECT COALESCE(SUM(amount), 0) FROM registry_contributions WHERE item_id = $1 AND status = 'confirmed'"
-        )
-        .bind(item_id)
-        .fetch_one(&state.db)
-        .await
-        .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
-
-        let item = sqlx::query_as::<_, HoneymoonItem>(
-            "SELECT * FROM honeymoon_items WHERE id = $1"
-        )
-        .bind(item_id)
-        .fetch_one(&state.db)
-        .await
-        .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
-
-        let is_fully_funded = total >= item.price;
-
         sqlx::query(
             "UPDATE honeymoon_items SET total_contributed = $1, is_fully_funded = $2, updated_at = NOW() WHERE id = $3"
         )
@@ -1237,13 +1236,13 @@ async fn admin_delete_contribution(
         .await
         .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
 
-    // Update item totals if this was a confirmed contribution
+    // Update item totals if this was a non-rejected contribution
     if let Some(contribution) = contribution {
-        if contribution.status == "confirmed" && contribution.item_id.is_some() {
+        if contribution.status != "rejected" && contribution.item_id.is_some() {
             let item_id = contribution.item_id.unwrap();
 
             let total: Decimal = sqlx::query_scalar::<_, Decimal>(
-                "SELECT COALESCE(SUM(amount), 0) FROM registry_contributions WHERE item_id = $1 AND status = 'confirmed'"
+                "SELECT COALESCE(SUM(amount), 0) FROM registry_contributions WHERE item_id = $1 AND status != 'rejected'"
             )
             .bind(item_id)
             .fetch_one(&state.db)
