@@ -289,7 +289,6 @@ export default function RegistryPage() {
                 Send an Interac e-Transfer to{" "}
                 <strong>contact@samandjonah.com</strong>
               </li>
-              <li>We'll confirm your contribution once we receive it</li>
               <li>
                 We'll send you a picture of us doing this activity, to say thank
                 you :)
