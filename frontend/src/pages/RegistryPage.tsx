@@ -290,7 +290,10 @@ export default function RegistryPage() {
                 <strong>contact@samandjonah.com</strong>
               </li>
               <li>We'll confirm your contribution once we receive it</li>
-              <li>We'll send you a picture of us doing this activity</li>
+              <li>
+                We'll send you a picture of us doing this activity, to say thank
+                you :)
+              </li>
             </ol>
           </div>
         </div>
