@@ -26,10 +26,12 @@ interface Rsvp {
 }
 
 interface InviteRsvpResponse {
-  id: string;
-  unique_code: string;
-  invite_type: string;
-  guests: Guest[];
+  invite: {
+    id: string;
+    unique_code: string;
+    invite_type: string;
+    guests: Guest[];
+  };
   rsvps: Rsvp[];
   already_responded: boolean;
 }
@@ -93,7 +95,7 @@ export default function RSVPPage() {
   // Initialize form data when invite loads
   useEffect(() => {
     if (inviteData) {
-      const forms: GuestFormData[] = inviteData.guests.map(guest => {
+      const forms: GuestFormData[] = inviteData.invite.guests.map(guest => {
         const existingRsvp = inviteData.rsvps.find(r => r.guest_id === guest.id);
         return {
           guest_id: guest.id,
@@ -252,8 +254,8 @@ export default function RSVPPage() {
 
   if (!inviteData) return null;
 
-  const isCouple = inviteData.guests.length > 1;
-  const guestNames = inviteData.guests.map(g => g.name);
+  const isCouple = inviteData.invite.guests.length > 1;
+  const guestNames = inviteData.invite.guests.map(g => g.name);
   const displayName = isCouple
     ? `${guestNames[0]} & ${guestNames[1]}`
     : guestNames[0];
