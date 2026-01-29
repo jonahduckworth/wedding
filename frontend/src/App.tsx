@@ -18,7 +18,7 @@ function App() {
       <Route path="/details" element={<DetailsPage />} />
       <Route path="/travel" element={<TravelPage />} />
       <Route path="/faq" element={<FAQPage />} />
-      <Route path="/rsvp/:code" element={<RSVPPage />} />
+      <Route path="/rsvp" element={<RSVPPage />} />
       <Route path="/registry" element={<RegistryPage />} />
       <Route path="/admin/*" element={<AdminDashboard />} />
     </Routes>

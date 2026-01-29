@@ -1,8 +1,11 @@
 import { Routes, Route, Link } from 'react-router-dom';
+import { useQuery } from '@tanstack/react-query';
 import GuestManagement from './GuestManagement';
 import InviteManagement from './InviteManagement';
 import EmailCampaigns from './EmailCampaigns';
 import RegistryManagement from './RegistryManagement';
+import RsvpManagement from './RsvpManagement';
+import InvitationSending from './InvitationSending';
 
 export default function AdminDashboard() {
   return (
@@ -49,6 +52,12 @@ export default function AdminDashboard() {
                 RSVPs
               </Link>
               <Link
+                to="/admin/invitations"
+                className="block px-4 py-2 rounded hover:bg-gray-100"
+              >
+                Invitation Emails
+              </Link>
+              <Link
                 to="/admin/registry"
                 className="block px-4 py-2 rounded hover:bg-gray-100"
               >
@@ -64,7 +73,8 @@ export default function AdminDashboard() {
               <Route path="guests" element={<GuestManagement />} />
               <Route path="invites" element={<InviteManagement />} />
               <Route path="emails" element={<EmailCampaigns />} />
-              <Route path="rsvps" element={<div>RSVP Management (Coming Soon)</div>} />
+              <Route path="rsvps" element={<RsvpManagement />} />
+              <Route path="invitations" element={<InvitationSending />} />
               <Route path="registry" element={<RegistryManagement />} />
             </Routes>
           </main>
@@ -75,41 +85,82 @@ export default function AdminDashboard() {
 }
 
 function AdminOverview() {
+  const apiUrl = window.location.hostname === 'localhost'
+    ? 'http://localhost:8081'
+    : 'https://api.samandjonah.com';
+
+  const { data: rsvpStats } = useQuery({
+    queryKey: ['overview-rsvp-stats'],
+    queryFn: async () => {
+      const res = await fetch(`${apiUrl}/api/admin/rsvps/stats`);
+      if (!res.ok) return null;
+      return res.json();
+    },
+  });
+
+  const { data: guests } = useQuery({
+    queryKey: ['overview-guests'],
+    queryFn: async () => {
+      const res = await fetch(`${apiUrl}/api/admin/guests`);
+      if (!res.ok) return [];
+      return res.json();
+    },
+  });
+
+  const activeGuests = guests?.filter((g: any) => !g.removed) || [];
+
   return (
     <div className="space-y-6">
       <h2 className="text-2xl font-bold">Overview</h2>
 
-      <div className="grid md:grid-cols-3 gap-6">
+      <div className="grid md:grid-cols-4 gap-6">
         <div className="bg-white rounded-lg shadow-md p-6">
           <h3 className="text-lg font-semibold mb-2">Total Guests</h3>
-          <p className="text-3xl font-bold text-primary">0</p>
+          <p className="text-3xl font-bold text-primary">{activeGuests.length}</p>
         </div>
 
         <div className="bg-white rounded-lg shadow-md p-6">
           <h3 className="text-lg font-semibold mb-2">RSVPs Received</h3>
-          <p className="text-3xl font-bold text-primary">0</p>
+          <p className="text-3xl font-bold text-primary">{rsvpStats?.total_responded ?? 0}</p>
         </div>
 
         <div className="bg-white rounded-lg shadow-md p-6">
-          <h3 className="text-lg font-semibold mb-2">Registry Contributions</h3>
-          <p className="text-3xl font-bold text-primary">$0</p>
+          <h3 className="text-lg font-semibold mb-2">Attending</h3>
+          <p className="text-3xl font-bold text-green-600">{rsvpStats?.total_attending ?? 0}</p>
+        </div>
+
+        <div className="bg-white rounded-lg shadow-md p-6">
+          <h3 className="text-lg font-semibold mb-2">Pending</h3>
+          <p className="text-3xl font-bold text-yellow-600">{rsvpStats?.total_pending ?? 0}</p>
         </div>
       </div>
 
       <div className="bg-white rounded-lg shadow-md p-6">
         <h3 className="text-lg font-semibold mb-4">Quick Actions</h3>
-        <div className="space-y-3">
+        <div className="grid md:grid-cols-2 gap-3">
           <Link
             to="/admin/guests"
-            className="block px-4 py-2 bg-primary text-white rounded hover:bg-primary/90"
+            className="block px-4 py-3 bg-primary text-white rounded-lg hover:bg-primary/90 text-center font-medium"
           >
-            Import Guest List
+            Manage Guests
+          </Link>
+          <Link
+            to="/admin/rsvps"
+            className="block px-4 py-3 bg-sage text-olive rounded-lg hover:bg-sage/80 text-center font-medium"
+          >
+            View RSVPs
+          </Link>
+          <Link
+            to="/admin/invitations"
+            className="block px-4 py-3 bg-rose text-mauve rounded-lg hover:bg-rose/80 text-center font-medium"
+          >
+            Send Invitations
           </Link>
           <Link
             to="/admin/emails"
-            className="block px-4 py-2 bg-primary text-white rounded hover:bg-primary/90"
+            className="block px-4 py-3 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 text-center font-medium"
           >
-            Send Email Campaign
+            Email Campaigns
           </Link>
         </div>
       </div>

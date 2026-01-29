@@ -1,6 +1,6 @@
 use axum::{
     extract::{Path, State},
-    http::StatusCode,
+    http::{StatusCode, header},
     response::Html,
     routing::{get, post},
     Json, Router,
@@ -11,12 +11,15 @@ use uuid::Uuid;
 
 use crate::email::EmailService;
 use crate::models::{
-    EmailCampaign, EmailSend, Guest, Invite, InviteWithGuests,
+    EmailCampaign, EmailSend, Guest, Invite, InviteWithGuests, Rsvp,
     HoneymoonCategory, HoneymoonItem, RegistryContribution,
     CreateCategoryRequest, UpdateCategoryRequest,
     CreateItemRequest, UpdateItemRequest,
     CreateContributionRequest, UpdateContributionRequest,
     CategoryWithItems, ItemWithContributions, PublicContribution, RegistryStats,
+    RsvpStats, RsvpWithGuest, AdminRsvpEntry,
+    InviteRsvpSubmission, InviteRsvpResponse,
+    SendInvitationRequest, SendInvitationResponse,
 };
 use axum_extra::extract::Multipart;
 use rust_decimal::Decimal;
@@ -118,6 +121,13 @@ pub fn admin_routes() -> Router<AppState> {
         .route("/campaigns/:id/send", post(send_campaign))
         .route("/campaigns/:id/stats", get(campaign_stats))
         .route("/campaigns/:id/recipients", get(campaign_recipients))
+        // RSVP admin routes
+        .route("/rsvps", get(admin_list_rsvps))
+        .route("/rsvps/stats", get(admin_rsvp_stats))
+        .route("/rsvps/export", get(admin_export_rsvps))
+        // Invitation email routes
+        .route("/invitations/send", post(admin_send_invitations))
+        .route("/invitations/status", get(admin_invitation_status))
         // Registry admin routes
         .route("/registry/categories", get(admin_list_categories).post(admin_create_category))
         .route("/registry/categories/:id", axum::routing::put(admin_update_category).delete(admin_delete_category))
@@ -131,6 +141,9 @@ pub fn admin_routes() -> Router<AppState> {
 
 pub fn public_routes() -> Router<AppState> {
     Router::new()
+        // Public RSVP routes
+        .route("/rsvp/:code", get(rsvp_lookup))
+        .route("/rsvp/:code/submit", post(rsvp_submit))
         // Public registry routes
         .route("/registry/categories", get(public_list_categories))
         .route("/registry/items/:id", get(public_get_item))
@@ -1272,6 +1285,463 @@ async fn admin_delete_contribution(
     }
 
     Ok(StatusCode::NO_CONTENT)
+}
+
+// ============ PUBLIC RSVP ROUTES ============
+
+// Look up invite by code for RSVP
+async fn rsvp_lookup(
+    State(state): State<AppState>,
+    Path(code): Path<String>,
+) -> Result<Json<InviteRsvpResponse>, StatusCode> {
+    // Find invite by unique code
+    let invite = sqlx::query_as::<_, Invite>(
+        "SELECT * FROM invites WHERE unique_code = $1"
+    )
+    .bind(&code)
+    .fetch_optional(&state.db)
+    .await
+    .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
+
+    let invite = match invite {
+        Some(inv) => inv,
+        None => return Err(StatusCode::NOT_FOUND),
+    };
+
+    // Get guests for this invite
+    let guests = sqlx::query_as::<_, Guest>(
+        "SELECT * FROM guests WHERE invite_id = $1 AND removed = false ORDER BY name"
+    )
+    .bind(invite.id)
+    .fetch_all(&state.db)
+    .await
+    .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
+
+    if guests.is_empty() {
+        return Err(StatusCode::NOT_FOUND);
+    }
+
+    // Get existing RSVPs for guests in this invite
+    let guest_ids: Vec<Uuid> = guests.iter().map(|g| g.id).collect();
+    let rsvps = sqlx::query_as::<_, Rsvp>(
+        "SELECT * FROM rsvps WHERE guest_id = ANY($1)"
+    )
+    .bind(&guest_ids)
+    .fetch_all(&state.db)
+    .await
+    .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
+
+    let already_responded = !rsvps.is_empty();
+
+    Ok(Json(InviteRsvpResponse {
+        invite: InviteWithGuests {
+            invite,
+            guests,
+        },
+        rsvps,
+        already_responded,
+    }))
+}
+
+// Submit/update RSVP for an invite
+async fn rsvp_submit(
+    State(state): State<AppState>,
+    Path(code): Path<String>,
+    Json(submission): Json<InviteRsvpSubmission>,
+) -> Result<Json<Vec<Rsvp>>, StatusCode> {
+    // Find invite by unique code
+    let invite = sqlx::query_as::<_, Invite>(
+        "SELECT * FROM invites WHERE unique_code = $1"
+    )
+    .bind(&code)
+    .fetch_optional(&state.db)
+    .await
+    .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
+
+    let invite = match invite {
+        Some(inv) => inv,
+        None => return Err(StatusCode::NOT_FOUND),
+    };
+
+    // Verify all guest_ids belong to this invite
+    let invite_guest_ids: Vec<Uuid> = sqlx::query_scalar(
+        "SELECT id FROM guests WHERE invite_id = $1 AND removed = false"
+    )
+    .bind(invite.id)
+    .fetch_all(&state.db)
+    .await
+    .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
+
+    for entry in &submission.guests {
+        if !invite_guest_ids.contains(&entry.guest_id) {
+            return Err(StatusCode::BAD_REQUEST);
+        }
+    }
+
+    // Upsert RSVPs for each guest
+    let mut result_rsvps = Vec::new();
+    for entry in &submission.guests {
+        let rsvp = sqlx::query_as::<_, Rsvp>(
+            "INSERT INTO rsvps (guest_id, invite_id, attending, dietary_restrictions, song_requests, message)
+             VALUES ($1, $2, $3, $4, $5, $6)
+             ON CONFLICT (guest_id) DO UPDATE SET
+                attending = EXCLUDED.attending,
+                dietary_restrictions = EXCLUDED.dietary_restrictions,
+                song_requests = EXCLUDED.song_requests,
+                message = EXCLUDED.message,
+                updated_at = NOW()
+             RETURNING *"
+        )
+        .bind(entry.guest_id)
+        .bind(invite.id)
+        .bind(entry.attending)
+        .bind(&entry.dietary_restrictions)
+        .bind(&entry.song_requests)
+        .bind(&entry.message)
+        .fetch_one(&state.db)
+        .await
+        .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
+
+        result_rsvps.push(rsvp);
+    }
+
+    Ok(Json(result_rsvps))
+}
+
+// ============ ADMIN RSVP ROUTES ============
+
+// Get RSVP statistics
+async fn admin_rsvp_stats(State(state): State<AppState>) -> Result<Json<RsvpStats>, StatusCode> {
+    // Total invited = all non-removed guests with invites
+    let total_invited: i64 = sqlx::query_scalar::<_, Option<i64>>(
+        "SELECT COUNT(*) FROM guests WHERE removed = false AND invite_id IS NOT NULL"
+    )
+    .fetch_one(&state.db)
+    .await
+    .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?
+    .unwrap_or(0);
+
+    // Total responded = guests with RSVPs
+    let total_responded: i64 = sqlx::query_scalar::<_, Option<i64>>(
+        "SELECT COUNT(*) FROM rsvps r
+         INNER JOIN guests g ON g.id = r.guest_id
+         WHERE g.removed = false"
+    )
+    .fetch_one(&state.db)
+    .await
+    .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?
+    .unwrap_or(0);
+
+    // Total attending
+    let total_attending: i64 = sqlx::query_scalar::<_, Option<i64>>(
+        "SELECT COUNT(*) FROM rsvps r
+         INNER JOIN guests g ON g.id = r.guest_id
+         WHERE g.removed = false AND r.attending = true"
+    )
+    .fetch_one(&state.db)
+    .await
+    .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?
+    .unwrap_or(0);
+
+    // Total declined
+    let total_declined: i64 = sqlx::query_scalar::<_, Option<i64>>(
+        "SELECT COUNT(*) FROM rsvps r
+         INNER JOIN guests g ON g.id = r.guest_id
+         WHERE g.removed = false AND r.attending = false"
+    )
+    .fetch_one(&state.db)
+    .await
+    .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?
+    .unwrap_or(0);
+
+    let total_pending = total_invited - total_responded;
+
+    Ok(Json(RsvpStats {
+        total_invited,
+        total_responded,
+        total_attending,
+        total_declined,
+        total_pending,
+    }))
+}
+
+// List all RSVPs grouped by invite
+async fn admin_list_rsvps(State(state): State<AppState>) -> Result<Json<Vec<AdminRsvpEntry>>, StatusCode> {
+    // Get all invites with guests
+    let invites = sqlx::query_as::<_, Invite>("SELECT * FROM invites ORDER BY created_at DESC")
+        .fetch_all(&state.db)
+        .await
+        .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
+
+    let mut entries = Vec::new();
+
+    for invite in invites {
+        let guests = sqlx::query_as::<_, Guest>(
+            "SELECT * FROM guests WHERE invite_id = $1 AND removed = false ORDER BY name"
+        )
+        .bind(invite.id)
+        .fetch_all(&state.db)
+        .await
+        .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
+
+        if guests.is_empty() {
+            continue;
+        }
+
+        let guest_ids: Vec<Uuid> = guests.iter().map(|g| g.id).collect();
+        let rsvps = sqlx::query_as::<_, Rsvp>(
+            "SELECT * FROM rsvps WHERE guest_id = ANY($1)"
+        )
+        .bind(&guest_ids)
+        .fetch_all(&state.db)
+        .await
+        .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
+
+        // Build RsvpWithGuest entries
+        let rsvps_with_guests: Vec<RsvpWithGuest> = rsvps.iter().map(|rsvp| {
+            let guest = guests.iter().find(|g| g.id == rsvp.guest_id);
+            RsvpWithGuest {
+                rsvp: rsvp.clone(),
+                guest_name: guest.map(|g| g.name.clone()).unwrap_or_default(),
+                guest_email: guest.map(|g| g.email.clone()).unwrap_or_default(),
+            }
+        }).collect();
+
+        // Determine status
+        let status = if rsvps.is_empty() {
+            "pending".to_string()
+        } else if rsvps.len() < guests.len() {
+            "partial".to_string()
+        } else if rsvps.iter().all(|r| r.attending) {
+            "attending".to_string()
+        } else if rsvps.iter().all(|r| !r.attending) {
+            "declined".to_string()
+        } else {
+            "partial".to_string()
+        };
+
+        entries.push(AdminRsvpEntry {
+            invite: InviteWithGuests {
+                invite: invite.clone(),
+                guests,
+            },
+            rsvps: rsvps_with_guests,
+            status,
+        });
+    }
+
+    Ok(Json(entries))
+}
+
+// Export RSVPs as CSV
+async fn admin_export_rsvps(State(state): State<AppState>) -> Result<(StatusCode, [(axum::http::HeaderName, axum::http::HeaderValue); 2], String), StatusCode> {
+    #[derive(sqlx::FromRow)]
+    struct ExportRow {
+        name: String,
+        email: String,
+        attending: bool,
+        dietary_restrictions: Option<String>,
+        song_requests: Option<String>,
+        message: Option<String>,
+        submitted_at: Option<time::OffsetDateTime>,
+    }
+
+    let rows = sqlx::query_as::<_, ExportRow>(
+        "SELECT g.name, g.email, r.attending, r.dietary_restrictions, r.song_requests, r.message, r.submitted_at
+         FROM rsvps r
+         INNER JOIN guests g ON g.id = r.guest_id
+         WHERE g.removed = false
+         ORDER BY g.name"
+    )
+    .fetch_all(&state.db)
+    .await
+    .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
+
+    let mut csv = String::from("Name,Email,Attending,Dietary Restrictions,Song Requests,Message,Submitted At\n");
+    for row in &rows {
+        let submitted_str = row.submitted_at.map(|t| t.to_string()).unwrap_or_default();
+        csv.push_str(&format!(
+            "\"{}\",\"{}\",{},\"{}\",\"{}\",\"{}\",\"{}\"\n",
+            row.name.replace('"', "\"\""),
+            row.email.replace('"', "\"\""),
+            if row.attending { "Yes" } else { "No" },
+            row.dietary_restrictions.as_deref().unwrap_or("").replace('"', "\"\""),
+            row.song_requests.as_deref().unwrap_or("").replace('"', "\"\""),
+            row.message.as_deref().unwrap_or("").replace('"', "\"\""),
+            submitted_str,
+        ));
+    }
+
+    Ok((
+        StatusCode::OK,
+        [
+            (header::CONTENT_TYPE, axum::http::HeaderValue::from_static("text/csv")),
+            (header::CONTENT_DISPOSITION, axum::http::HeaderValue::from_static("attachment; filename=\"rsvps.csv\"")),
+        ],
+        csv,
+    ))
+}
+
+// ============ ADMIN INVITATION ROUTES ============
+
+// Send invitation emails to selected invites
+async fn admin_send_invitations(
+    State(state): State<AppState>,
+    Json(req): Json<SendInvitationRequest>,
+) -> Result<Json<SendInvitationResponse>, StatusCode> {
+    let frontend_url = std::env::var("FRONTEND_URL")
+        .unwrap_or_else(|_| "https://samandjonah.com".to_string());
+    let resend_api_key = std::env::var("RESEND_API_KEY")
+        .map_err(|_| {
+            tracing::error!("RESEND_API_KEY environment variable not set");
+            StatusCode::INTERNAL_SERVER_ERROR
+        })?;
+    let from_email = std::env::var("FROM_EMAIL")
+        .unwrap_or_else(|_| "contact@samandjonah.com".to_string());
+
+    let mut sent_count = 0;
+    let mut errors = Vec::new();
+
+    for invite_id in &req.invite_ids {
+        // Get invite
+        let invite = sqlx::query_as::<_, Invite>(
+            "SELECT * FROM invites WHERE id = $1"
+        )
+        .bind(invite_id)
+        .fetch_optional(&state.db)
+        .await
+        .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
+
+        let invite = match invite {
+            Some(inv) => inv,
+            None => {
+                errors.push(format!("Invite {} not found", invite_id));
+                continue;
+            }
+        };
+
+        // Get guests
+        let guests = sqlx::query_as::<_, Guest>(
+            "SELECT * FROM guests WHERE invite_id = $1 AND removed = false ORDER BY name"
+        )
+        .bind(invite.id)
+        .fetch_all(&state.db)
+        .await
+        .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
+
+        if guests.is_empty() {
+            errors.push(format!("No guests found for invite {}", invite.unique_code));
+            continue;
+        }
+
+        // Get valid email addresses
+        let recipient_emails: Vec<String> = guests.iter()
+            .filter(|g| g.email.contains('@') && g.email.split('@').nth(1).map_or(false, |d| d.contains('.')))
+            .map(|g| g.email.clone())
+            .collect();
+
+        if recipient_emails.is_empty() {
+            errors.push(format!("No valid emails for invite {}", invite.unique_code));
+            continue;
+        }
+
+        let guest_names: Vec<String> = guests.iter().map(|g| g.name.clone()).collect();
+        let names_display = if guest_names.len() == 1 {
+            guest_names[0].clone()
+        } else {
+            format!("{} & {}", guest_names[0], guest_names[1])
+        };
+
+        let rsvp_link = format!("{}/rsvp?code={}", frontend_url, invite.unique_code);
+
+        // Build invitation email HTML (placeholder — will be replaced with image/PDF later)
+        let html = crate::email::templates::invitation_email_html(
+            &names_display,
+            &rsvp_link,
+            &frontend_url,
+        );
+
+        // Send via Resend
+        let email_payload = serde_json::json!({
+            "from": format!("Sam & Jonah <{}>", from_email),
+            "to": recipient_emails,
+            "subject": "You're Invited! Sam & Jonah's Wedding",
+            "html": html,
+            "reply_to": [from_email],
+        });
+
+        let client = reqwest::Client::new();
+        let response = client
+            .post("https://api.resend.com/emails")
+            .header("Authorization", format!("Bearer {}", resend_api_key))
+            .header("Content-Type", "application/json")
+            .json(&email_payload)
+            .send()
+            .await;
+
+        match response {
+            Ok(resp) => {
+                if resp.status().is_success() {
+                    sent_count += 1;
+                    // Mark invite as sent
+                    let _ = sqlx::query(
+                        "UPDATE invites SET invite_sent_at = NOW() WHERE id = $1"
+                    )
+                    .bind(invite.id)
+                    .execute(&state.db)
+                    .await;
+                    tracing::info!("✉️ Sent invitation to {} ({})", names_display, invite.unique_code);
+                } else {
+                    let status = resp.status();
+                    let body = resp.text().await.unwrap_or_default();
+                    errors.push(format!("Resend error for {}: {} - {}", invite.unique_code, status, body));
+                }
+            }
+            Err(e) => {
+                errors.push(format!("Failed to send to {}: {}", invite.unique_code, e));
+            }
+        }
+    }
+
+    Ok(Json(SendInvitationResponse {
+        success: errors.is_empty(),
+        sent_count,
+        errors,
+    }))
+}
+
+// Get invitation send status for all invites
+async fn admin_invitation_status(
+    State(state): State<AppState>,
+) -> Result<Json<Vec<InviteWithGuests>>, StatusCode> {
+    let invites = sqlx::query_as::<_, Invite>(
+        "SELECT * FROM invites ORDER BY invite_sent_at DESC NULLS LAST, created_at DESC"
+    )
+    .fetch_all(&state.db)
+    .await
+    .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
+
+    let mut result = Vec::new();
+    for invite in invites {
+        let guests = sqlx::query_as::<_, Guest>(
+            "SELECT * FROM guests WHERE invite_id = $1 AND removed = false ORDER BY name"
+        )
+        .bind(invite.id)
+        .fetch_all(&state.db)
+        .await
+        .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
+
+        if guests.is_empty() {
+            continue;
+        }
+
+        result.push(InviteWithGuests {
+            invite,
+            guests,
+        });
+    }
+
+    Ok(Json(result))
 }
 
 // Get registry stats (admin)

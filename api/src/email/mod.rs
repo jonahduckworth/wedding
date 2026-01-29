@@ -200,6 +200,7 @@ impl EmailService {
                     id: invite_row.id,
                     unique_code: invite_row.unique_code,
                     invite_type: invite_row.invite_type.unwrap_or_else(|| "single".to_string()),
+                    invite_sent_at: None,
                     created_at: invite_row.created_at,
                     updated_at: invite_row.updated_at,
                 },
