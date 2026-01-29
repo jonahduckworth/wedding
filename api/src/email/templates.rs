@@ -73,6 +73,10 @@ pub fn invitation_email_html(
                                 Please RSVP by April 30, 2026
                             </p>
 
+                            <p style="margin: 25px 0 0 0; font-size: 14px; line-height: 1.7; color: #999; text-align: center;">
+                                Kindly note that our celebration is an intimate affair and our invitation is extended to the guests named above only. We appreciate your understanding!
+                            </p>
+
                             <p style="margin: 25px 0 0 0; font-size: 16px; line-height: 1.7; color: #8b7355; text-align: center; font-style: italic;">
                                 With love,<br>
                                 <span style="font-style: normal; letter-spacing: 1px;">Sam &amp; Jonah</span>
