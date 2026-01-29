@@ -1,0 +1,19 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm install:*)",
+      "Bash(PGPASSWORD='wedding' psql:*)",
+      "Bash(lsof:*)",
+      "Bash(xargs kill:*)",
+      "Bash(cargo build:*)",
+      "Bash(cargo run:*)",
+      "Bash(curl:*)",
+      "Bash(npm run build:*)",
+      "Bash(ls:*)",
+      "Bash(cargo check:*)",
+      "Bash(SQLX_OFFLINE=true cargo check:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

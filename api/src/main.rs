@@ -60,6 +60,23 @@ async fn main() {
         Err(e) => eprintln!("Migration warning: {} (may already be applied)", e),
     }
 
+    // Ensure migration 004 columns exist (workaround for duplicate migration numbering)
+    eprintln!("Ensuring RSVP schema columns exist...");
+    let schema_fixes = [
+        "ALTER TABLE invites ADD COLUMN IF NOT EXISTS invite_sent_at TIMESTAMPTZ",
+        "ALTER TABLE rsvps ADD COLUMN IF NOT EXISTS song_requests TEXT",
+        "ALTER TABLE rsvps ADD COLUMN IF NOT EXISTS invite_id UUID REFERENCES invites(id) ON DELETE CASCADE",
+    ];
+    for sql in &schema_fixes {
+        if let Err(e) = sqlx::query(sql).execute(&db).await {
+            eprintln!("Schema fix note: {} ({})", e, sql);
+        }
+    }
+    // Create index separately (IF NOT EXISTS syntax differs)
+    let _ = sqlx::query("CREATE INDEX IF NOT EXISTS idx_rsvps_invite_id ON rsvps(invite_id)")
+        .execute(&db)
+        .await;
+
     // Create app state
     let state = routes::AppState { db };
 
