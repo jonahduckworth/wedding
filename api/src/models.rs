@@ -8,6 +8,7 @@ pub struct Invite {
     pub id: Uuid,
     pub unique_code: String,
     pub invite_type: String,
+    pub invite_sent_at: Option<time::OffsetDateTime>,
     pub created_at: Option<time::OffsetDateTime>,
     pub updated_at: Option<time::OffsetDateTime>,
 }
@@ -63,11 +64,78 @@ pub struct EmailSend {
 pub struct Rsvp {
     pub id: Uuid,
     pub guest_id: Uuid,
+    pub invite_id: Option<Uuid>,
     pub attending: bool,
     pub dietary_restrictions: Option<String>,
+    pub song_requests: Option<String>,
     pub message: Option<String>,
     pub submitted_at: Option<time::OffsetDateTime>,
     pub updated_at: Option<time::OffsetDateTime>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct RsvpWithGuest {
+    #[serde(flatten)]
+    pub rsvp: Rsvp,
+    pub guest_name: String,
+    pub guest_email: String,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct RsvpStats {
+    pub total_invited: i64,
+    pub total_responded: i64,
+    pub total_attending: i64,
+    pub total_declined: i64,
+    pub total_pending: i64,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct GuestRsvpRequest {
+    pub attending: bool,
+    pub dietary_restrictions: Option<String>,
+    pub song_requests: Option<String>,
+    pub message: Option<String>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct InviteRsvpSubmission {
+    pub guests: Vec<GuestRsvpEntry>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct GuestRsvpEntry {
+    pub guest_id: Uuid,
+    pub attending: bool,
+    pub dietary_restrictions: Option<String>,
+    pub song_requests: Option<String>,
+    pub message: Option<String>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct InviteRsvpResponse {
+    pub invite: InviteWithGuests,
+    pub rsvps: Vec<Rsvp>,
+    pub already_responded: bool,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct AdminRsvpEntry {
+    pub invite: InviteWithGuests,
+    pub rsvps: Vec<RsvpWithGuest>,
+    pub status: String, // "attending", "declined", "partial", "pending"
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct SendInvitationRequest {
+    pub invite_ids: Vec<Uuid>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct SendInvitationResponse {
+    pub success: bool,
+    pub sent_count: usize,
+    pub errors: Vec<String>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, FromRow)]
