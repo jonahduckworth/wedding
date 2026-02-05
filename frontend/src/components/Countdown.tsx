@@ -77,10 +77,10 @@ export default function Countdown() {
           variants={itemVariants}
           className="relative"
         >
-          <div className="bg-off-white border-2 border-dusty-rose/30 rounded-lg shadow-lg px-6 py-4 md:px-8 md:py-6 min-w-[100px] md:min-w-[120px]">
+          <div className="bg-berry border-2 border-glass-border rounded-lg shadow-lg px-6 py-4 md:px-8 md:py-6 min-w-[100px] md:min-w-[120px]">
             {/* Decorative corner accent */}
-            <div className="absolute -top-1 -right-1 w-3 h-3 bg-dusty-rose/20 rounded-full" />
-            <div className="absolute -bottom-1 -left-1 w-3 h-3 bg-sage/20 rounded-full" />
+            <div className="absolute -top-1 -right-1 w-3 h-3 bg-gold/20 rounded-full" />
+            <div className="absolute -bottom-1 -left-1 w-3 h-3 bg-gold/20 rounded-full" />
 
             <div className="text-center">
               <motion.div
@@ -88,11 +88,11 @@ export default function Countdown() {
                 initial={{ scale: 1.2, opacity: 0.5 }}
                 animate={{ scale: 1, opacity: 1 }}
                 transition={{ duration: 0.3 }}
-                className="text-4xl md:text-5xl font-display text-dusty-rose mb-1"
+                className="text-4xl md:text-5xl font-display text-gold mb-1"
               >
                 {String(unit.value).padStart(2, '0')}
               </motion.div>
-              <div className="text-xs md:text-sm font-medium text-warm-gray uppercase tracking-wider">
+              <div className="text-xs md:text-sm font-medium text-blush/70 uppercase tracking-wider">
                 {unit.label}
               </div>
             </div>

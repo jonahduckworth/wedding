@@ -167,28 +167,28 @@ export default function RSVPPage() {
       <Layout>
         <div className="container mx-auto px-4 py-16">
           <div className="max-w-lg mx-auto text-center">
-            <h1 className="text-4xl md:text-5xl font-display text-charcoal mb-4" style={{ fontWeight: 300 }}>
+            <h1 className="text-4xl md:text-5xl font-display text-cream mb-4" style={{ fontWeight: 300 }}>
               RSVP
             </h1>
-            <p className="text-warm-gray mb-2 text-lg">
+            <p className="text-blush/70 mb-2 text-lg">
               August 15, 2026 • Rouge, Calgary
             </p>
 
             {countdown && (
               <div className="mb-8 mt-6">
-                <p className="text-sm text-warm-gray mb-3 uppercase tracking-widest">Please respond by April 30, 2026</p>
+                <p className="text-sm text-blush/70 mb-3 uppercase tracking-widest">Please respond by April 30, 2026</p>
                 <div className="flex justify-center gap-4">
                   <div className="bg-white rounded-lg shadow-sm p-4 min-w-[80px]">
-                    <span className="text-3xl font-display text-dusty-rose">{countdown.days}</span>
-                    <p className="text-xs text-warm-gray uppercase tracking-wider mt-1">Days</p>
+                    <span className="text-3xl font-display text-gold">{countdown.days}</span>
+                    <p className="text-xs text-blush/70 uppercase tracking-wider mt-1">Days</p>
                   </div>
                   <div className="bg-white rounded-lg shadow-sm p-4 min-w-[80px]">
-                    <span className="text-3xl font-display text-dusty-rose">{countdown.hours}</span>
-                    <p className="text-xs text-warm-gray uppercase tracking-wider mt-1">Hours</p>
+                    <span className="text-3xl font-display text-gold">{countdown.hours}</span>
+                    <p className="text-xs text-blush/70 uppercase tracking-wider mt-1">Hours</p>
                   </div>
                   <div className="bg-white rounded-lg shadow-sm p-4 min-w-[80px]">
-                    <span className="text-3xl font-display text-dusty-rose">{countdown.minutes}</span>
-                    <p className="text-xs text-warm-gray uppercase tracking-wider mt-1">Min</p>
+                    <span className="text-3xl font-display text-gold">{countdown.minutes}</span>
+                    <p className="text-xs text-blush/70 uppercase tracking-wider mt-1">Min</p>
                   </div>
                 </div>
               </div>
@@ -202,7 +202,7 @@ export default function RSVPPage() {
             )}
 
             <div className="bg-white rounded-xl shadow-md p-8 mt-6">
-              <p className="text-warm-gray mb-6">
+              <p className="text-blush/70 mb-6">
                 Enter the unique code from your invitation to RSVP.
               </p>
 
@@ -220,13 +220,13 @@ export default function RSVPPage() {
                   value={code}
                   onChange={(e) => setCode(e.target.value)}
                   placeholder="Enter your RSVP code"
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg text-center text-lg tracking-widest uppercase focus:ring-2 focus:ring-dusty-rose focus:border-transparent"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg text-center text-lg tracking-widest uppercase focus:ring-2 focus:ring-gold focus:border-transparent"
                   disabled={pastDeadline}
                 />
                 <button
                   type="submit"
                   disabled={!code.trim() || pastDeadline}
-                  className="w-full bg-dusty-rose text-white py-3 rounded-lg hover:bg-dusty-rose/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed font-medium tracking-wide"
+                  className="w-full bg-gold text-white py-3 rounded-lg hover:bg-gold/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed font-medium tracking-wide"
                 >
                   Find My Invitation
                 </button>
@@ -269,20 +269,20 @@ export default function RSVPPage() {
           <div className="max-w-lg mx-auto text-center">
             <div className="bg-white rounded-xl shadow-md p-8">
               <div className="text-5xl mb-4">{anyAttending ? '🎉' : '💌'}</div>
-              <h2 className="text-3xl font-display text-charcoal mb-4" style={{ fontWeight: 300 }}>
+              <h2 className="text-3xl font-display text-cream mb-4" style={{ fontWeight: 300 }}>
                 {inviteData.already_responded ? 'RSVP Updated!' : 'Thank You!'}
               </h2>
               {anyAttending ? (
                 <>
-                  <p className="text-warm-gray text-lg mb-2">
+                  <p className="text-blush/70 text-lg mb-2">
                     We can't wait to celebrate with you, {displayName}!
                   </p>
-                  <p className="text-warm-gray">
+                  <p className="text-blush/70">
                     See you on August 15, 2026 at Rouge, Calgary.
                   </p>
                 </>
               ) : (
-                <p className="text-warm-gray text-lg">
+                <p className="text-blush/70 text-lg">
                   We're sorry you can't make it, {displayName}. We'll miss you!
                 </p>
               )}
@@ -290,7 +290,7 @@ export default function RSVPPage() {
               {!pastDeadline && (
                 <button
                   onClick={() => setSubmitted(false)}
-                  className="mt-6 text-dusty-rose hover:underline text-sm"
+                  className="mt-6 text-gold hover:underline text-sm"
                 >
                   Update my response
                 </button>
@@ -308,10 +308,10 @@ export default function RSVPPage() {
       <div className="container mx-auto px-4 py-12">
         <div className="max-w-2xl mx-auto">
           <div className="text-center mb-8">
-            <h1 className="text-4xl md:text-5xl font-display text-charcoal mb-3" style={{ fontWeight: 300 }}>
+            <h1 className="text-4xl md:text-5xl font-display text-cream mb-3" style={{ fontWeight: 300 }}>
               RSVP
             </h1>
-            <p className="text-warm-gray text-lg">
+            <p className="text-blush/70 text-lg">
               {isCouple ? (
                 <>Welcome, <strong>{guestNames[0]}</strong> & <strong>{guestNames[1]}</strong>!</>
               ) : (
@@ -319,7 +319,7 @@ export default function RSVPPage() {
               )}
             </p>
             {inviteData.already_responded && (
-              <p className="text-dusty-rose text-sm mt-2">
+              <p className="text-gold text-sm mt-2">
                 You've already responded — feel free to update your RSVP below.
               </p>
             )}
@@ -327,7 +327,7 @@ export default function RSVPPage() {
 
           {countdown && (
             <div className="text-center mb-6">
-              <p className="text-sm text-warm-gray">
+              <p className="text-sm text-blush/70">
                 Please respond by <strong>April 30, 2026</strong> — {countdown.days} days remaining
               </p>
             </div>
@@ -349,14 +349,14 @@ export default function RSVPPage() {
             {guestForms.map((form, index) => (
               <div key={form.guest_id} className="bg-white rounded-xl shadow-md p-6 md:p-8">
                 {isCouple && (
-                  <h3 className="text-xl font-display text-charcoal mb-6 pb-3 border-b border-gray-100" style={{ fontWeight: 400 }}>
+                  <h3 className="text-xl font-display text-cream mb-6 pb-3 border-b border-gray-100" style={{ fontWeight: 400 }}>
                     {form.name}
                   </h3>
                 )}
 
                 {/* Attendance */}
                 <div className="mb-6">
-                  <label className="block text-sm font-medium text-charcoal mb-3">
+                  <label className="block text-sm font-medium text-cream mb-3">
                     Will {isCouple ? form.name.split(' ')[0] : 'you'} be attending?
                   </label>
                   <div className="flex gap-4">
@@ -366,8 +366,8 @@ export default function RSVPPage() {
                       disabled={pastDeadline}
                       className={`flex-1 py-3 px-4 rounded-lg border-2 transition-all font-medium ${
                         form.attending === true
-                          ? 'border-dusty-rose bg-dusty-rose/10 text-dusty-rose'
-                          : 'border-gray-200 text-warm-gray hover:border-dusty-rose/50'
+                          ? 'border-gold bg-gold/10 text-gold'
+                          : 'border-gray-200 text-blush/70 hover:border-gold/50'
                       } disabled:opacity-50`}
                     >
                       Joyfully Accepts ✨
@@ -378,8 +378,8 @@ export default function RSVPPage() {
                       disabled={pastDeadline}
                       className={`flex-1 py-3 px-4 rounded-lg border-2 transition-all font-medium ${
                         form.attending === false
-                          ? 'border-warm-gray bg-gray-50 text-charcoal'
-                          : 'border-gray-200 text-warm-gray hover:border-gray-400'
+                          ? 'border-blush/30 bg-gray-50 text-cream'
+                          : 'border-gray-200 text-blush/70 hover:border-gray-400'
                       } disabled:opacity-50`}
                     >
                       Regretfully Declines
@@ -392,7 +392,7 @@ export default function RSVPPage() {
                   <div className="space-y-5 animate-fadeIn">
                     {/* Dietary Restrictions */}
                     <div>
-                      <label className="block text-sm font-medium text-charcoal mb-2">
+                      <label className="block text-sm font-medium text-cream mb-2">
                         Dietary Restrictions or Allergies
                       </label>
                       <input
@@ -400,14 +400,14 @@ export default function RSVPPage() {
                         value={form.dietary_restrictions}
                         onChange={(e) => updateGuestForm(index, { dietary_restrictions: e.target.value })}
                         placeholder="e.g., Vegetarian, Gluten-free, Nut allergy"
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-dusty-rose focus:border-transparent"
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold focus:border-transparent"
                         disabled={pastDeadline}
                       />
                     </div>
 
                     {/* Song Requests */}
                     <div>
-                      <label className="block text-sm font-medium text-charcoal mb-2">
+                      <label className="block text-sm font-medium text-cream mb-2">
                         Song Requests 🎵
                       </label>
                       <input
@@ -415,7 +415,7 @@ export default function RSVPPage() {
                         value={form.song_requests}
                         onChange={(e) => updateGuestForm(index, { song_requests: e.target.value })}
                         placeholder="What songs will get you on the dance floor?"
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-dusty-rose focus:border-transparent"
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold focus:border-transparent"
                         disabled={pastDeadline}
                       />
                     </div>
@@ -425,7 +425,7 @@ export default function RSVPPage() {
                 {/* Message (shown for all) */}
                 {form.attending !== null && (
                   <div className={form.attending ? 'mt-5' : ''}>
-                    <label className="block text-sm font-medium text-charcoal mb-2">
+                    <label className="block text-sm font-medium text-cream mb-2">
                       Message for Sam & Jonah (optional)
                     </label>
                     <textarea
@@ -433,7 +433,7 @@ export default function RSVPPage() {
                       onChange={(e) => updateGuestForm(index, { message: e.target.value })}
                       placeholder="Leave us a note!"
                       rows={3}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-dusty-rose focus:border-transparent resize-none"
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold focus:border-transparent resize-none"
                       disabled={pastDeadline}
                     />
                   </div>
@@ -447,7 +447,7 @@ export default function RSVPPage() {
                 <button
                   type="submit"
                   disabled={submitMutation.isPending}
-                  className="bg-dusty-rose text-white py-4 px-12 rounded-lg hover:bg-dusty-rose/90 transition-colors disabled:opacity-50 font-medium tracking-wide text-lg shadow-md"
+                  className="bg-gold text-white py-4 px-12 rounded-lg hover:bg-gold/90 transition-colors disabled:opacity-50 font-medium tracking-wide text-lg shadow-md"
                 >
                   {submitMutation.isPending
                     ? 'Submitting...'
@@ -466,7 +466,7 @@ export default function RSVPPage() {
                 setSubmittedCode('');
                 setCode('');
               }}
-              className="text-warm-gray hover:text-dusty-rose text-sm transition-colors"
+              className="text-blush/70 hover:text-gold text-sm transition-colors"
             >
               ← Use a different code
             </button>

@@ -1,8 +1,6 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { useState } from 'react';
 import Layout from '../components/Layout';
-import FloralDivider from '../components/decorative/FloralDivider';
-import SketchFilter from '../components/decorative/SketchFilter';
 
 export default function FAQPage() {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
@@ -53,30 +51,28 @@ export default function FAQPage() {
 
   return (
     <Layout>
-      <SketchFilter />
 
       {/* Hero Section */}
       <motion.section
         initial="hidden"
         animate="visible"
         variants={fadeInUp}
-        className="relative py-24 px-4 bg-gradient-to-b from-cream to-off-white"
+        className="relative py-24 px-4 bg-berry"
       >
         <div className="container mx-auto max-w-4xl text-center">
           <motion.h1
             variants={fadeInUp}
-            className="font-display text-5xl md:text-7xl mb-6 text-charcoal"
+            className="font-display text-5xl md:text-7xl mb-6 text-cream"
           >
             FAQ
           </motion.h1>
           <motion.p
             variants={fadeInUp}
-            className="text-xl text-warm-gray italic mb-8"
+            className="text-xl text-blush/70 italic mb-8"
           >
             Your questions answered
           </motion.p>
           <motion.div variants={fadeInUp}>
-            <FloralDivider className="text-dusty-rose" />
           </motion.div>
         </div>
       </motion.section>
@@ -86,7 +82,7 @@ export default function FAQPage() {
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true, margin: '-100px' }}
-        className="py-20 px-4 bg-off-white"
+        className="py-20 px-4 bg-berry"
       >
         <div className="container mx-auto max-w-3xl">
           <div className="space-y-4">
@@ -97,19 +93,19 @@ export default function FAQPage() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: index * 0.05 }}
-                className="bg-cream/50 rounded-2xl border-2 border-dusty-rose/20 overflow-hidden shadow-lg hover:shadow-xl transition-shadow"
+                className="bg-berry/50 rounded-2xl border-2 border-glass-border overflow-hidden shadow-lg hover:shadow-xl transition-shadow"
               >
                 <button
                   onClick={() => setOpenIndex(openIndex === index ? null : index)}
                   className="w-full text-left p-6 flex items-center justify-between gap-4 group"
                 >
-                  <h3 className="font-display text-xl md:text-2xl text-charcoal group-hover:text-dusty-rose transition-colors">
+                  <h3 className="font-display text-xl md:text-2xl text-cream group-hover:text-gold transition-colors">
                     {faq.question}
                   </h3>
                   <motion.div
                     animate={{ rotate: openIndex === index ? 180 : 0 }}
                     transition={{ duration: 0.3 }}
-                    className="flex-shrink-0 text-dusty-rose"
+                    className="flex-shrink-0 text-gold"
                   >
                     <svg
                       width="24"
@@ -135,7 +131,7 @@ export default function FAQPage() {
                       transition={{ duration: 0.3, ease: 'easeInOut' }}
                       className="overflow-hidden"
                     >
-                      <div className="px-6 pb-6 text-warm-gray leading-relaxed">
+                      <div className="px-6 pb-6 text-blush/70 leading-relaxed">
                         {faq.answer}
                       </div>
                     </motion.div>
@@ -153,20 +149,20 @@ export default function FAQPage() {
         whileInView="visible"
         viewport={{ once: true, margin: '-100px' }}
         variants={fadeInUp}
-        className="py-20 px-4 bg-gradient-to-b from-off-white to-blush/20"
+        className="py-20 px-4 bg-berry-dark/20"
       >
         <div className="container mx-auto max-w-2xl text-center">
-          <div className="bg-dusty-rose/10 border-2 border-dusty-rose/30 rounded-3xl p-12 shadow-lg">
+          <div className="bg-gold/10 border-2 border-glass-border rounded-3xl p-12 shadow-lg">
             <div className="text-5xl mb-6">💌</div>
-            <h2 className="font-display text-3xl md:text-4xl mb-4 text-charcoal">
+            <h2 className="font-display text-3xl md:text-4xl mb-4 text-cream">
               Still Have Questions?
             </h2>
-            <p className="text-warm-gray leading-relaxed mb-6">
+            <p className="text-blush/70 leading-relaxed mb-6">
               We're happy to help! Feel free to reach out to us directly.
             </p>
             <a
               href="mailto:contact@samandjonah.com"
-              className="inline-block bg-dusty-rose text-off-white px-8 py-3 rounded-full font-medium hover:bg-dusty-rose/90 transition-colors"
+              className="inline-block bg-gold text-berry-dark px-8 py-3 rounded-full font-medium hover:bg-gold/90 transition-colors"
             >
               Contact Us
             </a>

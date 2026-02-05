@@ -1,7 +1,5 @@
 import { motion } from 'framer-motion';
 import Layout from '../components/Layout';
-import FloralDivider from '../components/decorative/FloralDivider';
-import SketchFilter from '../components/decorative/SketchFilter';
 
 export default function TravelPage() {
   const fadeInUp = {
@@ -87,30 +85,28 @@ export default function TravelPage() {
 
   return (
     <Layout>
-      <SketchFilter />
 
       {/* Hero Section */}
       <motion.section
         initial="hidden"
         animate="visible"
         variants={fadeInUp}
-        className="relative py-24 px-4 bg-gradient-to-b from-cream to-off-white"
+        className="relative py-24 px-4 bg-berry"
       >
         <div className="container mx-auto max-w-4xl text-center">
           <motion.h1
             variants={fadeInUp}
-            className="font-display text-5xl md:text-7xl mb-6 text-charcoal"
+            className="font-display text-5xl md:text-7xl mb-6 text-cream"
           >
             Travel & Stay
           </motion.h1>
           <motion.p
             variants={fadeInUp}
-            className="text-xl text-warm-gray italic mb-8"
+            className="text-xl text-blush/70 italic mb-8"
           >
             Everything you need to know about visiting beautiful Calgary
           </motion.p>
           <motion.div variants={fadeInUp}>
-            <FloralDivider className="text-dusty-rose" />
           </motion.div>
         </div>
       </motion.section>
@@ -121,42 +117,42 @@ export default function TravelPage() {
         whileInView="visible"
         viewport={{ once: true, margin: '-100px' }}
         variants={fadeInUp}
-        className="py-20 px-4 bg-off-white"
+        className="py-20 px-4 bg-berry"
       >
         <div className="container mx-auto max-w-4xl">
-          <h2 className="font-display text-4xl md:text-5xl text-center mb-12 text-charcoal">
+          <h2 className="font-display text-4xl md:text-5xl text-center mb-12 text-cream">
             Getting to Calgary
           </h2>
 
           <div className="grid md:grid-cols-2 gap-8">
             <motion.div
               variants={fadeInUp}
-              className="bg-gradient-to-br from-dusty-rose/10 to-blush/20 rounded-3xl p-8 border-2 border-dusty-rose/30 shadow-lg"
+              className="bg-glass rounded-3xl p-8 border-2 border-glass-border shadow-lg"
             >
               <div className="text-5xl mb-4">✈️</div>
-              <h3 className="font-display text-2xl mb-3 text-charcoal">
+              <h3 className="font-display text-2xl mb-3 text-cream">
                 By Air
               </h3>
-              <p className="text-warm-gray leading-relaxed mb-3">
+              <p className="text-blush/70 leading-relaxed mb-3">
                 Calgary has an International Airport (YYC). It is approximately a 20-minute drive from the airport to Inglewood.
               </p>
-              <p className="text-warm-gray leading-relaxed">
+              <p className="text-blush/70 leading-relaxed">
                 Ubers operate throughout Calgary for convenient transportation.
               </p>
             </motion.div>
 
             <motion.div
               variants={fadeInUp}
-              className="bg-gradient-to-br from-sage/10 to-terracotta/10 rounded-3xl p-8 border-2 border-sage/30 shadow-lg"
+              className="bg-glass rounded-3xl p-8 border-2 border-glass-border shadow-lg"
             >
               <div className="text-5xl mb-4">🚇</div>
-              <h3 className="font-display text-2xl mb-3 text-charcoal">
+              <h3 className="font-display text-2xl mb-3 text-cream">
                 Getting Around
               </h3>
-              <p className="text-warm-gray leading-relaxed mb-3">
+              <p className="text-blush/70 leading-relaxed mb-3">
                 The C-Train operates for free throughout downtown.
               </p>
-              <p className="text-warm-gray leading-relaxed text-sm">
+              <p className="text-blush/70 leading-relaxed text-sm">
                 Note: There are no trains that connect downtown to Inglewood, but Ubers and taxis are readily available.
               </p>
             </motion.div>
@@ -169,18 +165,18 @@ export default function TravelPage() {
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true, margin: '-100px' }}
-        className="py-20 px-4 bg-gradient-to-b from-off-white to-blush/10"
+        className="py-20 px-4 bg-berry-dark/20"
       >
         <div className="container mx-auto max-w-5xl">
           <motion.h2
             variants={fadeInUp}
-            className="font-display text-4xl md:text-5xl text-center mb-4 text-charcoal"
+            className="font-display text-4xl md:text-5xl text-center mb-4 text-cream"
           >
             Where to Stay
           </motion.h2>
           <motion.p
             variants={fadeInUp}
-            className="text-center text-warm-gray mb-12"
+            className="text-center text-blush/70 mb-12"
           >
             Recommended accommodations for our wedding weekend
           </motion.p>
@@ -195,19 +191,19 @@ export default function TravelPage() {
                 transition={{ duration: 0.5, delay: index * 0.1 }}
                 className={`rounded-2xl p-8 border-2 shadow-lg hover:shadow-xl transition-all ${
                   hotel.highlight
-                    ? 'bg-dusty-rose/10 border-dusty-rose/40'
-                    : 'bg-off-white border-sage/20'
+                    ? 'bg-gold/10 border-gold/40'
+                    : 'bg-berry border-glass-border'
                 }`}
               >
                 {hotel.highlight && (
-                  <span className="inline-block px-3 py-1 bg-dusty-rose text-off-white text-sm rounded-full mb-3 font-medium">
+                  <span className="inline-block px-3 py-1 bg-gold text-berry-dark text-sm rounded-full mb-3 font-medium">
                     Special Rate
                   </span>
                 )}
-                <h3 className="font-display text-2xl mb-2 text-charcoal">
+                <h3 className="font-display text-2xl mb-2 text-cream">
                   {hotel.name}
                 </h3>
-                <p className="text-warm-gray mb-4">
+                <p className="text-blush/70 mb-4">
                   {hotel.description}
                 </p>
                 {hotel.link && (
@@ -215,7 +211,7 @@ export default function TravelPage() {
                     href={hotel.link}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center text-dusty-rose hover:text-dusty-rose/80 font-medium transition-colors"
+                    className="inline-flex items-center text-gold hover:text-gold/80 font-medium transition-colors"
                   >
                     Book Now
                     <svg className="ml-2 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -234,18 +230,18 @@ export default function TravelPage() {
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true, margin: '-100px' }}
-        className="py-20 px-4 bg-cream"
+        className="py-20 px-4 bg-berry"
       >
         <div className="container mx-auto max-w-6xl">
           <motion.h2
             variants={fadeInUp}
-            className="font-display text-4xl md:text-5xl text-center mb-4 text-charcoal"
+            className="font-display text-4xl md:text-5xl text-center mb-4 text-cream"
           >
             Things to Do in Calgary
           </motion.h2>
           <motion.p
             variants={fadeInUp}
-            className="text-center text-warm-gray mb-12"
+            className="text-center text-blush/70 mb-12"
           >
             Make a weekend of it and explore what Calgary has to offer
           </motion.p>
@@ -258,13 +254,13 @@ export default function TravelPage() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: index * 0.05 }}
-                className="bg-off-white rounded-2xl p-6 border-2 border-dusty-rose/20 shadow-lg hover:shadow-xl transition-all"
+                className="bg-berry rounded-2xl p-6 border-2 border-glass-border shadow-lg hover:shadow-xl transition-all"
               >
                 <div className="text-4xl mb-3">{activity.icon}</div>
-                <h3 className="font-display text-xl mb-2 text-charcoal">
+                <h3 className="font-display text-xl mb-2 text-cream">
                   {activity.title}
                 </h3>
-                <p className="text-warm-gray text-sm leading-relaxed">
+                <p className="text-blush/70 text-sm leading-relaxed">
                   {activity.description}
                 </p>
               </motion.div>

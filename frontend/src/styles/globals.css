@@ -2,31 +2,30 @@
 @import "tailwindcss";
 
 @theme {
-  /* Elegant Wedding Palette - Pencil Sketch Aesthetic */
-  --color-cream: #FAF7F2;           /* Warm cream - main background */
-  --color-blush: #E8D5D0;          /* Soft blush - accents */
-  --color-dusty-rose: #D4A5A5;     /* Dusty rose - primary */
-  --color-sage: #B8C5B0;           /* Soft sage - secondary */
-  --color-terracotta: #C89F91;     /* Warm terracotta - highlights */
-  --color-charcoal: #3D3D3D;       /* Charcoal - text */
-  --color-warm-gray: #8B8680;      /* Warm gray - muted text */
-  --color-off-white: #FFFEFB;      /* Off-white - pure backgrounds */
+  /* Deep Berry Wedding Palette */
+  --color-berry: #7B2350;            /* Deep berry - main background */
+  --color-berry-dark: #5E1A3D;       /* Darker berry - header/footer */
+  --color-berry-light: #8F2D5E;      /* Lighter berry - hover states */
+  --color-cream: #FAF7F2;            /* Warm cream - headings */
+  --color-blush: #E8D5D0;            /* Soft blush - body text */
+  --color-gold: #D4A574;             /* Warm gold - accents */
+  --color-gold-light: #E0BB90;       /* Light gold - hover */
+  --color-glass: rgba(255, 255, 255, 0.06);  /* Glass card bg */
+  --color-glass-border: rgba(255, 255, 255, 0.12); /* Glass borders */
 
   /* Semantic colors */
-  --color-primary: #D4A5A5;        /* Dusty rose */
-  --color-secondary: #B8C5B0;      /* Sage */
-  --color-accent: #C89F91;         /* Terracotta */
-  --color-text: #3D3D3D;           /* Charcoal */
-  --color-text-light: #8B8680;     /* Warm gray */
+  --color-primary: #D4A574;          /* Gold */
+  --color-secondary: #E8D5D0;        /* Blush */
+  --color-accent: #D4A574;           /* Gold */
+  --color-text: #FAF7F2;             /* Cream */
+  --color-text-light: #E8D5D0;       /* Blush */
+  --color-text-muted: rgba(232, 213, 208, 0.6); /* Muted blush */
 
-  /* Typography - Elegant & Romantic */
+  /* Typography */
   --font-display: "Cormorant Garamond", Georgia, serif;
   --font-body: "Montserrat", system-ui, -apple-system, sans-serif;
 
-  /* Hand-drawn effect */
-  --sketch-color: rgba(61, 61, 61, 0.15);
-
-  /* Spacing & Radius - Softer, more organic */
+  /* Spacing & Radius */
   --radius-xl: 2rem;
   --radius-lg: 1.5rem;
   --radius-md: 1rem;
@@ -35,11 +34,11 @@
 
 @layer base {
   * {
-    @apply border-charcoal/10;
+    @apply border-glass-border;
   }
 
   body {
-    @apply bg-cream text-charcoal antialiased;
+    @apply bg-berry text-blush antialiased;
     font-family: var(--font-body);
     font-weight: 300;
     letter-spacing: 0.01em;
@@ -49,6 +48,7 @@
     font-family: var(--font-display);
     font-weight: 400;
     letter-spacing: 0.02em;
+    color: var(--color-cream);
   }
 
   h1 {
@@ -64,57 +64,26 @@
     @apply text-3xl md:text-4xl;
   }
 
-  /* Smooth scrolling */
   html {
     scroll-behavior: smooth;
   }
 
-  /* Selection color */
   ::selection {
-    background-color: var(--color-blush);
-    color: var(--color-charcoal);
+    background-color: var(--color-gold);
+    color: var(--color-berry-dark);
   }
 }
 
 @layer utilities {
-  /* Hand-drawn sketch border effect */
-  .sketch-border {
-    position: relative;
-    border: none;
+  .animate-float {
+    animation: float 3s ease-in-out infinite;
   }
 
-  .sketch-border::before {
-    content: '';
-    position: absolute;
-    inset: -2px;
-    border: 2px solid currentColor;
-    border-radius: inherit;
-    opacity: 0.3;
-    filter: url(#sketch);
-  }
-
-  /* Floating animation */
   @keyframes float {
     0%, 100% { transform: translateY(0px); }
     50% { transform: translateY(-10px); }
   }
 
-  .animate-float {
-    animation: float 3s ease-in-out infinite;
-  }
-
-  /* Draw-in animation */
-  @keyframes draw {
-    to { stroke-dashoffset: 0; }
-  }
-
-  .animate-draw {
-    stroke-dasharray: 1000;
-    stroke-dashoffset: 1000;
-    animation: draw 2s ease-in-out forwards;
-  }
-
-  /* Fade-in-up */
   @keyframes fadeInUp {
     from {
       opacity: 0;
@@ -130,7 +99,6 @@
     animation: fadeInUp 0.8s ease-out forwards;
   }
 
-  /* Horizontal scroll animation for photo strips */
   @keyframes scroll {
     0% { transform: translateX(0); }
     100% { transform: translateX(-50%); }

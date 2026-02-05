@@ -23,20 +23,18 @@ export default function Layout({ children }: LayoutProps) {
   const isActive = (path: string) => location.pathname === path;
 
   return (
-    <div className="min-h-screen flex flex-col bg-cream">
-      <header className="border-b border-dusty-rose/20 shadow-sm sticky top-0 z-50 backdrop-blur-sm bg-off-white/95">
+    <div className="min-h-screen flex flex-col bg-berry">
+      <header className="border-b border-glass-border sticky top-0 z-50 backdrop-blur-md bg-berry-dark/90">
         <nav className="container mx-auto px-4 py-5">
           <div className="flex items-center justify-between">
-            {/* Logo */}
             <Link
               to="/"
-              className="text-3xl font-display text-charcoal hover:text-dusty-rose transition-colors"
+              className="text-3xl font-display text-cream hover:text-gold transition-colors"
               style={{ fontWeight: 300 }}
             >
-              Sam <span className="text-dusty-rose">&</span> Jonah
+              Sam <span className="text-gold">&</span> Jonah
             </Link>
 
-            {/* Desktop Navigation */}
             <div className="hidden md:flex gap-6 lg:gap-8">
               {navLinks.map((link) => (
                 <Link
@@ -44,15 +42,15 @@ export default function Layout({ children }: LayoutProps) {
                   to={link.path}
                   className={`relative text-sm lg:text-base font-medium transition-colors ${
                     isActive(link.path)
-                      ? 'text-dusty-rose'
-                      : 'text-warm-gray hover:text-dusty-rose'
+                      ? 'text-gold'
+                      : 'text-blush/70 hover:text-cream'
                   }`}
                 >
                   {link.label}
                   {isActive(link.path) && (
                     <motion.div
                       layoutId="activeNav"
-                      className="absolute -bottom-1 left-0 right-0 h-0.5 bg-dusty-rose"
+                      className="absolute -bottom-1 left-0 right-0 h-0.5 bg-gold"
                       transition={{ type: 'spring', stiffness: 380, damping: 30 }}
                     />
                   )}
@@ -60,10 +58,9 @@ export default function Layout({ children }: LayoutProps) {
               ))}
             </div>
 
-            {/* Mobile Menu Button */}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="md:hidden text-charcoal p-2"
+              className="md:hidden text-cream p-2"
             >
               <svg
                 width="24"
@@ -90,13 +87,12 @@ export default function Layout({ children }: LayoutProps) {
             </button>
           </div>
 
-          {/* Mobile Menu */}
           {mobileMenuOpen && (
             <motion.div
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: 'auto' }}
               exit={{ opacity: 0, height: 0 }}
-              className="md:hidden mt-4 pt-4 border-t border-dusty-rose/20"
+              className="md:hidden mt-4 pt-4 border-t border-glass-border"
             >
               <div className="flex flex-col gap-3">
                 {navLinks.map((link) => (
@@ -106,8 +102,8 @@ export default function Layout({ children }: LayoutProps) {
                     onClick={() => setMobileMenuOpen(false)}
                     className={`py-2 font-medium transition-colors ${
                       isActive(link.path)
-                        ? 'text-dusty-rose'
-                        : 'text-warm-gray hover:text-dusty-rose'
+                        ? 'text-gold'
+                        : 'text-blush/70 hover:text-cream'
                     }`}
                   >
                     {link.label}
@@ -121,29 +117,29 @@ export default function Layout({ children }: LayoutProps) {
 
       <main className="flex-1">{children}</main>
 
-      <footer className="bg-gradient-to-b from-blush/20 to-dusty-rose/10 border-t border-dusty-rose/20 py-16">
+      <footer className="bg-berry-dark/60 border-t border-glass-border py-16">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto text-center">
-            <p className="font-display text-3xl mb-3 text-charcoal" style={{ fontWeight: 300 }}>
-              Sam <span className="text-dusty-rose">&</span> Jonah
+            <p className="font-display text-3xl mb-3 text-cream" style={{ fontWeight: 300 }}>
+              Sam <span className="text-gold">&</span> Jonah
             </p>
-            <p className="text-warm-gray mb-6">
+            <p className="text-blush/60 mb-6">
               August 15, 2026 • Rouge, Calgary, Alberta
             </p>
-            <div className="flex justify-center gap-6 text-sm text-warm-gray">
-              <Link to="/story" className="hover:text-dusty-rose transition-colors">
+            <div className="flex justify-center gap-6 text-sm text-blush/50">
+              <Link to="/story" className="hover:text-gold transition-colors">
                 Our Story
               </Link>
-              <span>•</span>
-              <Link to="/details" className="hover:text-dusty-rose transition-colors">
+              <span className="text-glass-border">•</span>
+              <Link to="/details" className="hover:text-gold transition-colors">
                 Details
               </Link>
-              <span>•</span>
-              <Link to="/registry" className="hover:text-dusty-rose transition-colors">
+              <span className="text-glass-border">•</span>
+              <Link to="/registry" className="hover:text-gold transition-colors">
                 Registry
               </Link>
-              <span>•</span>
-              <Link to="/rsvp" className="hover:text-dusty-rose transition-colors">
+              <span className="text-glass-border">•</span>
+              <Link to="/rsvp" className="hover:text-gold transition-colors">
                 RSVP
               </Link>
             </div>

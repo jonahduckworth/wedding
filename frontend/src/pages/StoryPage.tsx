@@ -1,8 +1,6 @@
 import { motion } from 'framer-motion';
 import { useState } from 'react';
 import Layout from '../components/Layout';
-import FloralDivider from '../components/decorative/FloralDivider';
-import SketchFilter from '../components/decorative/SketchFilter';
 
 export default function StoryPage() {
   const [selectedPhoto, setSelectedPhoto] = useState<string | null>(null);
@@ -85,7 +83,6 @@ export default function StoryPage() {
 
   return (
     <Layout>
-      <SketchFilter />
 
       {/* Hero Section with Photo */}
       <motion.section
@@ -101,24 +98,23 @@ export default function StoryPage() {
             alt="Sam & Jonah"
             className="w-full h-full object-cover"
           />
-          <div className="absolute inset-0 bg-gradient-to-b from-cream/70 via-cream/50 to-cream/90" />
+          <div className="absolute inset-0 bg-berry/70 via-cream/50 to-berry/90" />
         </div>
 
         <div className="container mx-auto max-w-4xl text-center relative z-10 px-4 py-24">
           <motion.h1
             variants={fadeInUp}
-            className="font-display text-5xl md:text-7xl mb-6 text-charcoal"
+            className="font-display text-5xl md:text-7xl mb-6 text-cream"
           >
             Our Love Story
           </motion.h1>
           <motion.p
             variants={fadeInUp}
-            className="text-xl text-warm-gray italic mb-8"
+            className="text-xl text-blush/70 italic mb-8"
           >
             From a first date that lasted 12 hours to a lifetime together
           </motion.p>
           <motion.div variants={fadeInUp}>
-            <FloralDivider className="text-dusty-rose" />
           </motion.div>
         </div>
       </motion.section>
@@ -129,27 +125,27 @@ export default function StoryPage() {
         whileInView="visible"
         viewport={{ once: true, margin: '-100px' }}
         variants={fadeInUp}
-        className="py-20 px-4 bg-off-white"
+        className="py-20 px-4 bg-berry"
       >
         <div className="container mx-auto max-w-3xl">
-          <div className="bg-cream/50 rounded-3xl p-8 md:p-12 border-2 border-dusty-rose/20 shadow-lg">
-            <p className="text-lg text-charcoal leading-relaxed mb-6 font-light">
-              Jonah and Sam met in <strong className="font-medium text-dusty-rose">January 2021</strong>. They matched on the dating app, Hinge, a couple of months earlier. They delayed their first date due to Covid restrictions, and the fact that Sam would be travelling home for Christmas.
+          <div className="bg-berry/50 rounded-3xl p-8 md:p-12 border-2 border-glass-border shadow-lg">
+            <p className="text-lg text-cream leading-relaxed mb-6 font-light">
+              Jonah and Sam met in <strong className="font-medium text-gold">January 2021</strong>. They matched on the dating app, Hinge, a couple of months earlier. They delayed their first date due to Covid restrictions, and the fact that Sam would be travelling home for Christmas.
             </p>
-            <p className="text-lg text-charcoal leading-relaxed mb-6 font-light">
-              Their first date was skating/playing pond hockey. Sam thought Jonah was <em className="font-display">"kinda funny"</em>, Jonah loved Sam's stories, and their skating date quickly turned into a <strong className="font-medium text-dusty-rose">12-hour day</strong> which also included having coffee, building some furniture, and ordering sushi.
+            <p className="text-lg text-cream leading-relaxed mb-6 font-light">
+              Their first date was skating/playing pond hockey. Sam thought Jonah was <em className="font-display">"kinda funny"</em>, Jonah loved Sam's stories, and their skating date quickly turned into a <strong className="font-medium text-gold">12-hour day</strong> which also included having coffee, building some furniture, and ordering sushi.
             </p>
-            <p className="text-lg text-charcoal leading-relaxed mb-6 font-light">
+            <p className="text-lg text-cream leading-relaxed mb-6 font-light">
               They were both students at the time, with Jonah taking his B.Sc. in Computer Science, and Sam taking her M.Ed. in School and Applied Child Psychology. They had originally agreed that with their busy schedules, they should only plan to see each other a couple of times per week. This plan quickly went out the window (after the 2nd date), and they have been inseparable ever since.
             </p>
-            <p className="text-lg text-charcoal leading-relaxed mb-6 font-light">
+            <p className="text-lg text-cream leading-relaxed mb-6 font-light">
               Over the course of their relationship, they have spent some time long-distance (Jonah had to live in Kamloops for 4 months to finish his degree), lived together, done some travels (Arizona, Seattle, and throughout B.C.), and have supported each other through the early days/years of their professional careers.
             </p>
-            <p className="text-lg text-charcoal leading-relaxed mb-6 font-light">
-              In their free time, they enjoy going for bike rides (on the bike that Jonah refurbished for Sam), getting burgers, hanging out with friends, and playing a variety of different sports (e.g., soccer, tennis, golf, pickleball). They adopted their sweet puppy, <strong className="font-medium text-sage">Moose</strong>, in November 2024, and enjoy taking him for daily walks as well.
+            <p className="text-lg text-cream leading-relaxed mb-6 font-light">
+              In their free time, they enjoy going for bike rides (on the bike that Jonah refurbished for Sam), getting burgers, hanging out with friends, and playing a variety of different sports (e.g., soccer, tennis, golf, pickleball). They adopted their sweet puppy, <strong className="font-medium text-gold">Moose</strong>, in November 2024, and enjoy taking him for daily walks as well.
             </p>
-            <p className="text-lg text-charcoal leading-relaxed font-light">
-              Jonah and Sam aspire to do some bigger travels, including Italy, Germany, and Japan, as well as expanding their family. They are <strong className="font-medium text-dusty-rose">thrilled to be able to celebrate their love story and marriage</strong> with all of their favourite people.
+            <p className="text-lg text-cream leading-relaxed font-light">
+              Jonah and Sam aspire to do some bigger travels, including Italy, Germany, and Japan, as well as expanding their family. They are <strong className="font-medium text-gold">thrilled to be able to celebrate their love story and marriage</strong> with all of their favourite people.
             </p>
           </div>
         </div>
@@ -160,7 +156,7 @@ export default function StoryPage() {
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true }}
-        className="py-8 bg-off-white overflow-hidden"
+        className="py-8 bg-berry overflow-hidden"
       >
         <div className="flex gap-4 animate-scroll">
           {[...galleryPhotos.slice(0, 8), ...galleryPhotos.slice(0, 8)].map((photo, index) => (
@@ -186,19 +182,19 @@ export default function StoryPage() {
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true, margin: '-100px' }}
-        className="py-20 px-4 bg-gradient-to-b from-off-white via-blush/20 to-cream"
+        className="py-20 px-4 bg-berry-dark/20"
       >
         <div className="container mx-auto max-w-4xl">
           <motion.h2
             variants={fadeInUp}
-            className="font-display text-4xl md:text-5xl text-center mb-16 text-charcoal"
+            className="font-display text-4xl md:text-5xl text-center mb-16 text-cream"
           >
             Our Journey
           </motion.h2>
 
           <div className="relative">
             {/* Timeline line */}
-            <div className="absolute left-8 md:left-1/2 top-0 bottom-0 w-0.5 bg-dusty-rose/30" />
+            <div className="absolute left-8 md:left-1/2 top-0 bottom-0 w-0.5 bg-gold/30" />
 
             {timelineEvents.map((event, index) => (
               <motion.div
@@ -212,22 +208,22 @@ export default function StoryPage() {
                 } md:w-1/2`}
               >
                 {/* Timeline dot */}
-                <div className={`absolute top-6 ${index % 2 === 0 ? 'md:right-[-1.5rem]' : 'md:left-[-1.5rem]'} left-[1.75rem] w-12 h-12 bg-dusty-rose rounded-full border-4 border-off-white flex items-center justify-center text-xl shadow-lg`}>
+                <div className={`absolute top-6 ${index % 2 === 0 ? 'md:right-[-1.5rem]' : 'md:left-[-1.5rem]'} left-[1.75rem] w-12 h-12 bg-gold rounded-full border-4 border-berry flex items-center justify-center text-xl shadow-lg`}>
                   {event.icon}
                 </div>
 
                 {/* Content card */}
                 <div className="ml-20 md:ml-0 md:mr-0">
-                  <div className={`bg-off-white rounded-2xl p-6 shadow-lg border-2 border-dusty-rose/20 hover:shadow-xl transition-shadow ${
+                  <div className={`bg-berry rounded-2xl p-6 shadow-lg border-2 border-glass-border hover:shadow-xl transition-shadow ${
                     index % 2 === 0 ? 'md:mr-8' : 'md:ml-8'
                   }`}>
-                    <span className="inline-block text-sm font-medium text-dusty-rose mb-2">
+                    <span className="inline-block text-sm font-medium text-gold mb-2">
                       {event.date}
                     </span>
-                    <h3 className="font-display text-2xl mb-3 text-charcoal">
+                    <h3 className="font-display text-2xl mb-3 text-cream">
                       {event.title}
                     </h3>
-                    <p className="text-warm-gray leading-relaxed font-light">
+                    <p className="text-blush/70 leading-relaxed font-light">
                       {event.description}
                     </p>
                   </div>
@@ -244,13 +240,13 @@ export default function StoryPage() {
         whileInView="visible"
         viewport={{ once: true, margin: '-100px' }}
         variants={fadeInUp}
-        className="py-20 px-4 bg-off-white"
+        className="py-20 px-4 bg-berry"
       >
         <div className="container mx-auto max-w-6xl">
-          <h2 className="font-display text-4xl md:text-5xl mb-4 text-charcoal text-center">
+          <h2 className="font-display text-4xl md:text-5xl mb-4 text-cream text-center">
             Our Memories
           </h2>
-          <p className="text-warm-gray mb-12 text-center">
+          <p className="text-blush/70 mb-12 text-center">
             A glimpse into our journey together
           </p>
 
@@ -273,7 +269,7 @@ export default function StoryPage() {
                     className="w-full h-auto object-cover group-hover:scale-105 transition-transform duration-500"
                     loading="lazy"
                   />
-                  <div className="absolute inset-0 bg-dusty-rose/0 group-hover:bg-dusty-rose/10 transition-colors duration-300" />
+                  <div className="absolute inset-0 bg-gold/0 group-hover:bg-gold/10 transition-colors duration-300" />
                 </div>
               </motion.div>
             ))}
@@ -287,7 +283,7 @@ export default function StoryPage() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="fixed inset-0 z-50 bg-charcoal/90 flex items-center justify-center p-4"
+          className="fixed inset-0 z-50 bg-berry-dark/95 flex items-center justify-center p-4"
           onClick={() => setSelectedPhoto(null)}
         >
           <motion.div
@@ -303,7 +299,7 @@ export default function StoryPage() {
             />
             <button
               onClick={() => setSelectedPhoto(null)}
-              className="absolute -top-4 -right-4 w-10 h-10 bg-off-white rounded-full shadow-lg flex items-center justify-center text-charcoal hover:bg-dusty-rose hover:text-off-white transition-colors"
+              className="absolute -top-4 -right-4 w-10 h-10 bg-berry rounded-full shadow-lg flex items-center justify-center text-cream hover:bg-gold hover:text-berry-dark transition-colors"
             >
               <svg width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2">
                 <line x1="4" y1="4" x2="16" y2="16" />
