@@ -1,7 +1,5 @@
 import { motion } from 'framer-motion';
 import Layout from '../components/Layout';
-import FloralDivider from '../components/decorative/FloralDivider';
-import SketchFilter from '../components/decorative/SketchFilter';
 
 export default function DetailsPage() {
   const fadeInUp = {
@@ -25,30 +23,28 @@ export default function DetailsPage() {
 
   return (
     <Layout>
-      <SketchFilter />
 
       {/* Hero Section */}
       <motion.section
         initial="hidden"
         animate="visible"
         variants={fadeInUp}
-        className="relative py-24 px-4 bg-gradient-to-b from-cream to-off-white"
+        className="relative py-24 px-4 bg-berry"
       >
         <div className="container mx-auto max-w-4xl text-center">
           <motion.h1
             variants={fadeInUp}
-            className="font-display text-5xl md:text-7xl mb-6 text-charcoal"
+            className="font-display text-5xl md:text-7xl mb-6 text-cream"
           >
             Wedding Details
           </motion.h1>
           <motion.p
             variants={fadeInUp}
-            className="text-xl text-warm-gray italic mb-8"
+            className="text-xl text-blush/70 italic mb-8"
           >
             Everything you need to know for our special day
           </motion.p>
           <motion.div variants={fadeInUp}>
-            <FloralDivider className="text-dusty-rose" />
           </motion.div>
         </div>
       </motion.section>
@@ -59,21 +55,21 @@ export default function DetailsPage() {
         whileInView="visible"
         viewport={{ once: true, margin: '-100px' }}
         variants={fadeInUp}
-        className="py-20 px-4 bg-off-white"
+        className="py-20 px-4 bg-berry"
       >
         <div className="container mx-auto max-w-4xl">
           <div className="grid md:grid-cols-2 gap-8">
             {/* Venue Info Card */}
             <motion.div
               variants={fadeInUp}
-              className="bg-gradient-to-br from-dusty-rose/10 to-blush/20 rounded-3xl p-8 md:p-10 border-2 border-dusty-rose/30 shadow-lg"
+              className="bg-glass rounded-3xl p-8 md:p-10 border-2 border-glass-border shadow-lg"
             >
               <div className="text-5xl mb-4">📍</div>
-              <h2 className="font-display text-3xl md:text-4xl mb-4 text-charcoal">
+              <h2 className="font-display text-3xl md:text-4xl mb-4 text-cream">
                 The Venue
               </h2>
-              <div className="space-y-3 text-warm-gray">
-                <p className="text-2xl font-display text-dusty-rose">
+              <div className="space-y-3 text-blush/70">
+                <p className="text-2xl font-display text-gold">
                   Rouge Restaurant
                 </p>
                 <p className="text-lg">
@@ -82,7 +78,7 @@ export default function DetailsPage() {
                 <p className="text-lg font-medium">
                   August 15, 2026
                 </p>
-                <p className="text-lg font-medium text-dusty-rose">
+                <p className="text-lg font-medium text-gold">
                   Ceremony: 3:45 PM
                 </p>
               </div>
@@ -91,14 +87,14 @@ export default function DetailsPage() {
             {/* Dress Code Card */}
             <motion.div
               variants={fadeInUp}
-              className="bg-gradient-to-br from-sage/10 to-terracotta/10 rounded-3xl p-8 md:p-10 border-2 border-sage/30 shadow-lg"
+              className="bg-glass rounded-3xl p-8 md:p-10 border-2 border-glass-border shadow-lg"
             >
               <div className="text-5xl mb-4">👗</div>
-              <h2 className="font-display text-3xl md:text-4xl mb-4 text-charcoal">
+              <h2 className="font-display text-3xl md:text-4xl mb-4 text-cream">
                 Dress Code
               </h2>
-              <div className="space-y-4 text-warm-gray">
-                <p className="text-lg font-medium text-sage">
+              <div className="space-y-4 text-blush/70">
+                <p className="text-lg font-medium text-gold">
                   Cocktail Attire
                 </p>
                 <p className="text-base leading-relaxed">
@@ -118,25 +114,25 @@ export default function DetailsPage() {
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true, margin: '-100px' }}
-        className="py-20 px-4 bg-gradient-to-b from-off-white via-blush/10 to-cream"
+        className="py-20 px-4 bg-berry-dark/20"
       >
         <div className="container mx-auto max-w-4xl">
           <motion.h2
             variants={fadeInUp}
-            className="font-display text-4xl md:text-5xl text-center mb-4 text-charcoal"
+            className="font-display text-4xl md:text-5xl text-center mb-4 text-cream"
           >
             Timeline of the Day
           </motion.h2>
           <motion.p
             variants={fadeInUp}
-            className="text-center text-warm-gray mb-12"
+            className="text-center text-blush/70 mb-12"
           >
             A glimpse at how the celebration will unfold
           </motion.p>
 
           <div className="relative">
             {/* Timeline line */}
-            <div className="absolute left-8 md:left-1/2 top-0 bottom-0 w-0.5 bg-dusty-rose/30" />
+            <div className="absolute left-8 md:left-1/2 top-0 bottom-0 w-0.5 bg-gold/30" />
 
             <div className="space-y-8">
               {timeline.map((item, index) => (
@@ -158,7 +154,7 @@ export default function DetailsPage() {
                       index % 2 === 0
                         ? 'md:right-[-1.25rem]'
                         : 'md:left-[-1.25rem]'
-                    } left-[1.75rem] w-10 h-10 bg-dusty-rose rounded-full border-4 border-off-white flex items-center justify-center text-lg shadow-lg`}
+                    } left-[1.75rem] w-10 h-10 bg-gold rounded-full border-4 border-berry flex items-center justify-center text-lg shadow-lg`}
                   >
                     {item.icon}
                   </div>
@@ -166,14 +162,14 @@ export default function DetailsPage() {
                   {/* Content */}
                   <div className="ml-20 md:ml-0 md:mr-0">
                     <div
-                      className={`bg-off-white rounded-2xl p-6 shadow-lg border-2 border-dusty-rose/20 hover:shadow-xl transition-shadow ${
+                      className={`bg-berry rounded-2xl p-6 shadow-lg border-2 border-glass-border hover:shadow-xl transition-shadow ${
                         index % 2 === 0 ? 'md:mr-8' : 'md:ml-8'
                       }`}
                     >
-                      <span className="inline-block text-sm font-medium text-dusty-rose mb-1">
+                      <span className="inline-block text-sm font-medium text-gold mb-1">
                         {item.time}
                       </span>
-                      <h3 className="font-display text-xl md:text-2xl text-charcoal">
+                      <h3 className="font-display text-xl md:text-2xl text-cream">
                         {item.event}
                       </h3>
                     </div>
@@ -191,37 +187,37 @@ export default function DetailsPage() {
         whileInView="visible"
         viewport={{ once: true, margin: '-100px' }}
         variants={fadeInUp}
-        className="py-20 px-4 bg-off-white"
+        className="py-20 px-4 bg-berry"
       >
         <div className="container mx-auto max-w-3xl">
-          <h2 className="font-display text-4xl md:text-5xl text-center mb-12 text-charcoal">
+          <h2 className="font-display text-4xl md:text-5xl text-center mb-12 text-cream">
             About the Venue
           </h2>
 
-          <div className="bg-cream/50 rounded-3xl p-8 md:p-12 border-2 border-sage/20 shadow-lg space-y-6">
+          <div className="bg-berry/50 rounded-3xl p-8 md:p-12 border-2 border-glass-border shadow-lg space-y-6">
             <div>
-              <h3 className="font-display text-2xl mb-3 text-charcoal flex items-center gap-2">
+              <h3 className="font-display text-2xl mb-3 text-cream flex items-center gap-2">
                 <span>🌳</span> Outdoor & Indoor
               </h3>
-              <p className="text-warm-gray leading-relaxed">
+              <p className="text-blush/70 leading-relaxed">
                 The ceremony and cocktail hour will be outside. The reception and dancing will begin outside under our tent. Music and dancing will then move inside later into the evening, but guests are free to socialize outside throughout the evening.
               </p>
             </div>
 
-            <div className="pt-6 border-t border-dusty-rose/20">
-              <h3 className="font-display text-2xl mb-3 text-charcoal flex items-center gap-2">
+            <div className="pt-6 border-t border-glass-border">
+              <h3 className="font-display text-2xl mb-3 text-cream flex items-center gap-2">
                 <span>🅿️</span> Parking
               </h3>
-              <p className="text-warm-gray leading-relaxed">
+              <p className="text-blush/70 leading-relaxed">
                 Parking information will be included with your invitation.
               </p>
             </div>
 
-            <div className="pt-6 border-t border-dusty-rose/20">
-              <h3 className="font-display text-2xl mb-3 text-charcoal flex items-center gap-2">
+            <div className="pt-6 border-t border-glass-border">
+              <h3 className="font-display text-2xl mb-3 text-cream flex items-center gap-2">
                 <span>🌙</span> When Does the Party End?
               </h3>
-              <p className="text-warm-gray leading-relaxed">
+              <p className="text-blush/70 leading-relaxed">
                 Details to be confirmed - but we're planning to celebrate well into the evening!
               </p>
             </div>

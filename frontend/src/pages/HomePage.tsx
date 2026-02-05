@@ -1,9 +1,6 @@
 import { motion } from 'framer-motion';
 import Layout from '../components/Layout';
 import Countdown from '../components/Countdown';
-import FloralDivider from '../components/decorative/FloralDivider';
-import FloralCorner from '../components/decorative/FloralCorner';
-import SketchFilter from '../components/decorative/SketchFilter';
 
 export default function HomePage() {
   const fadeInUp = {
@@ -28,23 +25,17 @@ export default function HomePage() {
 
   return (
     <Layout>
-      <SketchFilter />
-
-      {/* Hero Section with Image */}
+      {/* Hero Section */}
       <div className="relative min-h-screen flex items-center justify-center overflow-hidden">
-        {/* Background Image with Overlay */}
+        {/* Background Image with Berry Overlay */}
         <div className="absolute inset-0">
           <img
             src="/hero.jpg"
             alt="Sam & Jonah"
             className="w-full h-full object-cover"
           />
-          <div className="absolute inset-0 bg-gradient-to-b from-cream/80 via-cream/60 to-cream/90" />
+          <div className="absolute inset-0 bg-gradient-to-b from-berry/85 via-berry/70 to-berry" />
         </div>
-
-        {/* Decorative Corners */}
-        <FloralCorner position="top-left" className="text-dusty-rose opacity-30 hidden md:block" />
-        <FloralCorner position="top-right" className="text-sage opacity-30 hidden md:block" />
 
         {/* Hero Content */}
         <div className="relative z-10 container mx-auto px-4 py-20 text-center">
@@ -53,44 +44,49 @@ export default function HomePage() {
             animate="visible"
             variants={staggerContainer}
           >
-            {/* Names */}
+            <motion.p
+              variants={fadeInUp}
+              className="text-gold/80 text-sm md:text-base tracking-[0.3em] uppercase mb-6 font-body font-medium"
+            >
+              Together with their families
+            </motion.p>
+
             <motion.h1
               variants={fadeInUp}
-              className="font-display text-6xl md:text-8xl lg:text-9xl mb-6 text-charcoal"
+              className="font-display text-6xl md:text-8xl lg:text-9xl mb-6 text-cream"
               style={{ fontWeight: 300 }}
             >
-              Sam <span className="text-dusty-rose">&</span> Jonah
+              Sam <span className="text-gold">&</span> Jonah
             </motion.h1>
 
-            {/* Tagline */}
             <motion.div
               variants={fadeInUp}
               className="mb-8"
             >
-              <p className="text-2xl md:text-3xl font-display italic text-warm-gray mb-2">
+              <p className="text-2xl md:text-3xl font-display italic text-blush/80 mb-2">
                 are getting married
               </p>
             </motion.div>
 
-            {/* Decorative Divider */}
-            <motion.div variants={fadeInUp} className="mb-8">
-              <FloralDivider className="text-dusty-rose" />
+            {/* Elegant thin line divider */}
+            <motion.div variants={fadeInUp} className="mb-8 flex items-center justify-center gap-4">
+              <div className="w-16 h-px bg-gold/40" />
+              <div className="w-1.5 h-1.5 rounded-full bg-gold/60" />
+              <div className="w-16 h-px bg-gold/40" />
             </motion.div>
 
-            {/* Date & Location */}
             <motion.div variants={fadeInUp} className="mb-12 space-y-2">
-              <p className="text-xl md:text-2xl font-display text-charcoal">
+              <p className="text-xl md:text-2xl font-display text-cream">
                 August 15, 2026
               </p>
-              <p className="text-lg md:text-xl text-warm-gray">
+              <p className="text-lg md:text-xl text-blush/70">
                 Rouge Restaurant, Calgary, Alberta
               </p>
-              <p className="text-base md:text-lg text-warm-gray/80">
+              <p className="text-base md:text-lg text-blush/50">
                 Ceremony begins at 3:45 PM
               </p>
             </motion.div>
 
-            {/* Countdown */}
             <motion.div variants={fadeInUp} className="mb-12">
               <Countdown />
             </motion.div>
@@ -103,7 +99,7 @@ export default function HomePage() {
               <motion.div
                 animate={{ y: [0, 10, 0] }}
                 transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
-                className="text-warm-gray"
+                className="text-gold/50"
               >
                 <svg
                   width="24"
@@ -129,17 +125,21 @@ export default function HomePage() {
         whileInView="visible"
         viewport={{ once: true, margin: '-100px' }}
         variants={fadeInUp}
-        className="py-20 px-4 bg-off-white"
+        className="py-20 px-4 bg-berry"
       >
         <div className="container mx-auto max-w-3xl text-center">
-          <h2 className="font-display text-4xl md:text-5xl mb-6 text-charcoal">
+          <h2 className="font-display text-4xl md:text-5xl mb-6 text-cream">
             Join Us for Our Special Day
           </h2>
-          <p className="text-lg text-warm-gray leading-relaxed mb-8">
+          <p className="text-lg text-blush/70 leading-relaxed mb-8">
             We are thrilled to celebrate our love story and marriage with all of our favourite people.
             Explore our website to learn more about our journey, wedding details, and how you can be part of our adventure.
           </p>
-          <FloralDivider className="text-sage opacity-60" animate={false} />
+          <div className="flex items-center justify-center gap-4">
+            <div className="w-20 h-px bg-gold/30" />
+            <div className="w-1.5 h-1.5 rounded-full bg-gold/50" />
+            <div className="w-20 h-px bg-gold/30" />
+          </div>
         </div>
       </motion.section>
 
@@ -148,7 +148,7 @@ export default function HomePage() {
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true, margin: '-100px' }}
-        className="py-16 bg-off-white"
+        className="py-16 bg-berry"
       >
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-6xl mx-auto">
@@ -164,7 +164,7 @@ export default function HomePage() {
                 whileInView={{ opacity: 1, scale: 1 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.6, delay: index * 0.1 }}
-                className="aspect-square overflow-hidden rounded-2xl shadow-lg"
+                className="aspect-square overflow-hidden rounded-2xl shadow-lg ring-1 ring-white/10"
               >
                 <img
                   src={`/Gallery/${photo}`}
@@ -182,7 +182,7 @@ export default function HomePage() {
           >
             <a
               href="/story"
-              className="inline-flex items-center gap-2 text-dusty-rose hover:text-dusty-rose/80 font-medium transition-colors"
+              className="inline-flex items-center gap-2 text-gold hover:text-gold-light font-medium transition-colors"
             >
               View more photos
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -199,7 +199,7 @@ export default function HomePage() {
         whileInView="visible"
         viewport={{ once: true, margin: '-100px' }}
         variants={staggerContainer}
-        className="py-20 px-4 bg-cream"
+        className="py-20 px-4 bg-berry-dark/30"
       >
         <div className="container mx-auto max-w-6xl">
           <div className="grid md:grid-cols-3 gap-8">
@@ -208,24 +208,18 @@ export default function HomePage() {
                 title: 'Our Story',
                 description: 'From our first date skating to building a life together',
                 link: '/story',
-                icon: '💕',
-                color: 'dusty-rose'
               },
               {
                 title: 'Wedding Details',
                 description: 'Ceremony timeline, venue information, and what to expect',
                 link: '/details',
-                icon: '✨',
-                color: 'sage'
               },
               {
                 title: 'Travel & Stay',
                 description: 'Hotels, things to do, and exploring beautiful Calgary',
                 link: '/travel',
-                icon: '✈️',
-                color: 'terracotta'
               }
-            ].map((card, index) => (
+            ].map((card) => (
               <motion.a
                 key={card.title}
                 href={card.link}
@@ -233,19 +227,14 @@ export default function HomePage() {
                 whileHover={{ y: -5, transition: { duration: 0.2 } }}
                 className="group relative block"
               >
-                <div className="h-full bg-off-white rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all duration-300 border-2 border-transparent hover:border-dusty-rose/20">
-                  {/* Decorative corner */}
-                  <div className="absolute top-4 right-4 text-4xl opacity-20 group-hover:opacity-40 transition-opacity">
-                    {card.icon}
-                  </div>
-
-                  <h3 className="font-display text-3xl mb-4 text-charcoal">
+                <div className="h-full bg-glass rounded-2xl p-8 border border-glass-border hover:border-gold/30 transition-[border-color] duration-300">
+                  <h3 className="font-display text-3xl mb-4 text-cream">
                     {card.title}
                   </h3>
-                  <p className="text-warm-gray leading-relaxed mb-6">
+                  <p className="text-blush/60 leading-relaxed mb-6">
                     {card.description}
                   </p>
-                  <div className="flex items-center text-dusty-rose font-medium group-hover:translate-x-2 transition-transform">
+                  <div className="flex items-center text-gold font-medium group-hover:translate-x-2 transition-transform">
                     <span>Explore</span>
                     <svg
                       className="ml-2 w-4 h-4"
@@ -269,50 +258,42 @@ export default function HomePage() {
         whileInView="visible"
         viewport={{ once: true, margin: '-100px' }}
         variants={fadeInUp}
-        className="py-20 px-4 bg-gradient-to-b from-off-white to-blush/30"
+        className="py-20 px-4 bg-berry"
       >
         <div className="container mx-auto max-w-4xl">
           <div className="grid md:grid-cols-2 gap-8">
             {/* RSVP Card */}
             <motion.div
               whileHover={{ scale: 1.02 }}
-              className="bg-dusty-rose/10 border-2 border-dusty-rose/30 rounded-2xl p-10 text-center relative overflow-hidden"
+              className="bg-glass rounded-2xl p-10 text-center border border-gold/20 hover:border-gold/40 transition-[border-color] duration-300"
             >
-              <div className="relative z-10">
-                <div className="text-5xl mb-4">📬</div>
-                <h3 className="font-display text-3xl mb-3 text-charcoal">RSVP</h3>
-                <p className="text-warm-gray mb-6">
-                  We can't wait to celebrate with you! Please let us know if you can join us.
-                </p>
-                <a
-                  href="/rsvp"
-                  className="inline-block bg-dusty-rose text-off-white px-8 py-3 rounded-full font-medium hover:bg-dusty-rose/90 transition-colors"
-                >
-                  RSVP Now
-                </a>
-              </div>
-              <FloralCorner position="bottom-right" className="text-dusty-rose/20" />
+              <h3 className="font-display text-3xl mb-3 text-cream">RSVP</h3>
+              <p className="text-blush/60 mb-6">
+                We can't wait to celebrate with you! Please let us know if you can join us.
+              </p>
+              <a
+                href="/rsvp"
+                className="inline-block bg-gold text-berry-dark px-8 py-3 rounded-full font-medium hover:bg-gold-light transition-colors"
+              >
+                RSVP Now
+              </a>
             </motion.div>
 
             {/* Registry Card */}
             <motion.div
               whileHover={{ scale: 1.02 }}
-              className="bg-sage/10 border-2 border-sage/30 rounded-2xl p-10 text-center relative overflow-hidden"
+              className="bg-glass rounded-2xl p-10 text-center border border-gold/20 hover:border-gold/40 transition-[border-color] duration-300"
             >
-              <div className="relative z-10">
-                <div className="text-5xl mb-4">🇮🇹</div>
-                <h3 className="font-display text-3xl mb-3 text-charcoal">Honeymoon Registry</h3>
-                <p className="text-warm-gray mb-6">
-                  Help us create magical memories in Italy and Germany this September.
-                </p>
-                <a
-                  href="/registry"
-                  className="inline-block bg-sage text-off-white px-8 py-3 rounded-full font-medium hover:bg-sage/90 transition-colors"
-                >
-                  View Registry
-                </a>
-              </div>
-              <FloralCorner position="bottom-left" className="text-sage/20 scale-x-[-1]" />
+              <h3 className="font-display text-3xl mb-3 text-cream">Honeymoon Registry</h3>
+              <p className="text-blush/60 mb-6">
+                Help us create magical memories in Italy and Germany this September.
+              </p>
+              <a
+                href="/registry"
+                className="inline-block border-2 border-gold text-gold px-8 py-3 rounded-full font-medium hover:bg-gold hover:text-berry-dark transition-colors"
+              >
+                View Registry
+              </a>
             </motion.div>
           </div>
         </div>
