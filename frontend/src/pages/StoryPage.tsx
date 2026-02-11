@@ -96,9 +96,9 @@ export default function StoryPage() {
           <img
             src="/Gallery/NoraHanakoPhotographyS&JEngagement-5590.jpg"
             alt="Sam & Jonah"
-            className="w-full h-full object-cover"
+            className="w-full h-full object-cover object-[center_30%]"
           />
-          <div className="absolute inset-0 bg-berry/70 via-cream/50 to-berry/90" />
+          <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-black/15 to-berry" />
         </div>
 
         <div className="container mx-auto max-w-4xl text-center relative z-10 px-4 py-24">
