@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { motion } from "framer-motion";
 import Layout from "../components/Layout";
 import ContributionModal, {
   ContributionData,
@@ -108,51 +109,75 @@ export default function RegistryPage() {
 
   return (
     <Layout>
-      <div className="container mx-auto px-4 py-12">
-        <div className="max-w-4xl mx-auto">
-          <h1 className="text-4xl font-serif font-bold text-center mb-6">
-            Honeymoon Registry
-          </h1>
-          <p className="text-center text-gray-600 mb-8 max-w-2xl mx-auto">
-            Your presence at our wedding is the greatest gift of all. However,
-            if you wish to contribute to our honeymoon in Italy, we would be
-            incredibly grateful.
-          </p>
+      {/* Hero Section */}
+      <div className="relative py-24 px-4 bg-berry">
+        <div className="container mx-auto max-w-4xl text-center">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+          >
+            <p className="text-gold/80 text-sm tracking-[0.3em] uppercase mb-4 font-body font-medium">
+              Our Honeymoon Fund
+            </p>
+            <h1 className="font-display text-5xl md:text-7xl mb-6 text-cream" style={{ fontWeight: 300 }}>
+              Honeymoon Registry
+            </h1>
+            <div className="flex items-center justify-center gap-4 mb-6">
+              <div className="w-16 h-px bg-gold/40" />
+              <div className="w-1.5 h-1.5 rounded-full bg-gold/60" />
+              <div className="w-16 h-px bg-gold/40" />
+            </div>
+            <p className="text-lg text-blush/70 leading-relaxed max-w-2xl mx-auto">
+              Your presence at our wedding is the greatest gift of all. However,
+              if you wish to contribute to our honeymoon in Italy, we would be
+              incredibly grateful.
+            </p>
+          </motion.div>
+        </div>
+      </div>
 
+      <div className="py-16 px-4 bg-berry">
+        <div className="container mx-auto max-w-5xl">
           {/* General Contribution Card */}
-          <div className="bg-gradient-to-r from-primary/10 to-primary/5 rounded-lg p-6 mb-12 text-center">
-            <h2 className="text-xl font-semibold mb-2">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="bg-glass rounded-2xl p-8 md:p-10 mb-16 text-center border border-gold/20 hover:border-gold/40 transition-[border-color] duration-300"
+          >
+            <h2 className="font-display text-3xl mb-3 text-cream">
               Contribute Any Amount
             </h2>
-            <p className="text-gray-600 mb-4">
+            <p className="text-blush/60 mb-6 max-w-lg mx-auto">
               Not sure what to pick? Make a general contribution and we'll put
               it towards our honeymoon adventures!
             </p>
             <button
               onClick={handleGeneralContribution}
-              className="bg-primary text-white px-6 py-2 rounded-md hover:bg-primary/90 transition-colors"
+              className="inline-block bg-gold text-berry-dark px-8 py-3 rounded-full font-medium hover:bg-gold-light transition-colors"
             >
               Make a Contribution
             </button>
-          </div>
+          </motion.div>
 
           {isLoading && (
             <div className="text-center py-12">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
-              <p className="mt-4 text-gray-600">Loading registry...</p>
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gold mx-auto"></div>
+              <p className="mt-4 text-blush/60">Loading registry...</p>
             </div>
           )}
 
           {error && (
             <div className="text-center py-12">
-              <p className="text-red-600">
+              <p className="text-red-400">
                 Failed to load registry. Please try again later.
               </p>
             </div>
           )}
 
           {!isLoading && !hasItems && (
-            <div className="text-center py-12 text-gray-500">
+            <div className="text-center py-12 text-blush/50">
               <p>Registry items coming soon!</p>
             </div>
           )}
@@ -160,11 +185,17 @@ export default function RegistryPage() {
           {categories?.map(
             (category) =>
               category.items.length > 0 && (
-                <div key={category.id} className="mb-12">
-                  <h2 className="text-2xl font-semibold mb-6">
+                <motion.div
+                  key={category.id}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  className="mb-16"
+                >
+                  <h2 className="font-display text-3xl md:text-4xl mb-8 text-cream">
                     {category.name}
                   </h2>
-                  <div className="grid md:grid-cols-2 gap-6">
+                  <div className="grid md:grid-cols-2 gap-8">
                     {category.items.map((item) => {
                       const price = parseFloat(item.price);
                       const contributed = parseFloat(item.total_contributed);
@@ -174,25 +205,25 @@ export default function RegistryPage() {
                       return (
                         <div
                           key={item.id}
-                          className="bg-white rounded-lg shadow-md overflow-hidden"
+                          className="bg-glass rounded-2xl overflow-hidden border border-glass-border hover:border-gold/30 transition-[border-color] duration-300 shadow-lg"
                         >
                           {/* Clickable area for details */}
                           <button
                             onClick={() => handleViewDetails(item)}
-                            className="w-full text-left focus:outline-none focus:ring-2 focus:ring-primary focus:ring-inset"
+                            className="w-full text-left focus:outline-none focus:ring-2 focus:ring-gold/50 focus:ring-inset rounded-t-2xl"
                           >
                             {/* Image */}
                             {item.image_url ? (
                               <img
                                 src={`${apiUrl}${item.image_url}`}
                                 alt={item.name}
-                                className="w-full h-48 object-cover hover:opacity-90 transition-opacity"
+                                className="w-full h-52 object-cover hover:opacity-90 transition-opacity"
                               />
                             ) : (
-                              <div className="bg-gray-200 h-48 flex items-center justify-center hover:bg-gray-300 transition-colors">
+                              <div className="bg-berry-dark/40 h-52 flex items-center justify-center hover:bg-berry-dark/50 transition-colors">
                                 <svg
                                   xmlns="http://www.w3.org/2000/svg"
-                                  className="h-12 w-12 text-gray-400"
+                                  className="h-12 w-12 text-blush/30"
                                   fill="none"
                                   viewBox="0 0 24 24"
                                   stroke="currentColor"
@@ -208,11 +239,11 @@ export default function RegistryPage() {
                             )}
 
                             <div className="p-6 pb-0">
-                              <h3 className="text-xl font-semibold mb-2 hover:text-primary transition-colors">
+                              <h3 className="font-display text-2xl mb-2 text-cream hover:text-gold transition-colors">
                                 {item.name}
                               </h3>
                               {item.description && (
-                                <p className="text-gray-600 mb-4 text-sm line-clamp-2">
+                                <p className="text-blush/60 mb-4 text-sm line-clamp-2">
                                   {item.description}
                                 </p>
                               )}
@@ -221,22 +252,22 @@ export default function RegistryPage() {
 
                           <div className="p-6 pt-0">
                             {/* Progress Bar */}
-                            <div className="mb-4">
+                            <div className="mb-5">
                               <div className="flex justify-between text-sm mb-2">
-                                <span className="text-gray-600">
+                                <span className="text-blush/60">
                                   ${contributed.toFixed(0)} of $
                                   {price.toFixed(0)}
                                 </span>
-                                <span className="text-gray-600">
+                                <span className="text-gold/80">
                                   {Math.round(percentage)}%
                                 </span>
                               </div>
-                              <div className="w-full bg-gray-200 rounded-full h-2">
+                              <div className="w-full bg-berry-dark/40 rounded-full h-2">
                                 <div
                                   className={`h-2 rounded-full transition-all ${
                                     item.is_fully_funded
-                                      ? "bg-green-500"
-                                      : "bg-primary"
+                                      ? "bg-green-400"
+                                      : "bg-gold"
                                   }`}
                                   style={{
                                     width: `${Math.min(percentage, 100)}%`,
@@ -246,8 +277,8 @@ export default function RegistryPage() {
                             </div>
 
                             {item.is_fully_funded ? (
-                              <div className="text-center py-2 bg-green-50 text-green-700 rounded-md font-semibold">
-                                Fully Funded - Thank You!
+                              <div className="text-center py-2.5 bg-green-500/10 text-green-400 rounded-full font-medium border border-green-500/20">
+                                ✓ Fully Funded — Thank You!
                               </div>
                             ) : (
                               <button
@@ -255,7 +286,7 @@ export default function RegistryPage() {
                                   e.stopPropagation();
                                   handleContribute(item);
                                 }}
-                                className="w-full bg-primary text-white py-2 rounded-md hover:bg-primary/90 transition-colors"
+                                className="w-full bg-gold text-berry-dark py-2.5 rounded-full font-medium hover:bg-gold-light transition-colors"
                               >
                                 Contribute
                               </button>
@@ -263,7 +294,7 @@ export default function RegistryPage() {
 
                             <button
                               onClick={() => handleViewDetails(item)}
-                              className="w-full mt-2 text-sm text-gray-500 hover:text-primary transition-colors"
+                              className="w-full mt-3 text-sm text-blush/50 hover:text-gold transition-colors"
                             >
                               View Details & Contributors
                             </button>
@@ -272,14 +303,19 @@ export default function RegistryPage() {
                       );
                     })}
                   </div>
-                </div>
+                </motion.div>
               )
           )}
 
           {/* E-transfer Info */}
-          <div className="mt-12 bg-gray-50 rounded-lg p-6">
-            <h3 className="text-lg font-semibold mb-3">How It Works</h3>
-            <ol className="list-decimal list-inside space-y-2 text-gray-600">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="mt-8 bg-glass rounded-2xl p-8 md:p-10 border border-glass-border"
+          >
+            <h3 className="font-display text-2xl mb-4 text-cream">How It Works</h3>
+            <ol className="list-decimal list-inside space-y-3 text-blush/70">
               <li>
                 Choose an experience you'd like to contribute to, or make a
                 general contribution
@@ -287,14 +323,14 @@ export default function RegistryPage() {
               <li>Enter your details and the amount you'd like to give</li>
               <li>
                 Send an Interac e-Transfer to{" "}
-                <strong>contact@samandjonah.com</strong>
+                <strong className="text-gold">contact@samandjonah.com</strong>
               </li>
               <li>
                 We'll send you a picture of us doing this activity, to say thank
                 you :)
               </li>
             </ol>
-          </div>
+          </motion.div>
         </div>
       </div>
 
