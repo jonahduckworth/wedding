@@ -1,6 +1,6 @@
-import { motion } from 'framer-motion';
-import Layout from '../components/Layout';
-import Countdown from '../components/Countdown';
+import { motion } from "framer-motion";
+import Layout from "../components/Layout";
+import Countdown from "../components/Countdown";
 
 export default function HomePage() {
   const fadeInUp = {
@@ -8,8 +8,8 @@ export default function HomePage() {
     visible: {
       opacity: 1,
       y: 0,
-      transition: { duration: 0.8, ease: 'easeOut' }
-    }
+      transition: { duration: 0.8, ease: "easeOut" },
+    },
   };
 
   const staggerContainer = {
@@ -18,9 +18,9 @@ export default function HomePage() {
       opacity: 1,
       transition: {
         staggerChildren: 0.2,
-        delayChildren: 0.3
-      }
-    }
+        delayChildren: 0.3,
+      },
+    },
   };
 
   return (
@@ -32,7 +32,7 @@ export default function HomePage() {
           <img
             src="/hero.jpg"
             alt="Sam & Jonah"
-            className="w-full h-full object-cover object-[center_25%]"
+            className="w-full h-full object-cover"
           />
           <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-black/15 to-berry" />
         </div>
@@ -59,17 +59,17 @@ export default function HomePage() {
               Sam <span className="text-gold">&</span> Jonah
             </motion.h1>
 
-            <motion.div
-              variants={fadeInUp}
-              className="mb-8"
-            >
+            <motion.div variants={fadeInUp} className="mb-8">
               <p className="text-2xl md:text-3xl font-display italic text-blush/80 mb-2">
                 are getting married
               </p>
             </motion.div>
 
             {/* Elegant thin line divider */}
-            <motion.div variants={fadeInUp} className="mb-8 flex items-center justify-center gap-4">
+            <motion.div
+              variants={fadeInUp}
+              className="mb-8 flex items-center justify-center gap-4"
+            >
               <div className="w-16 h-px bg-gold/40" />
               <div className="w-1.5 h-1.5 rounded-full bg-gold/60" />
               <div className="w-16 h-px bg-gold/40" />
@@ -98,7 +98,11 @@ export default function HomePage() {
             >
               <motion.div
                 animate={{ y: [0, 10, 0] }}
-                transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
+                transition={{
+                  duration: 2,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                }}
                 className="text-gold/50"
               >
                 <svg
@@ -123,7 +127,7 @@ export default function HomePage() {
       <motion.section
         initial="hidden"
         whileInView="visible"
-        viewport={{ once: true, margin: '-100px' }}
+        viewport={{ once: true, margin: "-100px" }}
         variants={fadeInUp}
         className="py-20 px-4 bg-berry"
       >
@@ -132,8 +136,9 @@ export default function HomePage() {
             Join Us for Our Special Day
           </h2>
           <p className="text-lg text-blush/70 leading-relaxed mb-8">
-            We are thrilled to celebrate our love story and marriage with all of our favourite people.
-            Explore our website to learn more about our journey, wedding details, and how you can be part of our adventure.
+            We are thrilled to celebrate our love story and marriage with all of
+            our favourite people. Explore our website to learn more about our
+            journey, wedding details, and how you can be part of our adventure.
           </p>
           <div className="flex items-center justify-center gap-4">
             <div className="w-20 h-px bg-gold/30" />
@@ -147,16 +152,16 @@ export default function HomePage() {
       <motion.section
         initial="hidden"
         whileInView="visible"
-        viewport={{ once: true, margin: '-100px' }}
+        viewport={{ once: true, margin: "-100px" }}
         className="py-16 bg-berry"
       >
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-6xl mx-auto">
             {[
-              'NoraHanakoPhotographyS&JEngagement-5590-2.jpg',
-              'NoraHanakoPhotographyS&JEngagement-5718-2.jpg',
-              'NoraHanakoPhotographyS&JEngagement-5925-2.jpg',
-              'NoraHanakoPhotographyS&JEngagement-6183-2.jpg',
+              "NoraHanakoPhotographyS&JEngagement-5590-2.jpg",
+              "NoraHanakoPhotographyS&JEngagement-5718-2.jpg",
+              "NoraHanakoPhotographyS&JEngagement-5925-2.jpg",
+              "NoraHanakoPhotographyS&JEngagement-6183-2.jpg",
             ].map((photo, index) => (
               <motion.div
                 key={index}
@@ -185,8 +190,18 @@ export default function HomePage() {
               className="inline-flex items-center gap-2 text-gold hover:text-gold-light font-medium transition-colors"
             >
               View more photos
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              <svg
+                className="w-4 h-4"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M9 5l7 7-7 7"
+                />
               </svg>
             </a>
           </motion.div>
@@ -197,7 +212,7 @@ export default function HomePage() {
       <motion.section
         initial="hidden"
         whileInView="visible"
-        viewport={{ once: true, margin: '-100px' }}
+        viewport={{ once: true, margin: "-100px" }}
         variants={staggerContainer}
         className="py-20 px-4 bg-berry-dark/30"
       >
@@ -205,20 +220,23 @@ export default function HomePage() {
           <div className="grid md:grid-cols-3 gap-8">
             {[
               {
-                title: 'Our Story',
-                description: 'From our first date skating to building a life together',
-                link: '/story',
+                title: "Our Story",
+                description:
+                  "From our first date skating to building a life together",
+                link: "/story",
               },
               {
-                title: 'Wedding Details',
-                description: 'Ceremony timeline, venue information, and what to expect',
-                link: '/details',
+                title: "Wedding Details",
+                description:
+                  "Ceremony timeline, venue information, and what to expect",
+                link: "/details",
               },
               {
-                title: 'Travel & Stay',
-                description: 'Hotels, things to do, and exploring beautiful Calgary',
-                link: '/travel',
-              }
+                title: "Travel & Stay",
+                description:
+                  "Hotels, things to do, and exploring beautiful Calgary",
+                link: "/travel",
+              },
             ].map((card) => (
               <motion.a
                 key={card.title}
@@ -242,7 +260,12 @@ export default function HomePage() {
                       stroke="currentColor"
                       viewBox="0 0 24 24"
                     >
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M9 5l7 7-7 7"
+                      />
                     </svg>
                   </div>
                 </div>
@@ -256,7 +279,7 @@ export default function HomePage() {
       <motion.section
         initial="hidden"
         whileInView="visible"
-        viewport={{ once: true, margin: '-100px' }}
+        viewport={{ once: true, margin: "-100px" }}
         variants={fadeInUp}
         className="py-20 px-4 bg-berry"
       >
@@ -269,7 +292,8 @@ export default function HomePage() {
             >
               <h3 className="font-display text-3xl mb-3 text-cream">RSVP</h3>
               <p className="text-blush/60 mb-6">
-                We can't wait to celebrate with you! Please let us know if you can join us.
+                We can't wait to celebrate with you! Please let us know if you
+                can join us.
               </p>
               <a
                 href="/rsvp"
@@ -284,9 +308,12 @@ export default function HomePage() {
               whileHover={{ scale: 1.02 }}
               className="bg-glass rounded-2xl p-10 text-center border border-gold/20 hover:border-gold/40 transition-[border-color] duration-300"
             >
-              <h3 className="font-display text-3xl mb-3 text-cream">Honeymoon Registry</h3>
+              <h3 className="font-display text-3xl mb-3 text-cream">
+                Honeymoon Registry
+              </h3>
               <p className="text-blush/60 mb-6">
-                Help us create magical memories in Italy and Germany this September.
+                Help us create magical memories in Italy and Germany this
+                September.
               </p>
               <a
                 href="/registry"
