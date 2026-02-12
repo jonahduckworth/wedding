@@ -1,11 +1,11 @@
-import { useState } from "react";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { motion } from "framer-motion";
-import Layout from "../components/Layout";
+import { useState } from 'react';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { motion } from 'framer-motion';
+import Layout from '../components/Layout';
 import ContributionModal, {
   ContributionData,
-} from "../components/ContributionModal";
-import ItemDetailModal from "../components/ItemDetailModal";
+} from '../components/ContributionModal';
+import ItemDetailModal from '../components/ItemDetailModal';
 
 interface HoneymoonItem {
   id: string;
@@ -41,9 +41,9 @@ export default function RegistryPage() {
 
   // API URL
   const apiUrl =
-    window.location.hostname === "localhost"
-      ? "http://localhost:8081"
-      : "https://api.samandjonah.com";
+    window.location.hostname === 'localhost'
+      ? 'http://localhost:8081'
+      : 'https://api.samandjonah.com';
 
   // Fetch categories with items
   const {
@@ -51,10 +51,10 @@ export default function RegistryPage() {
     isLoading,
     error,
   } = useQuery<CategoryWithItems[]>({
-    queryKey: ["registry-categories"],
+    queryKey: ['registry-categories'],
     queryFn: async () => {
       const response = await fetch(`${apiUrl}/api/registry/categories`);
-      if (!response.ok) throw new Error("Failed to fetch registry");
+      if (!response.ok) throw new Error('Failed to fetch registry');
       return response.json();
     },
   });
@@ -63,15 +63,15 @@ export default function RegistryPage() {
   const contributionMutation = useMutation({
     mutationFn: async (data: ContributionData) => {
       const response = await fetch(`${apiUrl}/api/registry/contributions`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),
       });
-      if (!response.ok) throw new Error("Failed to submit contribution");
+      if (!response.ok) throw new Error('Failed to submit contribution');
       return response.json();
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["registry-categories"] });
+      queryClient.invalidateQueries({ queryKey: ['registry-categories'] });
     },
   });
 
@@ -109,79 +109,102 @@ export default function RegistryPage() {
 
   return (
     <Layout>
-      {/* Hero Section */}
-      <div className="relative py-24 px-4 bg-berry">
-        <div className="container mx-auto max-w-4xl text-center">
-          <motion.div
+      {/* ─── Page Header ─── */}
+      <section className="pt-32 md:pt-40 pb-16 md:pb-20 px-6">
+        <div className="max-w-4xl mx-auto text-center">
+          <motion.p
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            className="text-gold text-[13px] tracking-[0.3em] uppercase mb-4 font-medium"
+          >
+            Our Honeymoon Fund
+          </motion.p>
+          <motion.h1
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
+            transition={{ duration: 0.8, delay: 0.1 }}
+            className="font-display text-5xl md:text-7xl text-heading mb-6"
+            style={{ fontWeight: 300 }}
           >
-            <p className="text-gold/80 text-sm tracking-[0.3em] uppercase mb-4 font-body font-medium">
-              Our Honeymoon Fund
-            </p>
-            <h1 className="font-display text-5xl md:text-7xl mb-6 text-cream" style={{ fontWeight: 300 }}>
-              Honeymoon Registry
-            </h1>
-            <div className="flex items-center justify-center gap-4 mb-6">
-              <div className="w-16 h-px bg-gold/40" />
-              <div className="w-1.5 h-1.5 rounded-full bg-gold/60" />
-              <div className="w-16 h-px bg-gold/40" />
-            </div>
-            <p className="text-lg text-blush/70 leading-relaxed max-w-2xl mx-auto">
-              Your presence at our wedding is the greatest gift of all. However,
-              if you wish to contribute to our honeymoon in Italy, we would be
-              incredibly grateful.
-            </p>
+            Honeymoon Registry
+          </motion.h1>
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.3 }}
+            className="flex items-center justify-center gap-4 mb-6"
+          >
+            <div className="w-16 h-px bg-gold/30" />
+            <div className="w-1.5 h-1.5 rounded-full bg-gold/40" />
+            <div className="w-16 h-px bg-gold/30" />
           </motion.div>
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.4 }}
+            className="text-body text-lg leading-relaxed max-w-2xl mx-auto"
+          >
+            Your presence at our wedding is the greatest gift of all. However, if
+            you wish to contribute to our honeymoon in Italy, we would be
+            incredibly grateful.
+          </motion.p>
         </div>
-      </div>
+      </section>
 
-      <div className="py-16 px-4 bg-berry">
-        <div className="container mx-auto max-w-5xl">
+      {/* ─── Registry Content ─── */}
+      <div className="py-8 md:py-16 px-6">
+        <div className="max-w-5xl mx-auto">
           {/* General Contribution Card */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="bg-glass rounded-2xl p-8 md:p-10 mb-16 text-center border border-gold/20 hover:border-gold/40 transition-[border-color] duration-300"
+            className="bg-white rounded-2xl p-8 md:p-10 mb-16 text-center border border-card-border"
           >
-            <h2 className="font-display text-3xl mb-3 text-cream">
+            <h2
+              className="font-display text-3xl text-heading mb-3"
+              style={{ fontWeight: 300 }}
+            >
               Contribute Any Amount
             </h2>
-            <p className="text-blush/60 mb-6 max-w-lg mx-auto">
-              Not sure what to pick? Make a general contribution and we'll put
-              it towards our honeymoon adventures!
+            <p className="text-body mb-6 max-w-lg mx-auto">
+              Not sure what to pick? Make a general contribution and we'll put it
+              towards our honeymoon adventures!
             </p>
             <button
               onClick={handleGeneralContribution}
-              className="inline-block bg-gold text-berry-dark px-8 py-3 rounded-full font-medium hover:bg-gold-light transition-colors"
+              className="inline-block bg-berry text-white px-8 py-3 rounded-full text-[13px] font-medium uppercase tracking-[0.1em] hover:bg-berry-light transition-colors"
             >
               Make a Contribution
             </button>
           </motion.div>
 
+          {/* Loading */}
           {isLoading && (
             <div className="text-center py-12">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gold mx-auto"></div>
-              <p className="mt-4 text-blush/60">Loading registry...</p>
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gold mx-auto" />
+              <p className="mt-4 text-subtle">Loading registry...</p>
             </div>
           )}
 
+          {/* Error */}
           {error && (
             <div className="text-center py-12">
-              <p className="text-red-400">
+              <p className="text-red-500">
                 Failed to load registry. Please try again later.
               </p>
             </div>
           )}
 
+          {/* Empty */}
           {!isLoading && !hasItems && (
-            <div className="text-center py-12 text-blush/50">
+            <div className="text-center py-12 text-subtle">
               <p>Registry items coming soon!</p>
             </div>
           )}
 
+          {/* Categories & Items */}
           {categories?.map(
             (category) =>
               category.items.length > 0 && (
@@ -192,10 +215,14 @@ export default function RegistryPage() {
                   viewport={{ once: true }}
                   className="mb-16"
                 >
-                  <h2 className="font-display text-3xl md:text-4xl mb-8 text-cream">
+                  <h2
+                    className="font-display text-3xl md:text-4xl mb-8 text-heading"
+                    style={{ fontWeight: 300 }}
+                  >
                     {category.name}
                   </h2>
-                  <div className="grid md:grid-cols-2 gap-8">
+
+                  <div className="grid md:grid-cols-2 gap-6 md:gap-8">
                     {category.items.map((item) => {
                       const price = parseFloat(item.price);
                       const contributed = parseFloat(item.total_contributed);
@@ -205,25 +232,24 @@ export default function RegistryPage() {
                       return (
                         <div
                           key={item.id}
-                          className="bg-glass rounded-2xl overflow-hidden border border-glass-border hover:border-gold/30 transition-[border-color] duration-300 shadow-lg"
+                          className="bg-white rounded-2xl overflow-hidden border border-card-border hover:shadow-lg transition-shadow duration-500"
                         >
-                          {/* Clickable area for details */}
+                          {/* Clickable image/info area */}
                           <button
                             onClick={() => handleViewDetails(item)}
                             className="w-full text-left focus:outline-none focus:ring-2 focus:ring-gold/50 focus:ring-inset rounded-t-2xl"
                           >
-                            {/* Image */}
                             {item.image_url ? (
                               <img
                                 src={`${apiUrl}${item.image_url}`}
                                 alt={item.name}
-                                className="w-full h-52 object-cover hover:opacity-90 transition-opacity"
+                                className="w-full h-52 object-cover hover:opacity-95 transition-opacity"
                               />
                             ) : (
-                              <div className="bg-berry-dark/40 h-52 flex items-center justify-center hover:bg-berry-dark/50 transition-colors">
+                              <div className="bg-blush h-52 flex items-center justify-center hover:bg-blush/80 transition-colors">
                                 <svg
                                   xmlns="http://www.w3.org/2000/svg"
-                                  className="h-12 w-12 text-blush/30"
+                                  className="h-12 w-12 text-subtle/50"
                                   fill="none"
                                   viewBox="0 0 24 24"
                                   stroke="currentColor"
@@ -239,11 +265,14 @@ export default function RegistryPage() {
                             )}
 
                             <div className="p-6 pb-0">
-                              <h3 className="font-display text-2xl mb-2 text-cream hover:text-gold transition-colors">
+                              <h3
+                                className="font-display text-2xl text-heading hover:text-gold transition-colors mb-2"
+                                style={{ fontWeight: 400 }}
+                              >
                                 {item.name}
                               </h3>
                               {item.description && (
-                                <p className="text-blush/60 mb-4 text-sm line-clamp-2">
+                                <p className="text-body text-sm line-clamp-2 mb-4">
                                   {item.description}
                                 </p>
                               )}
@@ -251,23 +280,23 @@ export default function RegistryPage() {
                           </button>
 
                           <div className="p-6 pt-0">
-                            {/* Progress Bar */}
+                            {/* Progress */}
                             <div className="mb-5">
                               <div className="flex justify-between text-sm mb-2">
-                                <span className="text-blush/60">
+                                <span className="text-subtle">
                                   ${contributed.toFixed(0)} of $
                                   {price.toFixed(0)}
                                 </span>
-                                <span className="text-gold/80">
+                                <span className="text-gold">
                                   {Math.round(percentage)}%
                                 </span>
                               </div>
-                              <div className="w-full bg-berry-dark/40 rounded-full h-2">
+                              <div className="w-full bg-blush rounded-full h-2">
                                 <div
                                   className={`h-2 rounded-full transition-all ${
                                     item.is_fully_funded
-                                      ? "bg-green-400"
-                                      : "bg-gold"
+                                      ? 'bg-green-500'
+                                      : 'bg-gold'
                                   }`}
                                   style={{
                                     width: `${Math.min(percentage, 100)}%`,
@@ -277,7 +306,7 @@ export default function RegistryPage() {
                             </div>
 
                             {item.is_fully_funded ? (
-                              <div className="text-center py-2.5 bg-green-500/10 text-green-400 rounded-full font-medium border border-green-500/20">
+                              <div className="text-center py-2.5 bg-green-50 text-green-600 rounded-full font-medium border border-green-200 text-sm">
                                 ✓ Fully Funded — Thank You!
                               </div>
                             ) : (
@@ -286,7 +315,7 @@ export default function RegistryPage() {
                                   e.stopPropagation();
                                   handleContribute(item);
                                 }}
-                                className="w-full bg-gold text-berry-dark py-2.5 rounded-full font-medium hover:bg-gold-light transition-colors"
+                                className="w-full bg-berry text-white py-2.5 rounded-full text-[13px] font-medium uppercase tracking-[0.1em] hover:bg-berry-light transition-colors"
                               >
                                 Contribute
                               </button>
@@ -294,9 +323,9 @@ export default function RegistryPage() {
 
                             <button
                               onClick={() => handleViewDetails(item)}
-                              className="w-full mt-3 text-sm text-blush/50 hover:text-gold transition-colors"
+                              className="w-full mt-3 text-sm text-subtle hover:text-gold transition-colors"
                             >
-                              View Details & Contributors
+                              View Details &amp; Contributors
                             </button>
                           </div>
                         </div>
@@ -307,23 +336,28 @@ export default function RegistryPage() {
               )
           )}
 
-          {/* E-transfer Info */}
+          {/* How It Works */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="mt-8 bg-glass rounded-2xl p-8 md:p-10 border border-glass-border"
+            className="mt-8 bg-white rounded-2xl p-8 md:p-10 border border-card-border"
           >
-            <h3 className="font-display text-2xl mb-4 text-cream">How It Works</h3>
-            <ol className="list-decimal list-inside space-y-3 text-blush/70">
+            <h3
+              className="font-display text-2xl text-heading mb-5"
+              style={{ fontWeight: 400 }}
+            >
+              How It Works
+            </h3>
+            <ol className="list-decimal list-inside space-y-3 text-body">
               <li>
                 Choose an experience you'd like to contribute to, or make a
                 general contribution
               </li>
               <li>Enter your details and the amount you'd like to give</li>
               <li>
-                Send an Interac e-Transfer to{" "}
-                <strong className="text-gold">contact@samandjonah.com</strong>
+                Send an Interac e-Transfer to{' '}
+                <strong className="text-heading">contact@samandjonah.com</strong>
               </li>
               <li>
                 We'll send you a picture of us doing this activity, to say thank

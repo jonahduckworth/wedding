@@ -2,66 +2,81 @@
 @import "tailwindcss";
 
 @theme {
-  /* Deep Berry Wedding Palette */
-  --color-berry: #7B2350;            /* Deep berry - main background */
-  --color-berry-dark: #5E1A3D;       /* Darker berry - header/footer */
-  --color-berry-light: #8F2D5E;      /* Lighter berry - hover states */
-  --color-cream: #FAF7F2;            /* Warm cream - headings */
-  --color-blush: #E8D5D0;            /* Soft blush - body text */
-  --color-gold: #D4A574;             /* Warm gold - accents */
-  --color-gold-light: #E0BB90;       /* Light gold - hover */
-  --color-glass: rgba(255, 255, 255, 0.06);  /* Glass card bg */
-  --color-glass-border: rgba(255, 255, 255, 0.12); /* Glass borders */
+  /* ─── Wedding Palette ─── */
+  --color-berry: #7B2350;
+  --color-berry-dark: #4A1530;
+  --color-berry-light: #9E3A6C;
+  --color-cream: #FAF7F2;
+  --color-blush: #F3EBE5;
+  --color-gold: #C4975A;
+  --color-gold-light: #D4A574;
 
-  /* Semantic colors */
-  --color-primary: #D4A574;          /* Gold */
-  --color-secondary: #E8D5D0;        /* Blush */
-  --color-accent: #D4A574;           /* Gold */
-  --color-text: #FAF7F2;             /* Cream */
-  --color-text-light: #E8D5D0;       /* Blush */
-  --color-text-muted: rgba(232, 213, 208, 0.6); /* Muted blush */
+  /* ─── Text on light backgrounds ─── */
+  --color-heading: #2D1F26;
+  --color-body: #594D52;
+  --color-subtle: #8F8389;
 
-  /* Typography */
+  /* ─── Glass (dark sections: hero, footer) ─── */
+  --color-glass: rgba(255, 255, 255, 0.06);
+  --color-glass-border: rgba(255, 255, 255, 0.12);
+
+  /* ─── Card / UI ─── */
+  --color-card-border: rgba(0, 0, 0, 0.06);
+
+  /* ─── Semantic (used by modals & admin) ─── */
+  --color-primary: #7B2350;
+  --color-secondary: #F3EBE5;
+  --color-accent: #C4975A;
+  --color-text: #2D1F26;
+  --color-text-light: #594D52;
+  --color-text-muted: #8F8389;
+
+  /* ─── Typography ─── */
   --font-display: "Cormorant Garamond", Georgia, serif;
   --font-body: "Montserrat", system-ui, -apple-system, sans-serif;
 
-  /* Spacing & Radius */
+  /* ─── Radii ─── */
   --radius-xl: 2rem;
   --radius-lg: 1.5rem;
   --radius-md: 1rem;
   --radius-sm: 0.75rem;
 }
 
+/* ─── Base ─── */
 @layer base {
   * {
-    @apply border-glass-border;
+    border-color: var(--color-card-border);
   }
 
   body {
-    @apply bg-berry text-blush antialiased;
+    @apply bg-cream text-body antialiased;
     font-family: var(--font-body);
     font-weight: 300;
     letter-spacing: 0.01em;
+    line-height: 1.7;
   }
 
   h1, h2, h3, h4, h5, h6 {
     font-family: var(--font-display);
-    font-weight: 400;
-    letter-spacing: 0.02em;
-    color: var(--color-cream);
+    color: var(--color-heading);
+    line-height: 1.15;
   }
 
   h1 {
     @apply text-5xl md:text-7xl;
     font-weight: 300;
+    letter-spacing: 0.02em;
   }
 
   h2 {
-    @apply text-4xl md:text-5xl;
+    @apply text-3xl md:text-5xl;
+    font-weight: 300;
+    letter-spacing: 0.02em;
   }
 
   h3 {
-    @apply text-3xl md:text-4xl;
+    @apply text-2xl md:text-3xl;
+    font-weight: 400;
   }
 
   html {
@@ -70,42 +85,28 @@
 
   ::selection {
     background-color: var(--color-gold);
-    color: var(--color-berry-dark);
+    color: white;
   }
 }
 
+/* ─── Utilities ─── */
 @layer utilities {
-  .animate-float {
-    animation: float 3s ease-in-out infinite;
-  }
-
-  @keyframes float {
-    0%, 100% { transform: translateY(0px); }
-    50% { transform: translateY(-10px); }
-  }
-
   @keyframes fadeInUp {
-    from {
-      opacity: 0;
-      transform: translateY(30px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
   }
 
   .animate-fade-in-up {
-    animation: fadeInUp 0.8s ease-out forwards;
+    animation: fadeInUp 0.6s ease-out forwards;
   }
 
   @keyframes scroll {
-    0% { transform: translateX(0); }
+    0%   { transform: translateX(0); }
     100% { transform: translateX(-50%); }
   }
 
   .animate-scroll {
-    animation: scroll 40s linear infinite;
+    animation: scroll 45s linear infinite;
   }
 
   .animate-scroll:hover {

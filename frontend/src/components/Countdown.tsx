@@ -19,65 +19,45 @@ export default function Countdown({ compact = false }: { compact?: boolean }) {
         days: Math.floor(difference / (1000 * 60 * 60 * 24)),
         hours: Math.floor((difference / (1000 * 60 * 60)) % 24),
         minutes: Math.floor((difference / 1000 / 60) % 60),
-        seconds: Math.floor((difference / 1000) % 60)
+        seconds: Math.floor((difference / 1000) % 60),
       };
     }
-
     return { days: 0, hours: 0, minutes: 0, seconds: 0 };
   };
 
   const [timeLeft, setTimeLeft] = useState<TimeLeft>(calculateTimeLeft());
 
   useEffect(() => {
-    const timer = setInterval(() => {
-      setTimeLeft(calculateTimeLeft());
-    }, 1000);
-
+    const timer = setInterval(() => setTimeLeft(calculateTimeLeft()), 1000);
     return () => clearInterval(timer);
   }, []);
-
-  const containerVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: {
-        duration: 0.6,
-        staggerChildren: 0.1
-      }
-    }
-  };
-
-  const itemVariants = {
-    hidden: { opacity: 0, scale: 0.8 },
-    visible: {
-      opacity: 1,
-      scale: 1,
-      transition: { duration: 0.5 }
-    }
-  };
 
   const timeUnits = [
     { value: timeLeft.days, label: 'Days' },
     { value: timeLeft.hours, label: 'Hours' },
     { value: timeLeft.minutes, label: 'Minutes' },
-    { value: timeLeft.seconds, label: 'Seconds' }
+    { value: timeLeft.seconds, label: 'Seconds' },
   ];
 
   if (compact) {
     return (
-      <div className="flex items-center justify-center gap-3 md:gap-4">
+      <div className="flex items-center justify-center gap-6 md:gap-10">
         {timeUnits.map((unit, index) => (
-          <div key={unit.label} className="flex items-center gap-3 md:gap-4">
+          <div key={unit.label} className="flex items-center gap-6 md:gap-10">
             <div className="text-center">
-              <div className="text-2xl md:text-3xl font-display text-gold leading-none">
+              <div
+                className="text-3xl md:text-4xl font-display text-gold leading-none"
+                style={{ fontWeight: 300 }}
+              >
                 {String(unit.value).padStart(2, '0')}
               </div>
-              <div className="text-[9px] md:text-[10px] text-blush/50 uppercase tracking-wider mt-0.5">
+              <div className="text-[10px] text-subtle uppercase tracking-[0.2em] mt-1.5">
                 {unit.label}
               </div>
             </div>
-            {index < 3 && <span className="text-gold/30 text-lg font-light -mt-3">:</span>}
+            {index < 3 && (
+              <span className="text-gold/25 text-xl font-light -mt-3">·</span>
+            )}
           </div>
         ))}
       </div>
@@ -86,38 +66,27 @@ export default function Countdown({ compact = false }: { compact?: boolean }) {
 
   return (
     <motion.div
-      className="flex gap-4 md:gap-8 justify-center items-center flex-wrap"
-      variants={containerVariants}
-      initial="hidden"
-      animate="visible"
+      className="flex gap-10 md:gap-16 justify-center items-center"
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.8, delay: 0.2 }}
     >
-      {timeUnits.map((unit, index) => (
-        <motion.div
-          key={unit.label}
-          variants={itemVariants}
-          className="relative"
-        >
-          <div className="bg-berry border-2 border-glass-border rounded-lg shadow-lg px-6 py-4 md:px-8 md:py-6 min-w-[100px] md:min-w-[120px]">
-            {/* Decorative corner accent */}
-            <div className="absolute -top-1 -right-1 w-3 h-3 bg-gold/20 rounded-full" />
-            <div className="absolute -bottom-1 -left-1 w-3 h-3 bg-gold/20 rounded-full" />
-
-            <div className="text-center">
-              <motion.div
-                key={unit.value}
-                initial={{ scale: 1.2, opacity: 0.5 }}
-                animate={{ scale: 1, opacity: 1 }}
-                transition={{ duration: 0.3 }}
-                className="text-4xl md:text-5xl font-display text-gold mb-1"
-              >
-                {String(unit.value).padStart(2, '0')}
-              </motion.div>
-              <div className="text-xs md:text-sm font-medium text-blush/70 uppercase tracking-wider">
-                {unit.label}
-              </div>
-            </div>
+      {timeUnits.map((unit) => (
+        <div key={unit.label} className="text-center">
+          <motion.div
+            key={unit.value}
+            initial={{ opacity: 0.5 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.3 }}
+            className="text-5xl md:text-6xl font-display text-heading leading-none"
+            style={{ fontWeight: 300 }}
+          >
+            {String(unit.value).padStart(2, '0')}
+          </motion.div>
+          <div className="text-[10px] md:text-xs text-subtle uppercase tracking-[0.25em] mt-2">
+            {unit.label}
           </div>
-        </motion.div>
+        </div>
       ))}
     </motion.div>
   );

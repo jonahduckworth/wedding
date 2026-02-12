@@ -1,14 +1,15 @@
-import { motion } from "framer-motion";
-import Layout from "../components/Layout";
-import Countdown from "../components/Countdown";
+import { motion } from 'framer-motion';
+import { Link } from 'react-router-dom';
+import Layout from '../components/Layout';
+import Countdown from '../components/Countdown';
 
 export default function HomePage() {
   const fadeInUp = {
-    hidden: { opacity: 0, y: 30 },
+    hidden: { opacity: 0, y: 25 },
     visible: {
       opacity: 1,
       y: 0,
-      transition: { duration: 0.8, ease: "easeOut" },
+      transition: { duration: 0.8, ease: [0.25, 0.1, 0.25, 1] },
     },
   };
 
@@ -16,151 +17,175 @@ export default function HomePage() {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
-      transition: {
-        staggerChildren: 0.2,
-        delayChildren: 0.3,
-      },
+      transition: { staggerChildren: 0.15, delayChildren: 0.3 },
     },
   };
 
   return (
     <Layout>
-      {/* Hero Section */}
-      <div className="relative min-h-screen flex flex-col overflow-hidden">
-        {/* Background Image — clean, no colored overlay */}
+      {/* ═══════════════════════════════════════════
+          HERO — full-viewport photo
+          ═══════════════════════════════════════════ */}
+      <section className="relative h-screen flex flex-col overflow-hidden">
+        {/* Background */}
         <div className="absolute inset-0">
           <img
             src="/hero.jpg"
             alt="Sam & Jonah"
-            className="w-full h-full object-cover object-[center_25%]"
+            className="w-full h-full object-cover object-[center_20%] md:object-[center_25%]"
           />
-          {/* Subtle dark vignette for text readability — no berry/pink */}
-          <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-black/60" />
-          <div className="absolute inset-0 bg-black/15" />
+          {/* Subtle dark vignette — neutral only, no berry/pink */}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/5 to-black/30" />
         </div>
 
-        {/* Names — centered in the hero, between the faces */}
-        <div className="relative z-10 flex-1 flex items-center justify-center">
+        {/* Content — lower third so we don't cover faces */}
+        <div className="relative z-10 flex-1 flex flex-col justify-end pb-24 md:pb-32">
           <motion.div
             initial="hidden"
             animate="visible"
             variants={staggerContainer}
-            className="text-center"
+            className="text-center px-6"
           >
+            <motion.p
+              variants={fadeInUp}
+              className="text-white/50 text-[13px] tracking-[0.35em] uppercase mb-5"
+              style={{ fontFamily: 'var(--font-body)' }}
+            >
+              We're getting married
+            </motion.p>
             <motion.h1
               variants={fadeInUp}
-              className="font-display text-6xl md:text-8xl lg:text-9xl text-white drop-shadow-lg"
-              style={{ fontWeight: 300 }}
+              className="font-display text-[3.5rem] md:text-8xl lg:text-9xl text-white"
+              style={{ fontWeight: 300, letterSpacing: '0.02em' }}
             >
-              Sam <span className="text-gold">&</span> Jonah
+              Sam <span className="text-gold-light">&</span> Jonah
             </motion.h1>
             <motion.p
               variants={fadeInUp}
-              className="text-lg md:text-2xl font-display italic text-white/80 mt-2 drop-shadow-md"
+              className="text-lg md:text-xl font-display italic text-white/60 mt-3"
             >
               August 15, 2026 &nbsp;·&nbsp; Calgary, Alberta
             </motion.p>
           </motion.div>
         </div>
 
-        {/* Scroll Indicator — bottom center */}
+        {/* Scroll indicator */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ delay: 1.5 }}
-          className="relative z-10 flex justify-center pb-8"
+          transition={{ delay: 2 }}
+          className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10"
         >
           <motion.div
-            animate={{ y: [0, 8, 0] }}
-            transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-            className="text-white/50"
+            animate={{ y: [0, 6, 0] }}
+            transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}
+            className="text-white/30"
           >
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+            >
               <polyline points="6 9 12 15 18 9" />
             </svg>
           </motion.div>
         </motion.div>
-      </div>
+      </section>
 
-      {/* Countdown + Details Strip */}
-      <div className="bg-berry-dark py-8 md:py-10 px-4">
-        <div className="max-w-4xl mx-auto flex flex-col md:flex-row items-center justify-center gap-6 md:gap-12">
-          <div className="text-center md:text-right">
-            <p className="font-display text-xl md:text-2xl text-cream">Rouge Restaurant</p>
-            <p className="text-sm text-blush/60">Calgary, Alberta &nbsp;·&nbsp; Ceremony at 3:45 PM</p>
-          </div>
-          <div className="hidden md:block w-px h-12 bg-gold/20" />
+      {/* ═══════════════════════════════════════════
+          COUNTDOWN STRIP
+          ═══════════════════════════════════════════ */}
+      <section className="py-12 md:py-16 border-b border-card-border">
+        <div className="max-w-4xl mx-auto px-6">
           <Countdown compact />
+          <p className="text-center text-subtle text-sm mt-4 tracking-wider">
+            until we say "I do"
+          </p>
         </div>
-      </div>
+      </section>
 
-      {/* Welcome Message Section */}
+      {/* ═══════════════════════════════════════════
+          WELCOME MESSAGE
+          ═══════════════════════════════════════════ */}
       <motion.section
         initial="hidden"
         whileInView="visible"
-        viewport={{ once: true, margin: "-100px" }}
+        viewport={{ once: true, margin: '-80px' }}
         variants={fadeInUp}
-        className="py-20 px-4 bg-berry"
+        className="py-24 md:py-32 px-6"
       >
-        <div className="container mx-auto max-w-3xl text-center">
-          <h2 className="font-display text-4xl md:text-5xl mb-6 text-cream">
-            Join Us for Our Special Day
+        <div className="max-w-2xl mx-auto text-center">
+          <p className="text-gold text-[13px] tracking-[0.3em] uppercase mb-6 font-medium">
+            Welcome
+          </p>
+          <h2
+            className="font-display text-4xl md:text-5xl text-heading mb-8"
+            style={{ fontWeight: 300 }}
+          >
+            Join Us for Our Celebration
           </h2>
-          <p className="text-lg text-blush/70 leading-relaxed mb-8">
+          <p className="text-body text-lg leading-relaxed mb-10">
             We are thrilled to celebrate our love story and marriage with all of
             our favourite people. Explore our website to learn more about our
             journey, wedding details, and how you can be part of our adventure.
           </p>
           <div className="flex items-center justify-center gap-4">
-            <div className="w-20 h-px bg-gold/30" />
-            <div className="w-1.5 h-1.5 rounded-full bg-gold/50" />
-            <div className="w-20 h-px bg-gold/30" />
+            <div className="w-16 h-px bg-gold/30" />
+            <div className="w-1.5 h-1.5 rounded-full bg-gold/40" />
+            <div className="w-16 h-px bg-gold/30" />
           </div>
         </div>
       </motion.section>
 
-      {/* Featured Photos Section */}
+      {/* ═══════════════════════════════════════════
+          FEATURED PHOTOS
+          ═══════════════════════════════════════════ */}
       <motion.section
         initial="hidden"
         whileInView="visible"
-        viewport={{ once: true, margin: "-100px" }}
-        className="py-16 bg-berry"
+        viewport={{ once: true, margin: '-80px' }}
+        className="py-16 md:py-24 px-6 bg-blush"
       >
-        <div className="container mx-auto px-4">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-6xl mx-auto">
+        <div className="max-w-6xl mx-auto">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-5">
             {[
-              "NoraHanakoPhotographyS&JEngagement-5590-2.jpg",
-              "NoraHanakoPhotographyS&JEngagement-5718-2.jpg",
-              "NoraHanakoPhotographyS&JEngagement-5925-2.jpg",
-              "NoraHanakoPhotographyS&JEngagement-6183-2.jpg",
+              'NoraHanakoPhotographyS&JEngagement-5590-2.jpg',
+              'NoraHanakoPhotographyS&JEngagement-5718-2.jpg',
+              'NoraHanakoPhotographyS&JEngagement-5925-2.jpg',
+              'NoraHanakoPhotographyS&JEngagement-6183-2.jpg',
             ].map((photo, index) => (
               <motion.div
                 key={index}
-                initial={{ opacity: 0, scale: 0.9 }}
-                whileInView={{ opacity: 1, scale: 1 }}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.6, delay: index * 0.1 }}
-                className="aspect-square overflow-hidden rounded-2xl shadow-lg ring-1 ring-white/10"
+                className="aspect-[3/4] overflow-hidden rounded-xl"
               >
                 <img
                   src={`/Gallery/${photo}`}
                   alt={`Sam & Jonah ${index + 1}`}
-                  className="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
+                  className="w-full h-full object-cover hover:scale-105 transition-transform duration-700"
                 />
               </motion.div>
             ))}
           </div>
+
           <motion.div
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
-            className="text-center mt-8"
+            className="text-center mt-10"
           >
-            <a
-              href="/story"
-              className="inline-flex items-center gap-2 text-gold hover:text-gold-light font-medium transition-colors"
+            <Link
+              to="/story"
+              className="inline-flex items-center gap-2 text-gold text-[13px] font-medium uppercase tracking-[0.15em] hover:text-berry transition-colors"
             >
-              View more photos
+              View our story
               <svg
                 className="w-4 h-4"
                 fill="none"
@@ -170,129 +195,134 @@ export default function HomePage() {
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
-                  strokeWidth={2}
+                  strokeWidth={1.5}
                   d="M9 5l7 7-7 7"
                 />
               </svg>
-            </a>
+            </Link>
           </motion.div>
         </div>
       </motion.section>
 
-      {/* Quick Links Section */}
+      {/* ═══════════════════════════════════════════
+          QUICK LINKS
+          ═══════════════════════════════════════════ */}
       <motion.section
         initial="hidden"
         whileInView="visible"
-        viewport={{ once: true, margin: "-100px" }}
+        viewport={{ once: true, margin: '-80px' }}
         variants={staggerContainer}
-        className="py-20 px-4 bg-berry-dark/30"
+        className="py-24 md:py-32 px-6"
       >
-        <div className="container mx-auto max-w-6xl">
-          <div className="grid md:grid-cols-3 gap-8">
+        <div className="max-w-5xl mx-auto">
+          <div className="grid md:grid-cols-3 gap-6 md:gap-8">
             {[
               {
-                title: "Our Story",
+                title: 'Our Story',
                 description:
-                  "From our first date skating to building a life together",
-                link: "/story",
+                  'From our first date skating to building a life together',
+                link: '/story',
               },
               {
-                title: "Wedding Details",
+                title: 'Wedding Details',
                 description:
-                  "Ceremony timeline, venue information, and what to expect",
-                link: "/details",
+                  'Ceremony timeline, venue information, and what to expect',
+                link: '/details',
               },
               {
-                title: "Travel & Stay",
+                title: 'Travel & Stay',
                 description:
-                  "Hotels, things to do, and exploring beautiful Calgary",
-                link: "/travel",
+                  'Hotels, things to do, and exploring beautiful Calgary',
+                link: '/travel',
               },
             ].map((card) => (
-              <motion.a
-                key={card.title}
-                href={card.link}
-                variants={fadeInUp}
-                whileHover={{ y: -5, transition: { duration: 0.2 } }}
-                className="group relative block"
-              >
-                <div className="h-full bg-glass rounded-2xl p-8 border border-glass-border hover:border-gold/30 transition-[border-color] duration-300">
-                  <h3 className="font-display text-3xl mb-4 text-cream">
-                    {card.title}
-                  </h3>
-                  <p className="text-blush/60 leading-relaxed mb-6">
-                    {card.description}
-                  </p>
-                  <div className="flex items-center text-gold font-medium group-hover:translate-x-2 transition-transform">
-                    <span>Explore</span>
-                    <svg
-                      className="ml-2 w-4 h-4"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
+              <motion.div key={card.title} variants={fadeInUp}>
+                <Link to={card.link} className="group block h-full">
+                  <div className="h-full bg-white rounded-2xl p-8 md:p-10 border border-card-border hover:shadow-lg hover:shadow-berry/5 transition-all duration-500">
+                    <h3
+                      className="font-display text-2xl md:text-3xl text-heading mb-3"
+                      style={{ fontWeight: 400 }}
                     >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M9 5l7 7-7 7"
-                      />
-                    </svg>
+                      {card.title}
+                    </h3>
+                    <p className="text-body leading-relaxed mb-6">
+                      {card.description}
+                    </p>
+                    <span className="inline-flex items-center text-gold text-[13px] font-medium uppercase tracking-[0.1em] group-hover:translate-x-1 transition-transform duration-300">
+                      Explore
+                      <svg
+                        className="ml-2 w-4 h-4"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={1.5}
+                          d="M9 5l7 7-7 7"
+                        />
+                      </svg>
+                    </span>
                   </div>
-                </div>
-              </motion.a>
+                </Link>
+              </motion.div>
             ))}
           </div>
         </div>
       </motion.section>
 
-      {/* RSVP & Registry CTAs */}
+      {/* ═══════════════════════════════════════════
+          RSVP & REGISTRY CTAs
+          ═══════════════════════════════════════════ */}
       <motion.section
         initial="hidden"
         whileInView="visible"
-        viewport={{ once: true, margin: "-100px" }}
+        viewport={{ once: true, margin: '-80px' }}
         variants={fadeInUp}
-        className="py-20 px-4 bg-berry"
+        className="py-24 md:py-32 px-6 bg-blush"
       >
-        <div className="container mx-auto max-w-4xl">
+        <div className="max-w-4xl mx-auto">
           <div className="grid md:grid-cols-2 gap-8">
-            {/* RSVP Card */}
-            <motion.div
-              whileHover={{ scale: 1.02 }}
-              className="bg-glass rounded-2xl p-10 text-center border border-gold/20 hover:border-gold/40 transition-[border-color] duration-300"
-            >
-              <h3 className="font-display text-3xl mb-3 text-cream">RSVP</h3>
-              <p className="text-blush/60 mb-6">
-                We can't wait to celebrate with you! Please let us know if you
+            {/* RSVP */}
+            <div className="bg-white rounded-2xl p-10 md:p-12 text-center border border-card-border">
+              <h3
+                className="font-display text-3xl text-heading mb-4"
+                style={{ fontWeight: 300 }}
+              >
+                RSVP
+              </h3>
+              <p className="text-body mb-8">
+                We can't wait to celebrate with you. Please let us know if you
                 can join us.
               </p>
-              <a
-                href="/rsvp"
-                className="inline-block bg-gold text-berry-dark px-8 py-3 rounded-full font-medium hover:bg-gold-light transition-colors"
+              <Link
+                to="/rsvp"
+                className="inline-block bg-berry text-white px-8 py-3 rounded-full text-[13px] font-medium uppercase tracking-[0.1em] hover:bg-berry-light transition-colors"
               >
                 RSVP Now
-              </a>
-            </motion.div>
+              </Link>
+            </div>
 
-            {/* Registry Card */}
-            <motion.div
-              whileHover={{ scale: 1.02 }}
-              className="bg-glass rounded-2xl p-10 text-center border border-gold/20 hover:border-gold/40 transition-[border-color] duration-300"
-            >
-              <h3 className="font-display text-3xl mb-3 text-cream">
+            {/* Registry */}
+            <div className="bg-white rounded-2xl p-10 md:p-12 text-center border border-card-border">
+              <h3
+                className="font-display text-3xl text-heading mb-4"
+                style={{ fontWeight: 300 }}
+              >
                 Honeymoon Registry
               </h3>
-              <p className="text-blush/60 mb-6">
+              <p className="text-body mb-8">
                 Help us create magical memories in Italy and Germany this
                 September.
               </p>
-              <a
-                href="/registry"
-                className="inline-block border-2 border-gold text-gold px-8 py-3 rounded-full font-medium hover:bg-gold hover:text-berry-dark transition-colors"
+              <Link
+                to="/registry"
+                className="inline-block border-2 border-berry text-berry px-8 py-3 rounded-full text-[13px] font-medium uppercase tracking-[0.1em] hover:bg-berry hover:text-white transition-colors"
               >
                 View Registry
-              </a>
-            </motion.div>
+              </Link>
+            </div>
           </div>
         </div>
       </motion.section>
