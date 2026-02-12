@@ -32,7 +32,7 @@ export default function HomePage() {
           <img
             src="/hero.jpg"
             alt="Sam & Jonah"
-            className="w-full h-full object-cover scale-110 md:scale-100 object-[center_20%] md:object-center"
+            className="w-full h-full object-cover scale-[1.35] md:scale-100 object-[center_15%] md:object-center"
           />
           <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-black/10 to-berry" />
         </div>
