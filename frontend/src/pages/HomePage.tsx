@@ -26,106 +26,71 @@ export default function HomePage() {
   return (
     <Layout>
       {/* Hero Section */}
-      <div className="relative min-h-screen flex items-center justify-center overflow-hidden">
-        {/* Background Image with Berry Overlay */}
+      <div className="relative min-h-screen flex flex-col overflow-hidden">
+        {/* Background Image — clean, no colored overlay */}
         <div className="absolute inset-0">
           <img
             src="/hero.jpg"
             alt="Sam & Jonah"
-            className="w-full h-full object-cover scale-[1.35] md:scale-100 object-[center_15%] md:object-center"
+            className="w-full h-full object-cover object-[center_25%]"
           />
-          <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-black/10 to-berry" />
+          {/* Subtle dark vignette for text readability — no berry/pink */}
+          <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-black/60" />
+          <div className="absolute inset-0 bg-black/15" />
         </div>
 
-        {/* Countdown - top right on desktop, bottom on mobile */}
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 1.2 }}
-          className="absolute top-20 right-6 z-20 hidden md:block"
-        >
-          <div className="backdrop-blur-md bg-berry-dark/30 border border-glass-border rounded-2xl px-6 py-4">
-            <Countdown compact />
-          </div>
-        </motion.div>
-
-        {/* Hero Content - pushed to bottom so faces are visible */}
-        <div className="relative z-10 container mx-auto px-4 pt-[50vh] md:pt-[40vh] text-center">
+        {/* Names — centered in the hero, between the faces */}
+        <div className="relative z-10 flex-1 flex items-center justify-center">
           <motion.div
             initial="hidden"
             animate="visible"
             variants={staggerContainer}
+            className="text-center"
           >
             <motion.h1
               variants={fadeInUp}
-              className="font-display text-5xl md:text-8xl lg:text-9xl mb-4 md:mb-6 text-cream"
+              className="font-display text-6xl md:text-8xl lg:text-9xl text-white drop-shadow-lg"
               style={{ fontWeight: 300 }}
             >
               Sam <span className="text-gold">&</span> Jonah
             </motion.h1>
-
-            <motion.div variants={fadeInUp} className="mb-6 md:mb-8">
-              <p className="text-xl md:text-3xl font-display italic text-blush/80">
-                are getting married
-              </p>
-            </motion.div>
-
-            {/* Elegant thin line divider */}
-            <motion.div
+            <motion.p
               variants={fadeInUp}
-              className="mb-6 md:mb-8 flex items-center justify-center gap-4"
+              className="text-lg md:text-2xl font-display italic text-white/80 mt-2 drop-shadow-md"
             >
-              <div className="w-12 md:w-16 h-px bg-gold/40" />
-              <div className="w-1.5 h-1.5 rounded-full bg-gold/60" />
-              <div className="w-12 md:w-16 h-px bg-gold/40" />
-            </motion.div>
-
-            <motion.div variants={fadeInUp} className="mb-8 md:mb-12 space-y-1 md:space-y-2">
-              <p className="text-lg md:text-2xl font-display text-cream">
-                August 15, 2026
-              </p>
-              <p className="text-base md:text-xl text-blush/70">
-                Rouge Restaurant, Calgary, Alberta
-              </p>
-              <p className="text-sm md:text-lg text-blush/50">
-                Ceremony begins at 3:45 PM
-              </p>
-            </motion.div>
-
-            {/* Mobile countdown - compact inline */}
-            <motion.div variants={fadeInUp} className="mb-8 md:hidden">
-              <Countdown compact />
-            </motion.div>
-
-            {/* Scroll Indicator */}
-            <motion.div
-              variants={fadeInUp}
-              className="absolute bottom-10 left-1/2 transform -translate-x-1/2"
-            >
-              <motion.div
-                animate={{ y: [0, 10, 0] }}
-                transition={{
-                  duration: 2,
-                  repeat: Infinity,
-                  ease: "easeInOut",
-                }}
-                className="text-gold/50"
-              >
-                <svg
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <polyline points="6 9 12 15 18 9" />
-                </svg>
-              </motion.div>
-            </motion.div>
+              August 15, 2026 &nbsp;·&nbsp; Calgary, Alberta
+            </motion.p>
           </motion.div>
+        </div>
+
+        {/* Scroll Indicator — bottom center */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 1.5 }}
+          className="relative z-10 flex justify-center pb-8"
+        >
+          <motion.div
+            animate={{ y: [0, 8, 0] }}
+            transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+            className="text-white/50"
+          >
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <polyline points="6 9 12 15 18 9" />
+            </svg>
+          </motion.div>
+        </motion.div>
+      </div>
+
+      {/* Countdown + Details Strip */}
+      <div className="bg-berry-dark py-8 md:py-10 px-4">
+        <div className="max-w-4xl mx-auto flex flex-col md:flex-row items-center justify-center gap-6 md:gap-12">
+          <div className="text-center md:text-right">
+            <p className="font-display text-xl md:text-2xl text-cream">Rouge Restaurant</p>
+            <p className="text-sm text-blush/60">Calgary, Alberta &nbsp;·&nbsp; Ceremony at 3:45 PM</p>
+          </div>
+          <div className="hidden md:block w-px h-12 bg-gold/20" />
+          <Countdown compact />
         </div>
       </div>
 
