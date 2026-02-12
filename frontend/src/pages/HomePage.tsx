@@ -37,20 +37,13 @@ export default function HomePage() {
           <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-black/15 to-berry" />
         </div>
 
-        {/* Hero Content */}
-        <div className="relative z-10 container mx-auto px-4 py-20 text-center">
+        {/* Hero Content - pushed to bottom so faces are visible */}
+        <div className="relative z-10 container mx-auto px-4 pt-[45vh] md:pt-[40vh] text-center">
           <motion.div
             initial="hidden"
             animate="visible"
             variants={staggerContainer}
           >
-            <motion.p
-              variants={fadeInUp}
-              className="text-gold/80 text-sm md:text-base tracking-[0.3em] uppercase mb-6 font-body font-medium"
-            >
-              Together with their families
-            </motion.p>
-
             <motion.h1
               variants={fadeInUp}
               className="font-display text-6xl md:text-8xl lg:text-9xl mb-6 text-cream"
