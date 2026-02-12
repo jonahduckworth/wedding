@@ -96,7 +96,7 @@ export default function StoryPage() {
           <img
             src="/Gallery/NoraHanakoPhotographyS&JEngagement-5590.jpg"
             alt="Sam & Jonah"
-            className="w-full h-full object-cover object-[center_30%]"
+            className="w-full h-full object-cover object-top"
           />
           <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-black/15 to-berry" />
         </div>
@@ -207,8 +207,8 @@ export default function StoryPage() {
                   index % 2 === 0 ? 'md:pr-1/2 md:text-right' : 'md:pl-1/2 md:ml-auto'
                 } md:w-1/2`}
               >
-                {/* Timeline dot */}
-                <div className={`absolute top-6 ${index % 2 === 0 ? 'md:-right-6' : 'md:-left-6'} left-[0.5rem] md:left-auto w-12 h-12 bg-gold rounded-full border-4 border-berry flex items-center justify-center text-xl shadow-lg z-10`}>
+                {/* Timeline dot - centered on timeline line */}
+                <div className={`absolute top-6 left-2 md:left-auto ${index % 2 === 0 ? 'md:right-0 md:translate-x-1/2' : 'md:left-0 md:-translate-x-1/2'} w-12 h-12 bg-gold rounded-full border-4 border-berry flex items-center justify-center text-xl shadow-lg z-10`}>
                   {event.icon}
                 </div>
 
