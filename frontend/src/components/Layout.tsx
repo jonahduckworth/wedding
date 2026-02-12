@@ -24,7 +24,7 @@ export default function Layout({ children }: LayoutProps) {
 
   return (
     <div className="min-h-screen flex flex-col bg-berry">
-      <header className="border-b border-glass-border sticky top-0 z-50 backdrop-blur-md bg-berry-dark/90">
+      <header className="fixed top-0 left-0 right-0 z-50 backdrop-blur-sm bg-berry-dark/40">
         <nav className="container mx-auto px-4 py-5">
           <div className="flex items-center justify-between">
             <Link

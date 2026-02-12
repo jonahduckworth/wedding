@@ -32,13 +32,25 @@ export default function HomePage() {
           <img
             src="/hero.jpg"
             alt="Sam & Jonah"
-            className="w-full h-full object-cover"
+            className="w-full h-full object-cover scale-110 md:scale-100 object-[center_20%] md:object-center"
           />
-          <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-black/15 to-berry" />
+          <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-black/10 to-berry" />
         </div>
 
+        {/* Countdown - top right on desktop, bottom on mobile */}
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 1.2 }}
+          className="absolute top-20 right-6 z-20 hidden md:block"
+        >
+          <div className="backdrop-blur-md bg-berry-dark/30 border border-glass-border rounded-2xl px-6 py-4">
+            <Countdown compact />
+          </div>
+        </motion.div>
+
         {/* Hero Content - pushed to bottom so faces are visible */}
-        <div className="relative z-10 container mx-auto px-4 pt-[45vh] md:pt-[40vh] text-center">
+        <div className="relative z-10 container mx-auto px-4 pt-[50vh] md:pt-[40vh] text-center">
           <motion.div
             initial="hidden"
             animate="visible"
@@ -46,14 +58,14 @@ export default function HomePage() {
           >
             <motion.h1
               variants={fadeInUp}
-              className="font-display text-6xl md:text-8xl lg:text-9xl mb-6 text-cream"
+              className="font-display text-5xl md:text-8xl lg:text-9xl mb-4 md:mb-6 text-cream"
               style={{ fontWeight: 300 }}
             >
               Sam <span className="text-gold">&</span> Jonah
             </motion.h1>
 
-            <motion.div variants={fadeInUp} className="mb-8">
-              <p className="text-2xl md:text-3xl font-display italic text-blush/80 mb-2">
+            <motion.div variants={fadeInUp} className="mb-6 md:mb-8">
+              <p className="text-xl md:text-3xl font-display italic text-blush/80">
                 are getting married
               </p>
             </motion.div>
@@ -61,27 +73,28 @@ export default function HomePage() {
             {/* Elegant thin line divider */}
             <motion.div
               variants={fadeInUp}
-              className="mb-8 flex items-center justify-center gap-4"
+              className="mb-6 md:mb-8 flex items-center justify-center gap-4"
             >
-              <div className="w-16 h-px bg-gold/40" />
+              <div className="w-12 md:w-16 h-px bg-gold/40" />
               <div className="w-1.5 h-1.5 rounded-full bg-gold/60" />
-              <div className="w-16 h-px bg-gold/40" />
+              <div className="w-12 md:w-16 h-px bg-gold/40" />
             </motion.div>
 
-            <motion.div variants={fadeInUp} className="mb-12 space-y-2">
-              <p className="text-xl md:text-2xl font-display text-cream">
+            <motion.div variants={fadeInUp} className="mb-8 md:mb-12 space-y-1 md:space-y-2">
+              <p className="text-lg md:text-2xl font-display text-cream">
                 August 15, 2026
               </p>
-              <p className="text-lg md:text-xl text-blush/70">
+              <p className="text-base md:text-xl text-blush/70">
                 Rouge Restaurant, Calgary, Alberta
               </p>
-              <p className="text-base md:text-lg text-blush/50">
+              <p className="text-sm md:text-lg text-blush/50">
                 Ceremony begins at 3:45 PM
               </p>
             </motion.div>
 
-            <motion.div variants={fadeInUp} className="mb-12">
-              <Countdown />
+            {/* Mobile countdown - compact inline */}
+            <motion.div variants={fadeInUp} className="mb-8 md:hidden">
+              <Countdown compact />
             </motion.div>
 
             {/* Scroll Indicator */}

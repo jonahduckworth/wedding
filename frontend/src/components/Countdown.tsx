@@ -8,7 +8,7 @@ interface TimeLeft {
   seconds: number;
 }
 
-export default function Countdown() {
+export default function Countdown({ compact = false }: { compact?: boolean }) {
   const weddingDate = new Date('2026-08-15T15:45:00'); // 3:45 PM
 
   const calculateTimeLeft = (): TimeLeft => {
@@ -63,6 +63,26 @@ export default function Countdown() {
     { value: timeLeft.minutes, label: 'Minutes' },
     { value: timeLeft.seconds, label: 'Seconds' }
   ];
+
+  if (compact) {
+    return (
+      <div className="flex items-center justify-center gap-3 md:gap-4">
+        {timeUnits.map((unit, index) => (
+          <div key={unit.label} className="flex items-center gap-3 md:gap-4">
+            <div className="text-center">
+              <div className="text-2xl md:text-3xl font-display text-gold leading-none">
+                {String(unit.value).padStart(2, '0')}
+              </div>
+              <div className="text-[9px] md:text-[10px] text-blush/50 uppercase tracking-wider mt-0.5">
+                {unit.label}
+              </div>
+            </div>
+            {index < 3 && <span className="text-gold/30 text-lg font-light -mt-3">:</span>}
+          </div>
+        ))}
+      </div>
+    );
+  }
 
   return (
     <motion.div
