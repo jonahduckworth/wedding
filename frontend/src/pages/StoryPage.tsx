@@ -89,7 +89,7 @@ export default function StoryPage() {
         initial="hidden"
         animate="visible"
         variants={fadeInUp}
-        className="relative min-h-[60vh] flex items-center justify-center overflow-hidden"
+        className="relative min-h-screen flex items-center justify-center overflow-hidden"
       >
         {/* Background Image */}
         <div className="absolute inset-0">
@@ -208,7 +208,7 @@ export default function StoryPage() {
                 } md:w-1/2`}
               >
                 {/* Timeline dot */}
-                <div className={`absolute top-6 ${index % 2 === 0 ? 'md:right-[-1.5rem]' : 'md:left-[-1.5rem]'} left-[1.75rem] w-12 h-12 bg-gold rounded-full border-4 border-berry flex items-center justify-center text-xl shadow-lg`}>
+                <div className={`absolute top-6 ${index % 2 === 0 ? 'md:-right-6' : 'md:-left-6'} left-[0.5rem] md:left-auto w-12 h-12 bg-gold rounded-full border-4 border-berry flex items-center justify-center text-xl shadow-lg z-10`}>
                   {event.icon}
                 </div>
 
