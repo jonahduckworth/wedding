@@ -38,54 +38,54 @@ export default function TravelPage() {
   const activities = [
     {
       title: 'Shopping',
-      icon: '🛍️',
+      image: '/activities/shopping.png',
       description:
         "The wedding will be situated in the heart of Inglewood (Calgary's original downtown!). This cute neighbourhood has lots of boutiques, thrift shops, cafes, bookstores, and restaurants.",
     },
     {
       title: 'Breweries',
-      icon: '🍺',
+      image: '/activities/breweries.png',
       description:
         'There are lots of breweries in the area. Cold Garden is our old stomping grounds, but our current favourite is Highline Brewing.',
     },
     {
       title: 'E-Bike & River Paths',
-      icon: '🚴',
+      image: '/activities/ebike.png',
       description:
         "Try renting an e-bike, scooter, or just walk along the Bow River. Calgary has over 1000km of scenic and bikeable paths. Check out Pearce Estate Park, East Village or Prince's Island Park.",
     },
     {
       title: 'Golf',
-      icon: '⛳',
+      image: '/activities/golf.png',
       description:
         'Try out one of our courses, or our versions of Top Golf (LaunchPad, Golf Future) for golf games, drinks, and food.',
     },
     {
       title: 'Studio Bell',
-      icon: '🎵',
+      image: '/activities/studiobell.png',
       description:
         'Home of the National Music Centre and conveniently located downtown near Inglewood.',
     },
     {
       title: 'Calgary Zoo',
-      icon: '🦁',
+      image: '/activities/zoo.png',
       description: 'The Calgary Zoo is located right in Inglewood.',
     },
     {
       title: 'Calgary Tower',
-      icon: '🏙️',
+      image: '/activities/tower.png',
       description:
         'Have drinks in the rotating restaurant with panoramic views of the city.',
     },
     {
       title: 'Kensington',
-      icon: '☕',
+      image: '/activities/kensington.png',
       description:
         "Explore the neighbourhood that we live in! There's cute shops and cafes, as well as nearby Riley Park which has a lovely walking loop.",
     },
     {
       title: 'Mountains',
-      icon: '⛰️',
+      image: '/activities/mountains.png',
       description:
         "If you're planning on staying a while, check out some of the hikes just outside of Calgary! Anywhere in Kananaskis is stunning (1 hr drive). The town of Canmore is just as beautiful, but less busy than Banff (1 hr drive). Our favourite bagels are in Canmore at Rocky Mountain Bagel Co (it's worth it). Banff is a 1.5hr drive. Lake Louise is a 2 hr drive. There are also shuttles that can take you from Calgary to Banff or Lake Louise.",
     },
@@ -302,17 +302,26 @@ export default function TravelPage() {
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: index * 0.04 }}
               >
-                <div className="bg-white rounded-2xl p-6 md:p-7 border border-card-border h-full hover:shadow-md transition-shadow duration-500">
-                  <div className="text-3xl mb-3">{activity.icon}</div>
-                  <h3
-                    className="font-display text-xl text-heading mb-2"
-                    style={{ fontWeight: 400 }}
-                  >
-                    {activity.title}
-                  </h3>
-                  <p className="text-body text-[15px] leading-relaxed">
-                    {activity.description}
-                  </p>
+                <div className="bg-white rounded-2xl border border-card-border h-full hover:shadow-md transition-shadow duration-500 overflow-hidden">
+                  <div className="aspect-[4/3] overflow-hidden">
+                    <img
+                      src={activity.image}
+                      alt={activity.title}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                      loading="lazy"
+                    />
+                  </div>
+                  <div className="p-6">
+                    <h3
+                      className="font-display text-xl text-heading mb-2"
+                      style={{ fontWeight: 400 }}
+                    >
+                      {activity.title}
+                    </h3>
+                    <p className="text-body text-[15px] leading-relaxed">
+                      {activity.description}
+                    </p>
+                  </div>
                 </div>
               </motion.div>
             ))}
