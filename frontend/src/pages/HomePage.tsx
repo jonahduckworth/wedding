@@ -1,9 +1,12 @@
-import { motion } from 'framer-motion';
+import { motion, useAnimation } from 'framer-motion';
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import Layout from '../components/Layout';
 import Countdown from '../components/Countdown';
 
 export default function HomePage() {
+  const [heroLoaded, setHeroLoaded] = useState(false);
+
   const fadeInUp = {
     hidden: { opacity: 0, y: 25 },
     visible: {
@@ -34,8 +37,9 @@ export default function HomePage() {
             alt="Sam & Jonah"
             className="w-full h-full object-cover object-[center_20%] md:object-[center_25%]"
             initial={{ opacity: 0, scale: 1.05 }}
-            animate={{ opacity: 1, scale: 1 }}
+            animate={heroLoaded ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 1.05 }}
             transition={{ duration: 1.2, ease: [0.25, 0.1, 0.25, 1] }}
+            onLoad={() => setHeroLoaded(true)}
           />
           {/* Subtle dark vignette — neutral only, no berry/pink */}
           <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/5 to-black/30" />

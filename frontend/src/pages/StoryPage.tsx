@@ -1,9 +1,10 @@
-import { motion } from 'framer-motion';
+import { motion, useAnimation } from 'framer-motion';
 import { useState } from 'react';
 import Layout from '../components/Layout';
 
 export default function StoryPage() {
   const [selectedPhoto, setSelectedPhoto] = useState<string | null>(null);
+  const [heroLoaded, setHeroLoaded] = useState(false);
 
   const fadeInUp = {
     hidden: { opacity: 0, y: 25 },
@@ -96,8 +97,9 @@ export default function StoryPage() {
             alt="Sam & Jonah"
             className="w-full h-full object-cover object-[center_40%]"
             initial={{ opacity: 0, scale: 1.05 }}
-            animate={{ opacity: 1, scale: 1 }}
+            animate={heroLoaded ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 1.05 }}
             transition={{ duration: 1.2, ease: [0.25, 0.1, 0.25, 1] }}
+            onLoad={() => setHeroLoaded(true)}
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/5 to-black/25" />
         </div>
