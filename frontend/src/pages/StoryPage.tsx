@@ -91,10 +91,13 @@ export default function StoryPage() {
       {/* ─── Hero ─── */}
       <section className="relative h-screen flex items-end overflow-hidden">
         <div className="absolute inset-0">
-          <img
+          <motion.img
             src="/Gallery/NoraHanakoPhotographyS&JEngagement-5590.jpg"
             alt="Sam & Jonah"
             className="w-full h-full object-cover object-[center_40%]"
+            initial={{ opacity: 0, scale: 1.05 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 1.2, ease: [0.25, 0.1, 0.25, 1] }}
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/5 to-black/25" />
         </div>

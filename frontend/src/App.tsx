@@ -1,4 +1,5 @@
 import { Routes, Route } from 'react-router-dom';
+import ScrollToTop from './components/ScrollToTop';
 import HomePage from './pages/HomePage';
 import StoryPage from './pages/StoryPage';
 import WeddingPartyPage from './pages/WeddingPartyPage';
@@ -11,6 +12,8 @@ import AdminDashboard from './pages/admin/AdminDashboard';
 
 function App() {
   return (
+    <>
+    <ScrollToTop />
     <Routes>
       <Route path="/" element={<HomePage />} />
       <Route path="/story" element={<StoryPage />} />
@@ -22,6 +25,7 @@ function App() {
       <Route path="/registry" element={<RegistryPage />} />
       <Route path="/admin/*" element={<AdminDashboard />} />
     </Routes>
+    </>
   );
 }
 

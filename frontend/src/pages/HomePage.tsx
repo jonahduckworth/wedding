@@ -29,10 +29,13 @@ export default function HomePage() {
       <section className="relative h-screen flex flex-col overflow-hidden">
         {/* Background */}
         <div className="absolute inset-0">
-          <img
+          <motion.img
             src="/hero.jpg"
             alt="Sam & Jonah"
             className="w-full h-full object-cover object-[center_20%] md:object-[center_25%]"
+            initial={{ opacity: 0, scale: 1.05 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 1.2, ease: [0.25, 0.1, 0.25, 1] }}
           />
           {/* Subtle dark vignette — neutral only, no berry/pink */}
           <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/5 to-black/30" />
