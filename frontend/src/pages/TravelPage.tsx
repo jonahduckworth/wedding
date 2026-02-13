@@ -38,54 +38,54 @@ export default function TravelPage() {
   const activities = [
     {
       title: 'Shopping',
-      image: '/activities/shopping.png',
+      image: '/activities/shopping.webp',
       description:
         "The wedding will be situated in the heart of Inglewood (Calgary's original downtown!). This cute neighbourhood has lots of boutiques, thrift shops, cafes, bookstores, and restaurants.",
     },
     {
       title: 'Breweries',
-      image: '/activities/breweries.png',
+      image: '/activities/breweries.webp',
       description:
         'There are lots of breweries in the area. Cold Garden is our old stomping grounds, but our current favourite is Highline Brewing.',
     },
     {
       title: 'E-Bike & River Paths',
-      image: '/activities/ebike.png',
+      image: '/activities/ebike.webp',
       description:
         "Try renting an e-bike, scooter, or just walk along the Bow River. Calgary has over 1000km of scenic and bikeable paths. Check out Pearce Estate Park, East Village or Prince's Island Park.",
     },
     {
       title: 'Golf',
-      image: '/activities/golf.png',
+      image: '/activities/golf.webp',
       description:
         'Try out one of our courses, or our versions of Top Golf (LaunchPad, Golf Future) for golf games, drinks, and food.',
     },
     {
       title: 'Studio Bell',
-      image: '/activities/studiobell.png',
+      image: '/activities/studiobell.webp',
       description:
         'Home of the National Music Centre and conveniently located downtown near Inglewood.',
     },
     {
       title: 'Calgary Zoo',
-      image: '/activities/zoo.png',
+      image: '/activities/zoo.webp',
       description: 'The Calgary Zoo is located right in Inglewood.',
     },
     {
       title: 'Calgary Tower',
-      image: '/activities/tower.png',
+      image: '/activities/tower.webp',
       description:
         'Have drinks in the rotating restaurant with panoramic views of the city.',
     },
     {
       title: 'Kensington',
-      image: '/activities/kensington.png',
+      image: '/activities/kensington.webp',
       description:
         "Explore the neighbourhood that we live in! There's cute shops and cafes, as well as nearby Riley Park which has a lovely walking loop.",
     },
     {
       title: 'Mountains',
-      image: '/activities/mountains.png',
+      image: '/activities/mountains.webp',
       description:
         "If you're planning on staying a while, check out some of the hikes just outside of Calgary! Anywhere in Kananaskis is stunning (1 hr drive). The town of Canmore is just as beautiful, but less busy than Banff (1 hr drive). Our favourite bagels are in Canmore at Rocky Mountain Bagel Co (it's worth it). Banff is a 1.5hr drive. Lake Louise is a 2 hr drive. There are also shuttles that can take you from Calgary to Banff or Lake Louise.",
     },
