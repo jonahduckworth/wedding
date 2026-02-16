@@ -141,64 +141,65 @@ export default function Layout({ children }: LayoutProps) {
           </div>
         </nav>
 
-        {/* ─── Mobile Menu Overlay ─── */}
-        <AnimatePresence>
-          {mobileMenuOpen && (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.3 }}
-              className="fixed inset-0 bg-cream/[0.98] backdrop-blur-lg lg:hidden z-[60]"
-            >
-              {/* Close button */}
-              <button
-                onClick={() => setMobileMenuOpen(false)}
-                className="absolute top-5 right-6 p-2 text-heading"
-                aria-label="Close menu"
-              >
-                <svg
-                  width="24"
-                  height="24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="1.5"
-                  strokeLinecap="round"
-                >
-                  <line x1="18" y1="6" x2="6" y2="18" />
-                  <line x1="6" y1="6" x2="18" y2="18" />
-                </svg>
-              </button>
-
-              <div className="flex flex-col items-center justify-center h-full gap-7">
-                {[...navLinks, { path: '/rsvp', label: 'RSVP' }].map(
-                  (link, index) => (
-                    <motion.div
-                      key={link.path}
-                      initial={{ opacity: 0, y: 15 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: index * 0.04, duration: 0.3 }}
-                    >
-                      <Link
-                        to={link.path}
-                        onClick={() => setMobileMenuOpen(false)}
-                        className={`font-display text-3xl transition-colors ${
-                          isActive(link.path)
-                            ? 'text-gold'
-                            : 'text-heading hover:text-gold'
-                        }`}
-                        style={{ fontWeight: 300 }}
-                      >
-                        {link.label}
-                      </Link>
-                    </motion.div>
-                  )
-                )}
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
       </header>
+
+      {/* ─── Mobile Menu Overlay (outside header to avoid stacking context issues) ─── */}
+      <AnimatePresence>
+        {mobileMenuOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3 }}
+            className="fixed inset-0 bg-cream lg:hidden z-[9999]"
+          >
+            {/* Close button */}
+            <button
+              onClick={() => setMobileMenuOpen(false)}
+              className="absolute top-5 right-6 p-2 text-heading"
+              aria-label="Close menu"
+            >
+              <svg
+                width="24"
+                height="24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+              >
+                <line x1="18" y1="6" x2="6" y2="18" />
+                <line x1="6" y1="6" x2="18" y2="18" />
+              </svg>
+            </button>
+
+            <div className="flex flex-col items-center justify-center h-full gap-7">
+              {[...navLinks, { path: '/rsvp', label: 'RSVP' }].map(
+                (link, index) => (
+                  <motion.div
+                    key={link.path}
+                    initial={{ opacity: 0, y: 15 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: index * 0.04, duration: 0.3 }}
+                  >
+                    <Link
+                      to={link.path}
+                      onClick={() => setMobileMenuOpen(false)}
+                      className={`font-display text-3xl transition-colors ${
+                        isActive(link.path)
+                          ? 'text-gold'
+                          : 'text-heading hover:text-gold'
+                      }`}
+                      style={{ fontWeight: 300 }}
+                    >
+                      {link.label}
+                    </Link>
+                  </motion.div>
+                )
+              )}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* ─── Main ─── */}
       <main className="flex-1">{children}</main>
