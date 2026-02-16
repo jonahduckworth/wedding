@@ -29,13 +29,13 @@ export default function HomePage() {
       {/* ═══════════════════════════════════════════
           HERO — full-viewport photo
           ═══════════════════════════════════════════ */}
-      <section className="relative h-[75vh] md:h-screen flex flex-col overflow-hidden">
+      <section className="relative h-screen flex flex-col overflow-hidden">
         {/* Background */}
         <div className="absolute inset-0">
           <motion.img
             src="/hero.jpg"
             alt="Sam & Jonah"
-            className="w-full h-full object-cover object-[center_20%] md:object-[center_25%]"
+            className="w-full h-full object-cover object-[center_60%] md:object-[center_55%]"
             initial={{ opacity: 0, scale: 1.05 }}
             animate={heroLoaded ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 1.05 }}
             transition={{ duration: 1.2, ease: [0.25, 0.1, 0.25, 1] }}
