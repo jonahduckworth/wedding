@@ -1,8 +1,8 @@
-import { motion, useAnimation } from 'framer-motion';
-import { useState } from 'react';
-import { Link } from 'react-router-dom';
-import Layout from '../components/Layout';
-import Countdown from '../components/Countdown';
+import { motion, useAnimation } from "framer-motion";
+import { useState } from "react";
+import { Link } from "react-router-dom";
+import Layout from "../components/Layout";
+import Countdown from "../components/Countdown";
 
 export default function HomePage() {
   const [heroLoaded, setHeroLoaded] = useState(false);
@@ -38,7 +38,11 @@ export default function HomePage() {
             alt="Sam & Jonah"
             className="hidden md:block w-full h-full object-cover object-[center_25%]"
             initial={{ opacity: 0, scale: 1.05 }}
-            animate={heroLoaded ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 1.05 }}
+            animate={
+              heroLoaded
+                ? { opacity: 1, scale: 1 }
+                : { opacity: 0, scale: 1.05 }
+            }
             transition={{ duration: 1.2, ease: [0.25, 0.1, 0.25, 1] }}
             onLoad={() => setHeroLoaded(true)}
           />
@@ -46,9 +50,13 @@ export default function HomePage() {
           <motion.img
             src="/hero-mobile.jpg"
             alt="Sam & Jonah"
-            className="md:hidden w-full h-full object-cover object-[35%_60%]"
+            className="md:hidden w-full h-full object-cover object-[0%_60%]"
             initial={{ opacity: 0, scale: 1.05 }}
-            animate={heroLoaded ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 1.05 }}
+            animate={
+              heroLoaded
+                ? { opacity: 1, scale: 1 }
+                : { opacity: 0, scale: 1.05 }
+            }
             transition={{ duration: 1.2, ease: [0.25, 0.1, 0.25, 1] }}
             onLoad={() => setHeroLoaded(true)}
           />
@@ -67,14 +75,14 @@ export default function HomePage() {
             <motion.p
               variants={fadeInUp}
               className="text-white/90 text-[15px] tracking-[0.35em] uppercase mb-5 font-medium"
-              style={{ fontFamily: 'var(--font-body)' }}
+              style={{ fontFamily: "var(--font-body)" }}
             >
               We're getting married
             </motion.p>
             <motion.h1
               variants={fadeInUp}
               className="font-display text-[3.5rem] md:text-8xl lg:text-9xl text-white"
-              style={{ fontWeight: 300, letterSpacing: '0.02em' }}
+              style={{ fontWeight: 300, letterSpacing: "0.02em" }}
             >
               Sam <span className="text-gold-light">&</span> Jonah
             </motion.h1>
@@ -96,7 +104,7 @@ export default function HomePage() {
         >
           <motion.div
             animate={{ y: [0, 6, 0] }}
-            transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}
+            transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
             className="text-white/30"
           >
             <svg
@@ -132,7 +140,7 @@ export default function HomePage() {
       <motion.section
         initial="hidden"
         whileInView="visible"
-        viewport={{ once: true, margin: '-80px' }}
+        viewport={{ once: true, margin: "-80px" }}
         variants={fadeInUp}
         className="py-24 md:py-32 px-6"
       >
@@ -165,23 +173,27 @@ export default function HomePage() {
       <motion.section
         initial="hidden"
         whileInView="visible"
-        viewport={{ once: true, margin: '-80px' }}
+        viewport={{ once: true, margin: "-80px" }}
         className="py-16 md:py-24 px-6 bg-blush"
       >
         <div className="max-w-6xl mx-auto">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-5">
             {[
-              'NoraHanakoPhotographyS&JEngagement-5590-2.jpg',
-              'NoraHanakoPhotographyS&JEngagement-5718-2.jpg',
-              'NoraHanakoPhotographyS&JEngagement-5925-2.jpg',
-              'NoraHanakoPhotographyS&JEngagement-6183-2.jpg',
+              "NoraHanakoPhotographyS&JEngagement-5590-2.jpg",
+              "NoraHanakoPhotographyS&JEngagement-5718-2.jpg",
+              "NoraHanakoPhotographyS&JEngagement-5925-2.jpg",
+              "NoraHanakoPhotographyS&JEngagement-6183-2.jpg",
             ].map((photo, index) => (
               <motion.div
                 key={index}
                 initial={{ opacity: 0 }}
                 whileInView={{ opacity: 1 }}
                 viewport={{ once: true }}
-                transition={{ duration: 0.9, ease: [0.25, 0.1, 0.25, 1], delay: index * 0.12 }}
+                transition={{
+                  duration: 0.9,
+                  ease: [0.25, 0.1, 0.25, 1],
+                  delay: index * 0.12,
+                }}
                 className="aspect-[3/4] overflow-hidden rounded-xl"
               >
                 <img
@@ -228,7 +240,7 @@ export default function HomePage() {
       <motion.section
         initial="hidden"
         whileInView="visible"
-        viewport={{ once: true, margin: '-80px' }}
+        viewport={{ once: true, margin: "-80px" }}
         variants={staggerContainer}
         className="py-24 md:py-32 px-6"
       >
@@ -236,22 +248,22 @@ export default function HomePage() {
           <div className="grid md:grid-cols-3 gap-6 md:gap-8">
             {[
               {
-                title: 'Our Story',
+                title: "Our Story",
                 description:
-                  'From our first date skating to building a life together',
-                link: '/story',
+                  "From our first date skating to building a life together",
+                link: "/story",
               },
               {
-                title: 'Wedding Details',
+                title: "Wedding Details",
                 description:
-                  'Ceremony timeline, venue information, and what to expect',
-                link: '/details',
+                  "Ceremony timeline, venue information, and what to expect",
+                link: "/details",
               },
               {
-                title: 'Travel & Stay',
+                title: "Travel & Stay",
                 description:
-                  'Hotels, things to do, and exploring beautiful Calgary',
-                link: '/travel',
+                  "Hotels, things to do, and exploring beautiful Calgary",
+                link: "/travel",
               },
             ].map((card) => (
               <motion.div key={card.title} variants={fadeInUp}>
@@ -296,7 +308,7 @@ export default function HomePage() {
       <motion.section
         initial="hidden"
         whileInView="visible"
-        viewport={{ once: true, margin: '-80px' }}
+        viewport={{ once: true, margin: "-80px" }}
         variants={fadeInUp}
         className="py-24 md:py-32 px-6 bg-blush"
       >
