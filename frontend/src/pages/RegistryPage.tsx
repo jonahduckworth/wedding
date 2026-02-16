@@ -146,7 +146,7 @@ export default function RegistryPage() {
             className="text-body text-lg leading-relaxed max-w-2xl mx-auto"
           >
             Your presence at our wedding is the greatest gift of all. However, if
-            you wish to contribute to our honeymoon in Italy, we would be
+            you wish to contribute to our honeymoon in Italy and Portugal, we would be
             incredibly grateful.
           </motion.p>
         </div>

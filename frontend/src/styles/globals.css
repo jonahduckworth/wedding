@@ -8,8 +8,8 @@
   --color-berry-light: #9E3A6C;
   --color-cream: #FAF7F2;
   --color-blush: #F3EBE5;
-  --color-gold: #C4975A;
-  --color-gold-light: #D4A574;
+  --color-gold: #722F37;
+  --color-gold-light: #8C3A44;
 
   /* ─── Text on light backgrounds ─── */
   --color-heading: #2D1F26;
@@ -26,7 +26,7 @@
   /* ─── Semantic (used by modals & admin) ─── */
   --color-primary: #7B2350;
   --color-secondary: #F3EBE5;
-  --color-accent: #C4975A;
+  --color-accent: #722F37;
   --color-text: #2D1F26;
   --color-text-light: #594D52;
   --color-text-muted: #8F8389;
@@ -84,7 +84,7 @@
   }
 
   ::selection {
-    background-color: var(--color-gold);
+    background-color: var(--color-berry);
     color: white;
   }
 }

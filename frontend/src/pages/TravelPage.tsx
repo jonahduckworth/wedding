@@ -38,54 +38,54 @@ export default function TravelPage() {
   const activities = [
     {
       title: 'Shopping',
-      image: '/activities/shopping.webp',
+      image: 'https://images.unsplash.com/photo-1555529669-e69e7aa0ba9a?w=800&h=600&fit=crop',
       description:
         "The wedding will be situated in the heart of Inglewood (Calgary's original downtown!). This cute neighbourhood has lots of boutiques, thrift shops, cafes, bookstores, and restaurants.",
     },
     {
       title: 'Breweries',
-      image: '/activities/breweries.webp',
+      image: 'https://images.unsplash.com/photo-1535958636474-b021ee887b13?w=800&h=600&fit=crop',
       description:
         'There are lots of breweries in the area. Cold Garden is our old stomping grounds, but our current favourite is Highline Brewing.',
     },
     {
       title: 'E-Bike & River Paths',
-      image: '/activities/ebike.webp',
+      image: 'https://images.unsplash.com/photo-1558618666-fcd25c85f82e?w=800&h=600&fit=crop',
       description:
         "Try renting an e-bike, scooter, or just walk along the Bow River. Calgary has over 1000km of scenic and bikeable paths. Check out Pearce Estate Park, East Village or Prince's Island Park.",
     },
     {
       title: 'Golf',
-      image: '/activities/golf.webp',
+      image: 'https://images.unsplash.com/photo-1587174486073-ae5e5cff23aa?w=800&h=600&fit=crop',
       description:
         'Try out one of our courses, or our versions of Top Golf (LaunchPad, Golf Future) for golf games, drinks, and food.',
     },
     {
       title: 'Studio Bell',
-      image: '/activities/studiobell.webp',
+      image: 'https://images.unsplash.com/photo-1514320291840-2e0a9bf2a9ae?w=800&h=600&fit=crop',
       description:
         'Home of the National Music Centre and conveniently located downtown near Inglewood.',
     },
     {
       title: 'Calgary Zoo',
-      image: '/activities/zoo.webp',
+      image: 'https://images.unsplash.com/photo-1534567153574-2b12153a87f0?w=800&h=600&fit=crop',
       description: 'The Calgary Zoo is located right in Inglewood.',
     },
     {
       title: 'Calgary Tower',
-      image: '/activities/tower.webp',
+      image: 'https://images.unsplash.com/photo-1571154820609-33a8b52f4c7c?w=800&h=600&fit=crop',
       description:
         'Have drinks in the rotating restaurant with panoramic views of the city.',
     },
     {
       title: 'Kensington',
-      image: '/activities/kensington.webp',
+      image: 'https://images.unsplash.com/photo-1519999482648-25049ddd37b1?w=800&h=600&fit=crop',
       description:
         "Explore the neighbourhood that we live in! There's cute shops and cafes, as well as nearby Riley Park which has a lovely walking loop.",
     },
     {
       title: 'Mountains',
-      image: '/activities/mountains.webp',
+      image: 'https://images.unsplash.com/photo-1503614472-8c93d56e92ce?w=800&h=600&fit=crop',
       description:
         "If you're planning on staying a while, check out some of the hikes just outside of Calgary! Anywhere in Kananaskis is stunning (1 hr drive). The town of Canmore is just as beautiful, but less busy than Banff (1 hr drive). Our favourite bagels are in Canmore at Rocky Mountain Bagel Co (it's worth it). Banff is a 1.5hr drive. Lake Louise is a 2 hr drive. There are also shuttles that can take you from Calgary to Banff or Lake Louise.",
     },

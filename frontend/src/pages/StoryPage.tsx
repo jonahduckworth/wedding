@@ -55,7 +55,7 @@ export default function StoryPage() {
       date: 'Future',
       title: 'Dreams Ahead',
       description:
-        'Sam and Jonah aspire to travel to Italy, Germany, and Japan, while expanding their family and building a beautiful life together.',
+        'Sam and Jonah aspire to travel to Italy, Portugal, and Japan, while expanding their family and building a beautiful life together.',
       icon: '🌟',
     },
   ];
@@ -110,16 +110,16 @@ export default function StoryPage() {
           variants={fadeInUp}
           className="relative z-10 w-full text-center pb-24 md:pb-32 px-6"
         >
-          <p className="text-white/45 text-[13px] tracking-[0.35em] uppercase mb-4">
+          <p className="text-white/80 text-[15px] tracking-[0.35em] uppercase mb-4 font-medium">
             How it all began
           </p>
           <h1
-            className="font-display text-5xl md:text-7xl lg:text-8xl text-white"
-            style={{ fontWeight: 300, letterSpacing: '0.02em' }}
+            className="font-display text-5xl md:text-7xl lg:text-8xl text-white drop-shadow-lg"
+            style={{ fontWeight: 400, letterSpacing: '0.02em' }}
           >
             Our Love Story
           </h1>
-          <p className="text-lg md:text-xl font-display italic text-white/55 mt-3">
+          <p className="text-xl md:text-2xl font-display italic text-white/85 mt-3">
             From a first date that lasted 12 hours to a lifetime together
           </p>
         </motion.div>
@@ -175,7 +175,7 @@ export default function StoryPage() {
             </p>
             <p>
               Jonah and Sam aspire to do some bigger travels, including Italy,
-              Germany, and Japan, as well as expanding their family. They are{' '}
+              Portugal, and Japan, as well as expanding their family. They are{' '}
               <strong className="font-medium text-heading">
                 thrilled to be able to celebrate their love story and marriage
               </strong>{' '}
@@ -232,10 +232,10 @@ export default function StoryPage() {
             {timelineEvents.map((event, index) => (
               <motion.div
                 key={index}
-                initial={{ opacity: 0, x: index % 2 === 0 ? -40 : 40 }}
+                initial={{ opacity: 0, x: index % 2 === 0 ? -20 : 20 }}
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true, margin: '-50px' }}
-                transition={{ duration: 0.6, delay: index * 0.08 }}
+                transition={{ duration: 0.8, ease: [0.25, 0.1, 0.25, 1], delay: index * 0.08 }}
                 className={`relative mb-14 md:mb-12 ${
                   index % 2 === 0
                     ? 'md:pr-1/2 md:text-right'
@@ -295,7 +295,7 @@ export default function StoryPage() {
               className="font-display text-4xl md:text-5xl text-heading"
               style={{ fontWeight: 300 }}
             >
-              Our Memories
+              Engagement Gallery
             </h2>
           </div>
 
@@ -304,10 +304,10 @@ export default function StoryPage() {
             {galleryPhotos.map((photo, index) => (
               <motion.div
                 key={index}
-                initial={{ opacity: 0, y: 15 }}
-                whileInView={{ opacity: 1, y: 0 }}
+                initial={{ opacity: 0 }}
+                whileInView={{ opacity: 1 }}
                 viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: index * 0.02 }}
+                transition={{ duration: 0.8, ease: [0.25, 0.1, 0.25, 1], delay: index * 0.03 }}
                 className="break-inside-avoid cursor-pointer group"
                 onClick={() => setSelectedPhoto(photo)}
               >

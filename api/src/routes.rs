@@ -856,11 +856,8 @@ async fn public_get_item(
     let public_contributions: Vec<PublicContribution> = contributions
         .into_iter()
         .map(|c| PublicContribution {
-            display_name: if c.is_anonymous {
-                "Anonymous".to_string()
-            } else {
-                c.contributor_name.unwrap_or("Anonymous".to_string())
-            },
+            // Hide all contributor names on public endpoint
+            display_name: "A Generous Guest".to_string(),
             amount: c.amount,
             message: c.message,
             created_at: c.created_at,

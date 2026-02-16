@@ -33,7 +33,7 @@ export default function FAQPage() {
     {
       question: 'How do I RSVP?',
       answer:
-        'Invitations will be sent out in a few months. Please save the date in your calendar and wait for a future email with your invitation and instructions to RSVP!',
+        'Invitations have been sent out! Please check your email for your unique RSVP link. If you haven\'t received yours, please reach out to us at contact@samandjonah.com.',
     },
     {
       question: 'Can I bring my plus one?',
@@ -43,17 +43,17 @@ export default function FAQPage() {
     {
       question: 'Where should I park?',
       answer:
-        'Parking information will be included with your invitation and detailed on the venue website.',
+        'Free street parking is available on surrounding streets near Rouge Restaurant. There is also a paid lot nearby. A detailed parking map will be shared closer to the date.',
     },
     {
       question: 'When does the party end?',
       answer:
-        "Details will be confirmed closer to the date — but we're planning to celebrate well into the evening!",
+        'The party wraps up at 1:00 AM — so wear your dancing shoes!',
     },
     {
       question: 'Will you accept gifts?',
       answer:
-        'You are too kind! In lieu of gifts, please consider contributing to our honeymoon fund! We are heading to Italy and Germany in September 2026. We have set up a Honeymoon Registry for guests who would like to contribute to something specific.',
+        'You are too kind! In lieu of gifts, please consider contributing to our honeymoon fund! We are heading to Italy and Portugal in September 2026. We have set up a Honeymoon Registry for guests who would like to contribute to something specific.',
     },
   ];
 

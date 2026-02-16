@@ -55,7 +55,7 @@ export default function HomePage() {
           >
             <motion.p
               variants={fadeInUp}
-              className="text-white/50 text-[13px] tracking-[0.35em] uppercase mb-5"
+              className="text-white/90 text-[15px] tracking-[0.35em] uppercase mb-5 font-medium"
               style={{ fontFamily: 'var(--font-body)' }}
             >
               We're getting married
@@ -69,7 +69,7 @@ export default function HomePage() {
             </motion.h1>
             <motion.p
               variants={fadeInUp}
-              className="text-lg md:text-xl font-display italic text-white/60 mt-3"
+              className="text-xl md:text-2xl font-display italic text-white/90 mt-3"
             >
               August 15, 2026 &nbsp;·&nbsp; Calgary, Alberta
             </motion.p>
@@ -167,10 +167,10 @@ export default function HomePage() {
             ].map((photo, index) => (
               <motion.div
                 key={index}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
+                initial={{ opacity: 0 }}
+                whileInView={{ opacity: 1 }}
                 viewport={{ once: true }}
-                transition={{ duration: 0.6, delay: index * 0.1 }}
+                transition={{ duration: 0.9, ease: [0.25, 0.1, 0.25, 1], delay: index * 0.12 }}
                 className="aspect-[3/4] overflow-hidden rounded-xl"
               >
                 <img
@@ -320,7 +320,7 @@ export default function HomePage() {
                 Honeymoon Registry
               </h3>
               <p className="text-body mb-8">
-                Help us create magical memories in Italy and Germany this
+                Help us create magical memories in Italy and Portugal this
                 September.
               </p>
               <Link
