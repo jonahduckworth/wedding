@@ -1,6 +1,6 @@
-import { motion, useAnimation } from 'framer-motion';
-import { useState } from 'react';
-import Layout from '../components/Layout';
+import { motion, useAnimation } from "framer-motion";
+import { useState } from "react";
+import Layout from "../components/Layout";
 
 export default function StoryPage() {
   const [selectedPhoto, setSelectedPhoto] = useState<string | null>(null);
@@ -17,76 +17,83 @@ export default function StoryPage() {
 
   const timelineEvents = [
     {
-      date: 'January 2021',
-      title: 'The First Date',
+      date: "January 2021",
+      title: "The First Date",
       description:
         'They matched on Hinge a couple months earlier, but Covid restrictions delayed their first meeting. Their skating/pond hockey date quickly turned into a 12-hour adventure that included coffee, building furniture, and ordering sushi. Sam thought Jonah was "kinda funny", and Jonah loved Sam\'s stories.',
-      icon: '⛸️',
+      icon: "⛸️",
     },
     {
-      date: '2021–2022',
-      title: 'Inseparable',
+      date: "2021–2022",
+      title: "Inseparable",
       description:
-        'They originally agreed to only see each other a couple times per week due to busy schedules with Jonah taking his B.Sc. in Computer Science and Sam taking her M.Ed. in School and Applied Child Psychology. This plan quickly went out the window after the 2nd date!',
-      icon: '💫',
+        "They originally agreed to only see each other a couple times per week due to busy schedules with Jonah taking his B.Sc. in Computer Science and Sam taking her M.Ed. in School and Applied Child Psychology. This plan quickly went out the window after the 2nd date!",
+      icon: "💫",
     },
     {
-      date: '2022',
-      title: 'Long Distance',
+      date: "2022",
+      title: "Long Distance",
       description:
-        'When Jonah had to live in Kamloops for 4 months to finish his degree, they proved their love could withstand the distance.',
-      icon: '✈️',
+        "When Jonah had to live in Kamloops for 4 months to finish his degree, they proved their love could withstand the distance.",
+      icon: "✈️",
     },
     {
-      date: '2022–2024',
-      title: 'Adventures Together',
+      date: "2022–2024",
+      title: "Adventures Together",
       description:
-        'They traveled to Arizona, Seattle, and throughout B.C., supported each other through the early days of their careers, and enjoyed bike rides (on the bike Jonah refurbished for Sam), getting burgers, hanging with friends, and playing sports together.',
-      icon: '🚴',
+        "They traveled to Arizona, Seattle, and throughout B.C., supported each other through the early days of their careers, and enjoyed bike rides (on the bike Jonah refurbished for Sam), getting burgers, hanging with friends, and playing sports together.",
+      icon: "🚴",
     },
     {
-      date: 'November 2024',
-      title: 'Moose Joins the Family',
+      date: "November 2024",
+      title: "Moose Joins the Family",
       description:
-        'They adopted their sweet puppy, Moose, and now enjoy daily walks together as a family.',
-      icon: '🐕',
+        "They adopted their sweet puppy, Moose, and now enjoy daily walks together as a family.",
+      icon: "🐕",
     },
     {
-      date: 'Future',
-      title: 'Dreams Ahead',
+      date: "Future",
+      title: "Dreams Ahead",
       description:
-        'Sam and Jonah aspire to travel to Italy, Portugal, and Japan, while expanding their family and building a beautiful life together.',
-      icon: '🌟',
+        "Sam and Jonah aspire to travel to Italy, Portugal, and Japan, while expanding their family and building a beautiful life together.",
+      icon: "🌟",
     },
   ];
 
   const galleryPhotos = [
-    'NoraHanakoPhotographyS&JEngagement-5429.jpg',
-    'NoraHanakoPhotographyS&JEngagement-5481.jpg',
-    'NoraHanakoPhotographyS&JEngagement-5500-2.jpg',
-    'NoraHanakoPhotographyS&JEngagement-5521-2.jpg',
-    'NoraHanakoPhotographyS&JEngagement-5537.jpg',
-    'NoraHanakoPhotographyS&JEngagement-5571.jpg',
-    'NoraHanakoPhotographyS&JEngagement-5590-2.jpg',
-    'NoraHanakoPhotographyS&JEngagement-5635.jpg',
-    'NoraHanakoPhotographyS&JEngagement-5671-2.jpg',
-    'NoraHanakoPhotographyS&JEngagement-5718-2.jpg',
-    'NoraHanakoPhotographyS&JEngagement-5750-2.jpg',
-    'NoraHanakoPhotographyS&JEngagement-5757.jpg',
-    'NoraHanakoPhotographyS&JEngagement-5786.jpg',
-    'NoraHanakoPhotographyS&JEngagement-5806.jpg',
-    'NoraHanakoPhotographyS&JEngagement-5815.jpg',
-    'NoraHanakoPhotographyS&JEngagement-5852-2.jpg',
-    'NoraHanakoPhotographyS&JEngagement-5880-2.jpg',
-    'NoraHanakoPhotographyS&JEngagement-5925-2.jpg',
-    'NoraHanakoPhotographyS&JEngagement-5963-2.jpg',
-    'NoraHanakoPhotographyS&JEngagement-5995-2.jpg',
-    'NoraHanakoPhotographyS&JEngagement-6057.jpg',
-    'NoraHanakoPhotographyS&JEngagement-6089-2.jpg',
-    'NoraHanakoPhotographyS&JEngagement-6165-2.jpg',
-    'NoraHanakoPhotographyS&JEngagement-6183-2.jpg',
-    'NoraHanakoPhotographyS&JEngagement-6203-2.jpg',
-    'NoraHanakoPhotographyS&JEngagement-6223.jpg',
+    "NoraHanakoPhotographyS&JEngagement-5429.jpg",
+    "NoraHanakoPhotographyS&JEngagement-5481.jpg",
+    "NoraHanakoPhotographyS&JEngagement-5500-2.jpg",
+    "NoraHanakoPhotographyS&JEngagement-5521-2.jpg",
+    "NoraHanakoPhotographyS&JEngagement-5537.jpg",
+    "NoraHanakoPhotographyS&JEngagement-5571.jpg",
+    "NoraHanakoPhotographyS&JEngagement-5590-2.jpg",
+    "NoraHanakoPhotographyS&JEngagement-5635.jpg",
+    "NoraHanakoPhotographyS&JEngagement-5671-2.jpg",
+    "NoraHanakoPhotographyS&JEngagement-5718-2.jpg",
+    "NoraHanakoPhotographyS&JEngagement-5750-2.jpg",
+    "NoraHanakoPhotographyS&JEngagement-5963-2.jpg",
+    "NoraHanakoPhotographyS&JEngagement-6017.jpg",
+    "NoraHanakoPhotographyS&JEngagement-5925.jpg",
+    "NoraHanakoPhotographyS&JEngagement-5757.jpg",
+    "NoraHanakoPhotographyS&JEngagement-5786.jpg",
+    "NoraHanakoPhotographyS&JEngagement-5806.jpg",
+    "NoraHanakoPhotographyS&JEngagement-5727-2.jpg",
+    "NoraHanakoPhotographyS&JEngagement-5815.jpg",
+    "NoraHanakoPhotographyS&JEngagement-5852-2.jpg",
+    "IMG_0569.JPG",
+    "NoraHanakoPhotographyS&JEngagement-5880-2.jpg",
+    "NoraHanakoPhotographyS&JEngagement-5995-2.jpg",
+    "NoraHanakoPhotographyS&JEngagement-5574.jpg",
+    "NoraHanakoPhotographyS&JEngagement-6057.jpg",
+    "NoraHanakoPhotographyS&JEngagement-6165-2.jpg",
+    "NoraHanakoPhotographyS&JEngagement-6089-2.jpg",
+    "NoraHanakoPhotographyS&JEngagement-6183-2.jpg",
+    "NoraHanakoPhotographyS&JEngagement-6203-2.jpg",
+    "NoraHanakoPhotographyS&JEngagement-6223.jpg",
+    "NoraHanakoPhotographyS&JEngagement-6191.jpg",
+    "IMG_0232.JPG",
+    "NoraHanakoPhotographyS&JEngagement-5472.jpg",
   ];
 
   return (
@@ -99,7 +106,11 @@ export default function StoryPage() {
             alt="Sam & Jonah"
             className="w-full h-full object-cover object-[center_40%]"
             initial={{ opacity: 0, scale: 1.05 }}
-            animate={heroLoaded ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 1.05 }}
+            animate={
+              heroLoaded
+                ? { opacity: 1, scale: 1 }
+                : { opacity: 0, scale: 1.05 }
+            }
             transition={{ duration: 1.2, ease: [0.25, 0.1, 0.25, 1] }}
             onLoad={() => setHeroLoaded(true)}
           />
@@ -117,7 +128,7 @@ export default function StoryPage() {
           </p>
           <h1
             className="font-display text-5xl md:text-7xl lg:text-8xl text-white drop-shadow-lg"
-            style={{ fontWeight: 400, letterSpacing: '0.02em' }}
+            style={{ fontWeight: 400, letterSpacing: "0.02em" }}
           >
             Our Love Story
           </h1>
@@ -131,56 +142,56 @@ export default function StoryPage() {
       <motion.section
         initial="hidden"
         whileInView="visible"
-        viewport={{ once: true, margin: '-80px' }}
+        viewport={{ once: true, margin: "-80px" }}
         variants={fadeInUp}
         className="py-24 md:py-32 px-6"
       >
         <div className="max-w-3xl mx-auto">
           <div className="space-y-6 text-lg text-body leading-[1.9]">
             <p>
-              Jonah and Sam met in{' '}
-              <strong className="font-medium text-heading">January 2021</strong>.
-              They matched on the dating app, Hinge, a couple of months earlier.
-              They delayed their first date due to Covid restrictions, and the
-              fact that Sam would be travelling home for Christmas.
+              Jonah and Sam met in{" "}
+              <strong className="font-medium text-heading">January 2021</strong>
+              . They matched on the dating app, Hinge, a couple of months
+              earlier. They delayed their first date due to Covid restrictions,
+              and the fact that Sam would be travelling home for Christmas.
             </p>
             <p>
-              Their first date was skating/playing pond hockey. Sam thought Jonah
-              was <em className="font-display">"kinda funny"</em>, Jonah loved
-              Sam's stories, and their skating date quickly turned into a{' '}
-              <strong className="font-medium text-heading">12-hour day</strong>{' '}
+              Their first date was skating/playing pond hockey. Sam thought
+              Jonah was <em className="font-display">"kinda funny"</em>, Jonah
+              loved Sam's stories, and their skating date quickly turned into a{" "}
+              <strong className="font-medium text-heading">12-hour day</strong>{" "}
               which also included having coffee, building some furniture, and
               ordering sushi.
             </p>
             <p>
-              They were both students at the time, with Jonah taking his B.Sc. in
-              Computer Science, and Sam taking her M.Ed. in School and Applied
-              Child Psychology. They had originally agreed that with their busy
-              schedules, they should only plan to see each other a couple of times
-              per week. This plan quickly went out the window (after the 2nd
-              date), and they have been inseparable ever since.
+              They were both students at the time, with Jonah taking his B.Sc.
+              in Computer Science, and Sam taking her M.Ed. in School and
+              Applied Child Psychology. They had originally agreed that with
+              their busy schedules, they should only plan to see each other a
+              couple of times per week. This plan quickly went out the window
+              (after the 2nd date), and they have been inseparable ever since.
             </p>
             <p>
               Over the course of their relationship, they have spent some time
-              long-distance (Jonah had to live in Kamloops for 4 months to finish
-              his degree), lived together, done some travels (Arizona, Seattle,
-              and throughout B.C.), and have supported each other through the
-              early days/years of their professional careers.
+              long-distance (Jonah had to live in Kamloops for 4 months to
+              finish his degree), lived together, done some travels (Arizona,
+              Seattle, and throughout B.C.), and have supported each other
+              through the early days/years of their professional careers.
             </p>
             <p>
               In their free time, they enjoy going for bike rides (on the bike
               that Jonah refurbished for Sam), getting burgers, hanging out with
               friends, and playing a variety of different sports (e.g., soccer,
-              tennis, golf, pickleball). They adopted their sweet puppy,{' '}
+              tennis, golf, pickleball). They adopted their sweet puppy,{" "}
               <strong className="font-medium text-heading">Moose</strong>, in
               November 2024, and enjoy taking him for daily walks as well.
             </p>
             <p>
               Jonah and Sam aspire to do some bigger travels, including Italy,
-              Portugal, and Japan, as well as expanding their family. They are{' '}
+              Portugal, and Japan, as well as expanding their family. They are{" "}
               <strong className="font-medium text-heading">
                 thrilled to be able to celebrate their love story and marriage
-              </strong>{' '}
+              </strong>{" "}
               with all of their favourite people.
             </p>
           </div>
@@ -202,7 +213,7 @@ export default function StoryPage() {
                   className="w-full h-full object-cover"
                 />
               </div>
-            )
+            ),
           )}
         </div>
       </section>
@@ -211,7 +222,7 @@ export default function StoryPage() {
       <motion.section
         initial="hidden"
         whileInView="visible"
-        viewport={{ once: true, margin: '-80px' }}
+        viewport={{ once: true, margin: "-80px" }}
         className="py-24 md:py-32 px-6"
       >
         <div className="max-w-4xl mx-auto">
@@ -236,20 +247,24 @@ export default function StoryPage() {
                 key={index}
                 initial={{ opacity: 0, x: index % 2 === 0 ? -20 : 20 }}
                 whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true, margin: '-50px' }}
-                transition={{ duration: 0.8, ease: [0.25, 0.1, 0.25, 1], delay: index * 0.08 }}
+                viewport={{ once: true, margin: "-50px" }}
+                transition={{
+                  duration: 0.8,
+                  ease: [0.25, 0.1, 0.25, 1],
+                  delay: index * 0.08,
+                }}
                 className={`relative mb-14 md:mb-12 ${
                   index % 2 === 0
-                    ? 'md:pr-1/2 md:text-right'
-                    : 'md:pl-1/2 md:ml-auto'
+                    ? "md:pr-1/2 md:text-right"
+                    : "md:pl-1/2 md:ml-auto"
                 } md:w-1/2`}
               >
                 {/* Dot */}
                 <div
                   className={`absolute top-6 left-2 md:left-auto ${
                     index % 2 === 0
-                      ? 'md:right-0 md:translate-x-1/2'
-                      : 'md:left-0 md:-translate-x-1/2'
+                      ? "md:right-0 md:translate-x-1/2"
+                      : "md:left-0 md:-translate-x-1/2"
                   } w-12 h-12 bg-gold rounded-full border-4 border-cream flex items-center justify-center text-xl shadow-sm z-10`}
                 >
                   {event.icon}
@@ -259,7 +274,7 @@ export default function StoryPage() {
                 <div className="ml-20 md:ml-0">
                   <div
                     className={`bg-white rounded-2xl p-6 md:p-8 border border-card-border shadow-sm hover:shadow-md transition-shadow ${
-                      index % 2 === 0 ? 'md:mr-8' : 'md:ml-8'
+                      index % 2 === 0 ? "md:mr-8" : "md:ml-8"
                     }`}
                   >
                     <span className="inline-block text-[13px] font-medium text-gold mb-2 tracking-wide">
@@ -271,7 +286,9 @@ export default function StoryPage() {
                     >
                       {event.title}
                     </h3>
-                    <p className="text-body leading-relaxed">{event.description}</p>
+                    <p className="text-body leading-relaxed">
+                      {event.description}
+                    </p>
                   </div>
                 </div>
               </motion.div>
@@ -284,7 +301,7 @@ export default function StoryPage() {
       <motion.section
         initial="hidden"
         whileInView="visible"
-        viewport={{ once: true, margin: '-80px' }}
+        viewport={{ once: true, margin: "-80px" }}
         variants={fadeInUp}
         className="py-24 md:py-32 px-6 bg-blush"
       >
@@ -309,7 +326,11 @@ export default function StoryPage() {
                 initial={{ opacity: 0 }}
                 whileInView={{ opacity: 1 }}
                 viewport={{ once: true }}
-                transition={{ duration: 0.8, ease: [0.25, 0.1, 0.25, 1], delay: index * 0.03 }}
+                transition={{
+                  duration: 0.8,
+                  ease: [0.25, 0.1, 0.25, 1],
+                  delay: index * 0.03,
+                }}
                 className="break-inside-avoid cursor-pointer group"
                 onClick={() => setSelectedPhoto(photo)}
               >
