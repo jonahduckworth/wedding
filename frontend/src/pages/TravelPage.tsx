@@ -1,7 +1,10 @@
 import { motion } from 'framer-motion';
+import { useState } from 'react';
 import Layout from '../components/Layout';
 
 export default function TravelPage() {
+  const [heroLoaded, setHeroLoaded] = useState(false);
+
   const fadeInUp = {
     hidden: { opacity: 0, y: 25 },
     visible: {
@@ -93,45 +96,40 @@ export default function TravelPage() {
 
   return (
     <Layout>
-      {/* ─── Page Header ─── */}
-      <section className="pt-32 md:pt-40 pb-16 md:pb-20 px-6">
-        <div className="max-w-4xl mx-auto text-center">
-          <motion.p
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="text-gold text-[13px] tracking-[0.3em] uppercase mb-4 font-medium"
-          >
+      {/* ─── Hero ─── */}
+      <section className="relative h-screen flex items-end overflow-hidden">
+        <div className="absolute inset-0">
+          <motion.img
+            src="/Gallery/NoraHanakoPhotographyS&JEngagement-5892.jpg"
+            alt="Sam & Jonah"
+            className="w-full h-full object-cover object-center"
+            initial={{ opacity: 0, scale: 1.05 }}
+            animate={heroLoaded ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 1.05 }}
+            transition={{ duration: 1.2, ease: [0.25, 0.1, 0.25, 1] }}
+            onLoad={() => setHeroLoaded(true)}
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/5 to-black/25" />
+        </div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 25 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.3, ease: [0.25, 0.1, 0.25, 1] }}
+          className="relative z-10 w-full text-center pb-24 md:pb-32 px-6"
+        >
+          <p className="text-white/45 text-[13px] tracking-[0.35em] uppercase mb-4">
             Plan your trip
-          </motion.p>
-          <motion.h1
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.1 }}
-            className="font-display text-5xl md:text-7xl text-heading mb-6"
-            style={{ fontWeight: 300 }}
+          </p>
+          <h1
+            className="font-display text-5xl md:text-7xl lg:text-8xl text-white"
+            style={{ fontWeight: 300, letterSpacing: '0.02em' }}
           >
             Travel &amp; Stay
-          </motion.h1>
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.3 }}
-            className="flex items-center justify-center gap-4"
-          >
-            <div className="w-16 h-px bg-gold/30" />
-            <div className="w-1.5 h-1.5 rounded-full bg-gold/40" />
-            <div className="w-16 h-px bg-gold/30" />
-          </motion.div>
-          <motion.p
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.4 }}
-            className="text-body text-lg mt-6"
-          >
+          </h1>
+          <p className="text-lg md:text-xl font-display italic text-white/55 mt-3">
             Everything you need to know about visiting beautiful Calgary
-          </motion.p>
-        </div>
+          </p>
+        </motion.div>
       </section>
 
       {/* ─── Getting Here ─── */}

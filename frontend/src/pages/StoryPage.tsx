@@ -73,6 +73,7 @@ export default function StoryPage() {
     'NoraHanakoPhotographyS&JEngagement-5718-2.jpg',
     'NoraHanakoPhotographyS&JEngagement-5750-2.jpg',
     'NoraHanakoPhotographyS&JEngagement-5786.jpg',
+    'NoraHanakoPhotographyS&JEngagement-5806.jpg',
     'NoraHanakoPhotographyS&JEngagement-5815.jpg',
     'NoraHanakoPhotographyS&JEngagement-5852-2.jpg',
     'NoraHanakoPhotographyS&JEngagement-5880-2.jpg',
