@@ -32,10 +32,21 @@ export default function HomePage() {
       <section className="relative h-screen flex flex-col overflow-hidden">
         {/* Background */}
         <div className="absolute inset-0">
+          {/* Desktop hero */}
           <motion.img
-            src="/hero.jpg"
+            src="/hero-desktop.jpg"
             alt="Sam & Jonah"
-            className="w-full h-full object-cover object-[center_60%] md:object-[center_55%]"
+            className="hidden md:block w-full h-full object-cover object-[center_25%]"
+            initial={{ opacity: 0, scale: 1.05 }}
+            animate={heroLoaded ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 1.05 }}
+            transition={{ duration: 1.2, ease: [0.25, 0.1, 0.25, 1] }}
+            onLoad={() => setHeroLoaded(true)}
+          />
+          {/* Mobile hero */}
+          <motion.img
+            src="/hero-mobile.jpg"
+            alt="Sam & Jonah"
+            className="md:hidden w-full h-full object-cover object-[center_60%]"
             initial={{ opacity: 0, scale: 1.05 }}
             animate={heroLoaded ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 1.05 }}
             transition={{ duration: 1.2, ease: [0.25, 0.1, 0.25, 1] }}
