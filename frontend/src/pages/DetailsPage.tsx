@@ -193,8 +193,9 @@ export default function DetailsPage() {
                 <span>🅿️</span> Parking
               </h3>
               <p className="text-body leading-relaxed">
-                Free street parking is available on surrounding streets. There is also a
-                paid lot nearby. A detailed parking map will be shared closer to the date.
+                All public parking areas surrounding Rouge are City-Controlled Parking Areas.
+                We recommend parking in the Inglewood Parking Lot. Uber is also a great
+                option for transportation.
               </p>
             </div>
 
