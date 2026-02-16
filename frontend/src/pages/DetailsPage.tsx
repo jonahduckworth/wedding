@@ -13,35 +13,45 @@ export default function DetailsPage() {
 
   return (
     <Layout>
-      {/* ─── Hero with Rouge photo ─── */}
-      <section className="relative h-[60vh] md:h-[70vh] flex items-end overflow-hidden">
-        <div className="absolute inset-0">
-          <img
-            src="/rouge-hero.webp"
-            alt="Rouge Restaurant, Calgary"
-            className="w-full h-full object-cover"
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-black/10" />
-        </div>
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, ease: [0.25, 0.1, 0.25, 1] }}
-          className="relative z-10 w-full text-center pb-16 md:pb-24 px-6"
-        >
-          <p className="text-white/80 text-[15px] tracking-[0.35em] uppercase mb-4 font-medium">
+      {/* ─── Page Header ─── */}
+      <section className="pt-32 md:pt-40 pb-16 md:pb-20 px-6">
+        <div className="max-w-4xl mx-auto text-center">
+          <motion.p
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            className="text-gold text-[13px] tracking-[0.3em] uppercase mb-4 font-medium"
+          >
             The day
-          </p>
-          <h1
-            className="font-display text-5xl md:text-7xl text-white drop-shadow-lg"
+          </motion.p>
+          <motion.h1
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.1 }}
+            className="font-display text-5xl md:text-7xl text-heading mb-6"
             style={{ fontWeight: 300 }}
           >
             Wedding Details
-          </h1>
-          <p className="text-xl md:text-2xl font-display italic text-white/85 mt-3">
+          </motion.h1>
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.3 }}
+            className="flex items-center justify-center gap-4"
+          >
+            <div className="w-16 h-px bg-gold/30" />
+            <div className="w-1.5 h-1.5 rounded-full bg-gold/40" />
+            <div className="w-16 h-px bg-gold/30" />
+          </motion.div>
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.4 }}
+            className="text-body text-lg mt-6"
+          >
             Everything you need to know for our special day
-          </p>
-        </motion.div>
+          </motion.p>
+        </div>
       </section>
 
       {/* ─── Venue & Key Info ─── */}

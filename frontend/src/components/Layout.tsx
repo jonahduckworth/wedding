@@ -12,7 +12,7 @@ export default function Layout({ children }: LayoutProps) {
   const [scrolled, setScrolled] = useState(false);
 
   // Pages with full-bleed dark hero images
-  const isHeroPage = ['/', '/story', '/details'].includes(location.pathname);
+  const isHeroPage = ['/', '/story'].includes(location.pathname);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 60);
