@@ -46,7 +46,7 @@ export default function HomePage() {
           <motion.img
             src="/hero-mobile.jpg"
             alt="Sam & Jonah"
-            className="md:hidden w-full h-full object-cover object-[65%_60%]"
+            className="md:hidden w-full h-full object-cover object-[35%_60%]"
             initial={{ opacity: 0, scale: 1.05 }}
             animate={heroLoaded ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 1.05 }}
             transition={{ duration: 1.2, ease: [0.25, 0.1, 0.25, 1] }}
