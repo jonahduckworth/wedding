@@ -120,61 +120,14 @@ export default function ItemDetailModal({ item, apiUrl, onClose, onContribute }:
             </button>
           )}
 
-          {/* Contributors Section */}
-          <div>
-            <h3 className="font-semibold text-lg mb-3">
-              Contributions
-              {itemDetails?.contributions && itemDetails.contributions.length > 0 && (
-                <span className="text-gray-500 font-normal text-sm ml-2">
-                  ({itemDetails.contributions.length})
-                </span>
-              )}
-            </h3>
-
-            {isLoading ? (
-              <div className="text-center py-4 text-gray-500">Loading contributions...</div>
-            ) : !itemDetails?.contributions || itemDetails.contributions.length === 0 ? (
-              <div className="text-center py-4 text-gray-500 bg-gray-50 rounded-lg">
-                Be the first to contribute!
-              </div>
-            ) : (
-              <div className="space-y-3">
-                {itemDetails.contributions.map((contribution, index) => (
-                  <div
-                    key={index}
-                    className="flex items-start gap-3 p-3 bg-gray-50 rounded-lg"
-                  >
-                    {/* Avatar */}
-                    <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
-                      <span className="text-primary font-semibold">💝</span>
-                    </div>
-
-                    {/* Details — no name shown */}
-                    <div className="flex-1 min-w-0">
-                      <div className="flex justify-between items-start">
-                        <span className="font-medium text-gray-500">A generous guest</span>
-                        <span className="text-green-600 font-semibold">
-                          ${parseFloat(contribution.amount).toFixed(0)}
-                        </span>
-                      </div>
-                      {contribution.message && (
-                        <p className="text-sm text-gray-600 mt-1 italic">
-                          "{contribution.message}"
-                        </p>
-                      )}
-                      <p className="text-xs text-gray-400 mt-1">
-                        {new Date(contribution.created_at).toLocaleDateString('en-US', {
-                          month: 'short',
-                          day: 'numeric',
-                          year: 'numeric'
-                        })}
-                      </p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
+          {/* Contributions Summary */}
+          {contributed > 0 && (
+            <div className="text-center py-4 bg-gray-50 rounded-lg">
+              <p className="text-gray-600 text-sm">
+                <span className="font-semibold text-green-600">${contributed.toFixed(0)}</span> contributed so far
+              </p>
+            </div>
+          )}
         </div>
       </div>
     </div>

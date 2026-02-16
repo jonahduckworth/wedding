@@ -30,7 +30,7 @@ export default function ContributionModal({ item, onClose, onSubmit }: Contribut
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [amount, setAmount] = useState('');
-  const [isAnonymous, setIsAnonymous] = useState(false);
+  const isAnonymous = true; // All contributions are private
   const [message, setMessage] = useState('');
   const [purpose, setPurpose] = useState('');
   const [step, setStep] = useState<'form' | 'instructions' | 'confirm'>('form');
@@ -183,18 +183,9 @@ export default function ContributionModal({ item, onClose, onSubmit }: Contribut
                 />
               </div>
 
-              <div className="flex items-center">
-                <input
-                  type="checkbox"
-                  id="anonymous"
-                  checked={isAnonymous}
-                  onChange={(e) => setIsAnonymous(e.target.checked)}
-                  className="h-4 w-4 text-primary border-gray-300 rounded focus:ring-primary"
-                />
-                <label htmlFor="anonymous" className="ml-2 text-sm text-gray-700">
-                  Display my contribution as "Anonymous"
-                </label>
-              </div>
+              <p className="text-xs text-gray-400 italic">
+                Your name will not be displayed publicly.
+              </p>
 
               <button
                 onClick={() => setStep('instructions')}

@@ -325,7 +325,7 @@ export default function RegistryPage() {
                               onClick={() => handleViewDetails(item)}
                               className="w-full mt-3 text-sm text-subtle hover:text-gold transition-colors"
                             >
-                              View Details &amp; Contributors
+                              View Details
                             </button>
                           </div>
                         </div>
