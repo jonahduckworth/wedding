@@ -19,12 +19,6 @@ interface HoneymoonItem {
   display_order: number;
 }
 
-interface HoneymoonCategory {
-  id: string;
-  name: string;
-  display_order: number;
-}
-
 interface CategoryWithItems {
   id: string;
   name: string;

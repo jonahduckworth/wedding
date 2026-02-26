@@ -37,7 +37,8 @@ interface ItemDetailModalProps {
 
 export default function ItemDetailModal({ item, apiUrl, onClose, onContribute }: ItemDetailModalProps) {
   // Fetch item with contributions
-  const { data: itemDetails, isLoading } = useQuery<ItemWithContributions>({
+  // Pre-fetch item details with contributions (data used for future contribution display)
+  useQuery<ItemWithContributions>({
     queryKey: ['registry-item', item.id],
     queryFn: async () => {
       const response = await fetch(`${apiUrl}/api/registry/items/${item.id}`);

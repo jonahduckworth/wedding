@@ -1,4 +1,4 @@
-import { motion, useAnimation } from "framer-motion";
+import { motion } from "framer-motion";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import Layout from "../components/Layout";
@@ -12,7 +12,7 @@ export default function HomePage() {
     visible: {
       opacity: 1,
       y: 0,
-      transition: { duration: 0.8, ease: [0.25, 0.1, 0.25, 1] },
+      transition: { duration: 0.8, ease: [0.25, 0.1, 0.25, 1] as const },
     },
   };
 
@@ -43,7 +43,7 @@ export default function HomePage() {
                 ? { opacity: 1, scale: 1 }
                 : { opacity: 0, scale: 1.05 }
             }
-            transition={{ duration: 1.2, ease: [0.25, 0.1, 0.25, 1] }}
+            transition={{ duration: 1.2, ease: [0.25, 0.1, 0.25, 1] as const }}
             onLoad={() => setHeroLoaded(true)}
           />
           {/* Mobile hero */}
@@ -57,7 +57,7 @@ export default function HomePage() {
                 ? { opacity: 1, scale: 1 }
                 : { opacity: 0, scale: 1.05 }
             }
-            transition={{ duration: 1.2, ease: [0.25, 0.1, 0.25, 1] }}
+            transition={{ duration: 1.2, ease: [0.25, 0.1, 0.25, 1] as const }}
             onLoad={() => setHeroLoaded(true)}
           />
           {/* Subtle dark vignette — neutral only, no berry/pink */}

@@ -21,7 +21,7 @@ export default function FloralCorner({
     visible: {
       pathLength: 1,
       opacity: 0.4,
-      transition: { duration: 2.5, ease: 'easeInOut' }
+      transition: { duration: 2.5, ease: 'easeInOut' as const }
     }
   };
 

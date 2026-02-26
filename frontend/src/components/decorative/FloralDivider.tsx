@@ -11,7 +11,7 @@ export default function FloralDivider({ className = '', animate = true }: Floral
     visible: {
       pathLength: 1,
       opacity: 1,
-      transition: { duration: 2, ease: 'easeInOut' }
+      transition: { duration: 2, ease: 'easeInOut' as const }
     }
   };
 

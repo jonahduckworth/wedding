@@ -27,7 +27,8 @@ interface InviteWithGuests {
 export default function InviteManagement() {
   const [creatingInvite, setCreatingInvite] = useState(false);
   const [selectedGuestIds, setSelectedGuestIds] = useState<string[]>([]);
-  const [editingInvite, setEditingInvite] = useState<InviteWithGuests | null>(null);
+  const editingInviteState = useState<InviteWithGuests | null>(null);
+  const setEditingInvite = editingInviteState[1];
   const [deletingInviteId, setDeletingInviteId] = useState<string | null>(null);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const queryClient = useQueryClient();
@@ -90,24 +91,24 @@ export default function InviteManagement() {
     },
   });
 
-  // Update invite mutation
-  const updateInviteMutation = useMutation({
-    mutationFn: async ({ id, guestIds }: { id: string; guestIds: string[] }) => {
-      const inviteType = guestIds.length === 1 ? 'single' : 'couple';
-      const response = await fetch(`${apiUrl}/api/admin/invites/${id}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ guest_ids: guestIds, invite_type: inviteType }),
-      });
-      if (!response.ok) throw new Error('Failed to update invite');
-      return response.json();
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['invites'] });
-      queryClient.invalidateQueries({ queryKey: ['guests'] });
-      setEditingInvite(null);
-    },
-  });
+  // TODO: Wire up update invite mutation when edit UI is built
+  // const updateInviteMutation = useMutation({
+  //   mutationFn: async ({ id, guestIds }: { id: string; guestIds: string[] }) => {
+  //     const inviteType = guestIds.length === 1 ? 'single' : 'couple';
+  //     const response = await fetch(`${apiUrl}/api/admin/invites/${id}`, {
+  //       method: 'PUT',
+  //       headers: { 'Content-Type': 'application/json' },
+  //       body: JSON.stringify({ guest_ids: guestIds, invite_type: inviteType }),
+  //     });
+  //     if (!response.ok) throw new Error('Failed to update invite');
+  //     return response.json();
+  //   },
+  //   onSuccess: () => {
+  //     queryClient.invalidateQueries({ queryKey: ['invites'] });
+  //     queryClient.invalidateQueries({ queryKey: ['guests'] });
+  //     setEditingInvite(null);
+  //   },
+  // });
 
   // Delete invite mutation
   const deleteInviteMutation = useMutation({
