@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 
 interface HoneymoonCategory {
@@ -46,7 +46,6 @@ type Tab = 'categories' | 'items' | 'contributions';
 
 export default function RegistryManagement() {
   const [activeTab, setActiveTab] = useState<Tab>('items');
-  const queryClient = useQueryClient();
 
   const apiUrl = window.location.hostname === 'localhost'
     ? 'http://localhost:8081'
@@ -312,7 +311,6 @@ function ItemsTab({ apiUrl }: { apiUrl: string }) {
     price: '',
     display_order: 0,
   });
-  const fileInputRef = useRef<HTMLInputElement>(null);
   const queryClient = useQueryClient();
 
   const { data: categories } = useQuery<HoneymoonCategory[]>({

@@ -1,4 +1,4 @@
-import { motion, useAnimation } from "framer-motion";
+import { motion } from "framer-motion";
 import { useState } from "react";
 import Layout from "../components/Layout";
 
@@ -11,7 +11,7 @@ export default function StoryPage() {
     visible: {
       opacity: 1,
       y: 0,
-      transition: { duration: 0.8, ease: [0.25, 0.1, 0.25, 1] },
+      transition: { duration: 0.8, ease: [0.25, 0.1, 0.25, 1] as const },
     },
   };
 
@@ -111,7 +111,7 @@ export default function StoryPage() {
                 ? { opacity: 1, scale: 1 }
                 : { opacity: 0, scale: 1.05 }
             }
-            transition={{ duration: 1.2, ease: [0.25, 0.1, 0.25, 1] }}
+            transition={{ duration: 1.2, ease: [0.25, 0.1, 0.25, 1] as const }}
             onLoad={() => setHeroLoaded(true)}
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/5 to-black/25" />
