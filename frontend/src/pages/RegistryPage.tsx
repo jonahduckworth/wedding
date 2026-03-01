@@ -359,6 +359,19 @@ export default function RegistryPage() {
               </li>
             </ol>
           </motion.div>
+
+          {/* Card Box Note */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="mt-6 text-center py-8"
+          >
+            <p className="text-body text-[15px] leading-relaxed">
+              Prefer to give a card? There will also be a card box at the venue on
+              the day of the wedding 💌
+            </p>
+          </motion.div>
         </div>
       </div>
 

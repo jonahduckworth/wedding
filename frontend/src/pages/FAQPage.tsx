@@ -53,7 +53,7 @@ export default function FAQPage() {
     {
       question: 'Will you accept gifts?',
       answer:
-        'You are too kind! In lieu of gifts, please consider contributing to our honeymoon fund! We are heading to Italy and Portugal in September 2026. We have set up a Honeymoon Registry for guests who would like to contribute to something specific.',
+        'You are too kind! In lieu of gifts, please consider contributing to our honeymoon fund! We are heading to Italy and Portugal in September 2026. We have set up a Honeymoon Registry for guests who would like to contribute to something specific. There will also be a card box at the venue if you prefer to bring a card on the day.',
     },
   ];
 
