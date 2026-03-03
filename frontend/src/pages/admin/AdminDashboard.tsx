@@ -6,13 +6,33 @@ import EmailCampaigns from './EmailCampaigns';
 import RegistryManagement from './RegistryManagement';
 import RsvpManagement from './RsvpManagement';
 import InvitationSending from './InvitationSending';
+import AdminAuth, { useAdminUser, adminLogout } from '../../components/AdminAuth';
 
 export default function AdminDashboard() {
   return (
+    <AdminAuth>
+      <AdminDashboardContent />
+    </AdminAuth>
+  );
+}
+
+function AdminDashboardContent() {
+  const user = useAdminUser();
+
+  return (
     <div className="min-h-screen bg-gray-50">
       <div className="bg-white shadow">
-        <div className="container mx-auto px-4 py-4">
+        <div className="container mx-auto px-4 py-4 flex justify-between items-center">
           <h1 className="text-2xl font-bold">Admin Dashboard</h1>
+          <div className="flex items-center gap-3">
+            <span className="text-sm text-gray-500">Signed in as <strong>{user}</strong></span>
+            <button
+              onClick={adminLogout}
+              className="text-sm text-gray-500 hover:text-red-600 transition-colors"
+            >
+              Sign out
+            </button>
+          </div>
         </div>
       </div>
 
