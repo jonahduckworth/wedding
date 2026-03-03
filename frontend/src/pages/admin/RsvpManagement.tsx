@@ -316,9 +316,24 @@ export default function RsvpManagement() {
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <code className="text-xs font-mono bg-gray-100 px-2 py-1 rounded">
-                        {entry.unique_code}
-                      </code>
+                      <div className="flex items-center gap-2">
+                        <code className="text-xs font-mono bg-gray-100 px-2 py-1 rounded">
+                          {entry.unique_code}
+                        </code>
+                        <button
+                          onClick={() => {
+                            const url = `https://samandjonah.com/rsvp?code=${entry.unique_code}`;
+                            navigator.clipboard.writeText(url);
+                            const btn = document.getElementById(`copy-${entry.unique_code}`);
+                            if (btn) { btn.textContent = '✓'; setTimeout(() => btn.textContent = '📋', 1500); }
+                          }}
+                          id={`copy-${entry.unique_code}`}
+                          title="Copy RSVP URL"
+                          className="text-xs hover:bg-gray-200 rounded px-1 py-0.5 transition-colors"
+                        >
+                          📋
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 ))}
