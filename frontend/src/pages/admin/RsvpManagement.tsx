@@ -76,7 +76,7 @@ export default function RsvpManagement() {
     .filter(entry => {
       if (!searchTerm) return true;
       const search = searchTerm.toLowerCase();
-      return entry.guests.some(g =>
+      return (entry.guests || []).some(g =>
         g.name.toLowerCase().includes(search) ||
         g.email.toLowerCase().includes(search)
       ) || entry.unique_code.toLowerCase().includes(search);
@@ -245,8 +245,8 @@ export default function RsvpManagement() {
                   <tr key={entry.unique_code} className="hover:bg-gray-50">
                     <td className="px-6 py-4">
                       <div className="space-y-1">
-                        {entry.guests.map(g => {
-                          const rsvp = entry.rsvps.find(r => r.guest_id === g.id);
+                        {(entry.guests || []).map(g => {
+                          const rsvp = (entry.rsvps || []).find(r => r.guest_id === g.id);
                           return (
                             <div key={g.id} className="flex items-center gap-2">
                               <span className="text-sm font-medium text-gray-900">{g.name}</span>
@@ -265,9 +265,9 @@ export default function RsvpManagement() {
                     </td>
                     <td className="px-6 py-4">
                       <div className="space-y-1">
-                        {entry.rsvps.filter(r => r.dietary_restrictions).map(r => (
+                        {(entry.rsvps || []).filter(r => r.dietary_restrictions).map(r => (
                           <div key={r.id} className="text-sm text-gray-600">
-                            {entry.guests.length > 1 && (
+                            {(entry.guests || []).length > 1 && (
                               <span className="font-medium">{r.guest_name.split(' ')[0]}: </span>
                             )}
                             {r.dietary_restrictions}
@@ -277,9 +277,9 @@ export default function RsvpManagement() {
                     </td>
                     <td className="px-6 py-4">
                       <div className="space-y-1">
-                        {entry.rsvps.filter(r => r.song_requests).map(r => (
+                        {(entry.rsvps || []).filter(r => r.song_requests).map(r => (
                           <div key={r.id} className="text-sm text-gray-600">
-                            {entry.guests.length > 1 && (
+                            {(entry.guests || []).length > 1 && (
                               <span className="font-medium">{r.guest_name.split(' ')[0]}: </span>
                             )}
                             {r.song_requests}
@@ -289,7 +289,7 @@ export default function RsvpManagement() {
                     </td>
                     <td className="px-6 py-4">
                       <div className="space-y-1">
-                        {entry.rsvps.filter(r => r.message).map(r => (
+                        {(entry.rsvps || []).filter(r => r.message).map(r => (
                           <div key={r.id} className="text-sm text-gray-600 max-w-xs truncate" title={r.message || ''}>
                             {r.message}
                           </div>
