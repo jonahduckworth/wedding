@@ -23,55 +23,39 @@ pub fn invitation_email_html(
 
                     <!-- Header -->
                     <tr>
-                        <td style="padding: 50px 40px 30px; text-align: center; background-color: #faf8f5; border-bottom: 1px solid #e8ddd1;">
-                            <p style="margin: 0 0 10px 0; font-size: 14px; letter-spacing: 3px; text-transform: uppercase; color: #a0826d;">You Are Cordially Invited</p>
-                            <h1 style="margin: 0; font-size: 36px; color: #4a4a4a; font-weight: 300;">Sam <span style="color: #c9a88a;">&amp;</span> Jonah</h1>
+                        <td style="padding: 30px 40px 20px; text-align: center; background-color: #faf8f5;">
+                            <p style="margin: 0; font-size: 14px; letter-spacing: 3px; text-transform: uppercase; color: #7d2248;">Wedding Invitation</p>
                         </td>
                     </tr>
 
-                    <!-- Placeholder for future image/PDF -->
+                    <!-- Invitation Image -->
                     <tr>
-                        <td style="padding: 40px; text-align: center; background-color: #fdf9f5; border-bottom: 1px solid #e8ddd1;">
-                            <p style="margin: 0; font-size: 13px; color: #b0a090; font-style: italic;">
-                                [Invitation design will be placed here]
-                            </p>
+                        <td style="padding: 0; text-align: center;">
+                            <img src="{website_url}/invitation.jpg" alt="Samantha Orr and Jonah Duckworth invite you to share in the joy of their wedding — Saturday, August 15, 2026 at four o'clock in the afternoon — Rouge, 1240 8 Ave SE, Calgary, Alberta — Reception to follow — Please RSVP by April 30th 2026" width="600" style="width: 100%; max-width: 600px; height: auto; display: block; border: none;" />
                         </td>
                     </tr>
 
-                    <!-- Main content -->
+                    <!-- RSVP & Details -->
                     <tr>
                         <td style="padding: 40px; background-color: #ffffff; color: #4a4a4a;">
                             <p style="margin: 0 0 25px 0; font-size: 17px; line-height: 1.7; color: #6b6b6b; text-align: center;">
                                 Dear {guest_names},
                             </p>
 
-                            <p style="margin: 0 0 25px 0; font-size: 17px; line-height: 1.8; color: #6b6b6b; text-align: center;">
-                                We joyfully invite you to celebrate our wedding!
+                            <p style="margin: 0 0 30px 0; font-size: 17px; line-height: 1.8; color: #6b6b6b; text-align: center;">
+                                Please use the button below to RSVP for our special day.
                             </p>
 
-                            <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="margin: 20px 0; background-color: #faf8f5; border-radius: 8px;">
-                                <tr>
-                                    <td style="padding: 25px; text-align: center;">
-                                        <p style="margin: 0 0 8px 0; font-size: 22px; color: #4a4a4a; font-weight: 300;">Saturday, August 15, 2026</p>
-                                        <p style="margin: 0; font-size: 16px; color: #8b7355;">Rouge Restaurant • Calgary, Alberta</p>
-                                    </td>
-                                </tr>
-                            </table>
-
                             <!-- RSVP Button -->
-                            <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="margin: 35px 0;">
+                            <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="margin: 25px 0;">
                                 <tr>
                                     <td align="center">
-                                        <a href="{rsvp_link}" style="display: inline-block; background-color: #a0826d; color: #ffffff; text-decoration: none; padding: 18px 50px; font-size: 16px; font-weight: 400; letter-spacing: 2px; text-transform: uppercase;">
+                                        <a href="{rsvp_link}" style="display: inline-block; background-color: #7d2248; color: #ffffff; text-decoration: none; padding: 18px 50px; font-size: 16px; font-weight: 400; letter-spacing: 2px; text-transform: uppercase; border-radius: 4px;">
                                             RSVP Now
                                         </a>
                                     </td>
                                 </tr>
                             </table>
-
-                            <p style="margin: 30px 0 0 0; font-size: 14px; color: #999; text-align: center;">
-                                Please RSVP by April 30, 2026
-                            </p>
 
                             <p style="margin: 25px 0 0 0; font-size: 14px; line-height: 1.7; color: #999; text-align: center;">
                                 Kindly note that our celebration is an intimate affair and our invitation is extended to the guests named above only. We appreciate your understanding!
