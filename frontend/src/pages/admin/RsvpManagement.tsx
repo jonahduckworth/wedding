@@ -31,6 +31,17 @@ interface RsvpWithGuest {
   guest_email: string;
 }
 
+interface AdminRsvpEntryRaw {
+  invite: {
+    id: string;
+    unique_code: string;
+    invite_type: string;
+    guests: Guest[];
+  };
+  rsvps: RsvpWithGuest[];
+  status: string;
+}
+
 interface AdminRsvpEntry {
   id: string;
   unique_code: string;
@@ -60,7 +71,15 @@ export default function RsvpManagement() {
     queryFn: async () => {
       const res = await fetch(`${apiUrl}/api/admin/rsvps`);
       if (!res.ok) throw new Error('Failed to fetch RSVPs');
-      return res.json();
+      const raw: AdminRsvpEntryRaw[] = await res.json();
+      return raw.map(entry => ({
+        id: entry.invite.id,
+        unique_code: entry.invite.unique_code,
+        invite_type: entry.invite.invite_type,
+        guests: entry.invite.guests || [],
+        rsvps: entry.rsvps || [],
+        status: entry.status,
+      }));
     },
   });
 
