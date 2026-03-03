@@ -1,7 +1,6 @@
 // Email HTML templates with inline styles for maximum compatibility
 
 /// Invitation email with RSVP link
-/// Placeholder design — Jonah will provide the final image/PDF version later
 pub fn invitation_email_html(
     guest_names: &str,
     rsvp_link: &str,
@@ -14,30 +13,38 @@ pub fn invitation_email_html(
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>You're Invited - Sam & Jonah's Wedding</title>
+    <style>
+        @media only screen and (max-width: 620px) {{
+            .outer-table {{ width: 100% !important; }}
+            .inner-table {{ width: 100% !important; }}
+            .invitation-img {{ width: 100% !important; max-width: 100% !important; }}
+            .content-pad {{ padding: 30px 20px !important; }}
+        }}
+    </style>
 </head>
 <body style="margin: 0; padding: 0; font-family: 'Palatino Linotype', 'Book Antiqua', Palatino, Georgia, serif; background-color: #f7f3f0;">
     <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="background-color: #f7f3f0;">
         <tr>
-            <td align="center" style="padding: 30px 20px;">
-                <table role="presentation" width="600" cellspacing="0" cellpadding="0" border="0" style="max-width: 600px; background-color: #ffffff; box-shadow: 0 8px 24px rgba(0,0,0,0.08);">
+            <td align="center" style="padding: 20px 0;">
+                <table role="presentation" class="inner-table" width="600" cellspacing="0" cellpadding="0" border="0" style="max-width: 600px; width: 100%; background-color: #ffffff; box-shadow: 0 8px 24px rgba(0,0,0,0.08);">
 
                     <!-- Header -->
                     <tr>
-                        <td style="padding: 30px 40px 20px; text-align: center; background-color: #faf8f5;">
+                        <td style="padding: 25px 20px 15px; text-align: center; background-color: #faf8f5;">
                             <p style="margin: 0; font-size: 14px; letter-spacing: 3px; text-transform: uppercase; color: #7d2248;">Wedding Invitation</p>
                         </td>
                     </tr>
 
                     <!-- Invitation Image -->
                     <tr>
-                        <td style="padding: 0; text-align: center;">
-                            <img src="{website_url}/invitation.jpg" alt="Samantha Orr and Jonah Duckworth invite you to share in the joy of their wedding — Saturday, August 15, 2026 at four o'clock in the afternoon — Rouge, 1240 8 Ave SE, Calgary, Alberta — Reception to follow — Please RSVP by April 30th 2026" width="600" style="width: 100%; max-width: 600px; height: auto; display: block; border: none;" />
+                        <td style="padding: 0; text-align: center; font-size: 0; line-height: 0;">
+                            <img src="{website_url}/invitation.jpg" class="invitation-img" alt="Samantha Orr and Jonah Duckworth invite you to share in the joy of their wedding — Saturday, August 15, 2026 at four o'clock in the afternoon — Rouge, 1240 8 Ave SE, Calgary, Alberta — Reception to follow — Please RSVP by April 30th 2026" width="600" style="width: 100%; max-width: 600px; height: auto; display: block; border: none; outline: none;" />
                         </td>
                     </tr>
 
                     <!-- RSVP & Details -->
                     <tr>
-                        <td style="padding: 40px; background-color: #ffffff; color: #4a4a4a;">
+                        <td class="content-pad" style="padding: 40px; background-color: #ffffff; color: #4a4a4a;">
                             <p style="margin: 0 0 25px 0; font-size: 17px; line-height: 1.7; color: #6b6b6b; text-align: center;">
                                 Dear {guest_names},
                             </p>
