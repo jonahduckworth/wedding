@@ -1,5 +1,5 @@
 use axum::{
-    extract::{Path, State},
+    extract::{ConnectInfo, Path, State},
     http::{StatusCode, header},
     response::Html,
     routing::{get, post},
@@ -8,6 +8,11 @@ use axum::{
 use serde::{Deserialize, Serialize};
 use sqlx::PgPool;
 use uuid::Uuid;
+use std::collections::HashMap;
+use std::net::SocketAddr;
+use std::sync::Arc;
+use tokio::sync::Mutex;
+use std::time::Instant;
 
 use crate::email::EmailService;
 use crate::models::{
@@ -24,9 +29,41 @@ use crate::models::{
 use axum_extra::extract::Multipart;
 use rust_decimal::Decimal;
 
+/// Simple per-IP rate limiter for RSVP lookups
+#[derive(Clone)]
+pub struct RateLimiter {
+    attempts: Arc<Mutex<HashMap<String, Vec<Instant>>>>,
+}
+
+impl RateLimiter {
+    pub fn new() -> Self {
+        Self {
+            attempts: Arc::new(Mutex::new(HashMap::new())),
+        }
+    }
+
+    /// Returns true if the request should be allowed
+    pub async fn check(&self, ip: &str, max_attempts: usize, window_secs: u64) -> bool {
+        let mut attempts = self.attempts.lock().await;
+        let now = Instant::now();
+        let window = std::time::Duration::from_secs(window_secs);
+
+        let entry = attempts.entry(ip.to_string()).or_insert_with(Vec::new);
+        // Remove expired entries
+        entry.retain(|t| now.duration_since(*t) < window);
+
+        if entry.len() >= max_attempts {
+            return false;
+        }
+        entry.push(now);
+        true
+    }
+}
+
 #[derive(Clone)]
 pub struct AppState {
     pub db: PgPool,
+    pub rsvp_limiter: RateLimiter,
 }
 
 // CSV import structures
@@ -1289,8 +1326,16 @@ async fn admin_delete_contribution(
 // Look up invite by code for RSVP
 async fn rsvp_lookup(
     State(state): State<AppState>,
+    ConnectInfo(addr): ConnectInfo<SocketAddr>,
     Path(code): Path<String>,
 ) -> Result<Json<InviteRsvpResponse>, StatusCode> {
+    // Rate limit: 10 lookups per IP per 60 seconds
+    let ip = addr.ip().to_string();
+    if !state.rsvp_limiter.check(&ip, 10, 60).await {
+        tracing::warn!("RSVP rate limit exceeded for IP: {}", ip);
+        return Err(StatusCode::TOO_MANY_REQUESTS);
+    }
+
     // Find invite by unique code
     let invite = sqlx::query_as::<_, Invite>(
         "SELECT * FROM invites WHERE unique_code = $1"
@@ -1302,7 +1347,11 @@ async fn rsvp_lookup(
 
     let invite = match invite {
         Some(inv) => inv,
-        None => return Err(StatusCode::NOT_FOUND),
+        None => {
+            // Add a small delay on failed lookups to slow brute-force
+            tokio::time::sleep(std::time::Duration::from_millis(500)).await;
+            return Err(StatusCode::NOT_FOUND);
+        }
     };
 
     // Get guests for this invite

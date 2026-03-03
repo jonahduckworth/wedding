@@ -78,7 +78,10 @@ async fn main() {
         .await;
 
     // Create app state
-    let state = routes::AppState { db };
+    let state = routes::AppState {
+        db,
+        rsvp_limiter: routes::RateLimiter::new(),
+    };
 
     // Set up CORS - be explicit about allowed methods and headers for multipart uploads
     let cors = CorsLayer::new()
@@ -130,7 +133,7 @@ async fn main() {
         .await
         .expect("Failed to bind to address");
 
-    axum::serve(listener, app)
+    axum::serve(listener, app.into_make_service_with_connect_info::<SocketAddr>())
         .await
         .expect("Failed to start server");
 }
