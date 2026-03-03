@@ -13,12 +13,20 @@ pub fn invitation_email_html(
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>You're Invited - Sam & Jonah's Wedding</title>
+    <meta name="color-scheme" content="light">
+    <meta name="supported-color-schemes" content="light">
     <style>
+        :root {{ color-scheme: light; supported-color-schemes: light; }}
         @media only screen and (max-width: 620px) {{
             .outer-table {{ width: 100% !important; }}
             .inner-table {{ width: 100% !important; }}
             .invitation-img {{ width: 100% !important; max-width: 100% !important; }}
             .content-pad {{ padding: 30px 20px !important; }}
+        }}
+        @media (prefers-color-scheme: dark) {{
+            .email-bg {{ background-color: #f7f3f0 !important; }}
+            .email-body {{ background-color: #ffffff !important; color: #4a4a4a !important; }}
+            .btn-rsvp {{ background-color: #7d2248 !important; color: #ffffff !important; }}
         }}
     </style>
 </head>
@@ -68,7 +76,7 @@ pub fn invitation_email_html(
                                 Kindly note that our celebration is an intimate affair and our invitation is extended to the guests named above only. We appreciate your understanding!
                             </p>
 
-                            <p style="margin: 25px 0 0 0; font-size: 16px; line-height: 1.7; color: #8b7355; text-align: center; font-style: italic;">
+                            <p style="margin: 25px 0 0 0; font-size: 16px; line-height: 1.7; color: #7d2248; text-align: center; font-style: italic;">
                                 With love,<br>
                                 <span style="font-style: normal; letter-spacing: 1px;">Sam &amp; Jonah</span>
                             </p>
@@ -77,11 +85,11 @@ pub fn invitation_email_html(
 
                     <!-- Footer -->
                     <tr>
-                        <td style="padding: 25px 40px; background-color: #faf8f5; text-align: center; border-top: 1px solid #e8ddd1;">
-                            <p style="margin: 0 0 10px 0; font-size: 13px; color: #8b7355;">
-                                <a href="{website_url}" style="color: #a0826d; text-decoration: none;">Visit Our Wedding Website</a>
+                        <td style="padding: 25px 40px; background-color: #faf8f5; text-align: center; border-top: 1px solid #d4a0b3;">
+                            <p style="margin: 0 0 10px 0; font-size: 13px; color: #7d2248;">
+                                <a href="{website_url}" style="color: #7d2248; text-decoration: none;">Visit Our Wedding Website</a>
                             </p>
-                            <p style="margin: 0; font-size: 12px; color: #b0a090;">
+                            <p style="margin: 0; font-size: 12px; color: #9e7080;">
                                 If the button doesn't work, copy this link: {rsvp_link}
                             </p>
                         </td>
@@ -150,7 +158,7 @@ pub fn save_the_date_html(
                             <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="margin: 40px 0;">
                                 <tr>
                                     <td align="center" style="padding: 0 0 15px 0;">
-                                        <a href="{}" style="display: inline-block; background-color: #a0826d; color: #ffffff; text-decoration: none; padding: 16px 40px; font-size: 15px; font-weight: 400; letter-spacing: 1.5px; text-transform: uppercase; min-width: 200px; text-align: center;">
+                                        <a href="{}" style="display: inline-block; background-color: #7d2248; color: #ffffff; text-decoration: none; padding: 16px 40px; font-size: 15px; font-weight: 400; letter-spacing: 1.5px; text-transform: uppercase; min-width: 200px; text-align: center;">
                                             View Venue
                                         </a>
                                     </td>
@@ -168,7 +176,7 @@ pub fn save_the_date_html(
                                 Formal invitation with RSVP details to follow.
                             </p>
 
-                            <p style="margin: 30px 0 0 0; font-size: 16px; line-height: 1.7; color: #8b7355; text-align: center; font-style: italic; background-color: transparent;">
+                            <p style="margin: 30px 0 0 0; font-size: 16px; line-height: 1.7; color: #7d2248; text-align: center; font-style: italic; background-color: transparent;">
                                 With love,<br>
                                 <span style="font-weight: 400; font-style: normal; letter-spacing: 1px; background-color: transparent;">Sam & Jonah</span>
                             </p>
@@ -177,8 +185,8 @@ pub fn save_the_date_html(
 
                     <!-- Footer -->
                     <tr>
-                        <td style="padding: 35px 40px; background-color: #faf8f5; text-align: center; border-top: 1px solid #e8ddd1;">
-                            <p style="margin: 0; font-size: 14px; color: #8b7355; letter-spacing: 0.5px; background-color: transparent;">
+                        <td style="padding: 35px 40px; background-color: #faf8f5; text-align: center; border-top: 1px solid #d4a0b3;">
+                            <p style="margin: 0; font-size: 14px; color: #7d2248; letter-spacing: 0.5px; background-color: transparent;">
                                 August 15, 2026 • Rouge, Calgary, Alberta
                             </p>
                         </td>
