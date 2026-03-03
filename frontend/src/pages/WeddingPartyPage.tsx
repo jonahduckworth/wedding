@@ -50,13 +50,41 @@ export default function WeddingPartyPage() {
   ];
 
   const groomsmen = [
-    { name: 'Lukas Duckworth', role: 'Groomsman' },
-    { name: 'Layne Richardson', role: 'Groomsman' },
-    { name: 'Nolan Munden', role: 'Groomsman' },
-    { name: 'Adam Struch', role: 'Groomsman' },
-    { name: 'Adam Hildebrand', role: 'Groomsman' },
-    { name: 'Ryan McCue', role: 'Groomsman' },
-    { name: 'Dawson Walker', role: 'Groomsman' },
+    {
+      name: 'Lukas Duckworth',
+      role: 'Best Man',
+      bio: "Lukas is the best man and the groom's younger brother — though \"brother\" undersells it. They were best friends who happened to share a last name. Growing up, they'd watch WWE and immediately sprint to the trampoline to try the same moves. They played hockey together constantly: mini sticks, road hockey, and Jonah even helped coach Lukas' team alongside their dad for years. At some point, Lukas decided to pack his life up and move to Banff to chase skiing full-time. He worked at Sunshine for a few years, met his girlfriend Lauren out there, and now works for the ski media hub Newschoolers.",
+    },
+    {
+      name: 'Nolan Munden',
+      role: 'Groomsman',
+      bio: "Nolan was the first person Jonah met when he moved to Kamloops at eight years old, on his first day at McGowan Park Elementary. They were inseparable through elementary, high school, and even dropped out of business school together at TRU when they were 18. Everything they've been through together — the good times, the terrible decisions, the rest of it — can't really be condensed into a paragraph. But through all of it, they've always had each other's back. Today, Nolan lives in Kamloops with his wife Kirsten and their son Kace, running a truck service and repair shop called Munden Truck & Equipment Ltd.",
+    },
+    {
+      name: 'Adam Hildebrand',
+      role: 'Groomsman',
+      bio: "Adam and Jonah go back to grade 3, when Nolan introduced them after Jonah moved to Kamloops. They grew up together through McGowan Park and Sahali Secondary — playing sports, getting into trouble, doing what they knew best. After high school, they both gave business school at TRU an honest shot. Neither lasted more than a year. Adam found his way into welding and built a real career with it, while Jonah eventually circled back to school for computing science. Different paths, but the friendship never skipped a beat. Today, Adam lives in Kamloops with his wife Madison and their daughter Hunter. He's also working on a startup to help local businesses.",
+    },
+    {
+      name: 'Adam Struch',
+      role: 'Groomsman',
+      bio: "Adam and Jonah first crossed paths when Jonah moved to Kamloops and joined Adam's minor hockey team. Jonah always admired Adam's combination of athleticism and business sense, but he could never crack the AAA teams, and Adam went to different schools than the other Kamloops guys — so they didn't really get close until after high school. What brought them together was their mutual best friends, Nolan and Adam Hildebrand. Today, Adam lives in Chilliwack with his wife McKenzie. He has a degree in Hydrogeology, sells real estate, and runs a short-term rental company.",
+    },
+    {
+      name: 'Ryan McCue',
+      role: 'Groomsman',
+      bio: "Ryan is the first friend the groom made in Calgary. Sam set up a double date — ice skating at Bowness Park — with Ryan and his wife Issi. Jonah was immediately struck by Ryan's real estate tech job and how much he knew about software and building systems. At the time, Jonah hadn't finished his computing science degree and had zero tech portfolio. Ryan helped him build his very first React app, which was enough to land Jonah an internship right out of school. They're still building together — Ryan is CTO of Ref Buddy. Outside of tech, they play pickleball, poker, and get out for hikes, skiing, and golf whenever they can.",
+    },
+    {
+      name: 'Dawson Walker',
+      role: 'Groomsman',
+      bio: "Dawson is one of the groom's biggest inspirations when it comes to building things. The man has built hundreds of projects: websites, apps, a pinball machine, AR experiments, a hydroponics system for an indoor herb garden, crypto tech. Jonah met Dawson through Ryan, and the three of them bonded over being deep into the tech wave as it kept accelerating. Beyond tech, sports, and poker, Dawson and Jonah are also in a band together with their friend Mike. They play a lot of instruments and they are very loud. First album TBD. Today, Dawson is working on multiple projects in the crypto space and is married to his wife Courtney.",
+    },
+    {
+      name: 'Layne Richardson',
+      role: 'Groomsman',
+      bio: "Layne and Jonah first met in the summer of 2013 at an event for BC's U17 hockey players and up-and-coming officials. One of those instant friendships — they felt like they'd known each other forever. Since then, they've reffed hockey games together all over BC and built a friendship that goes well beyond the rink. It took both of them considerably longer than their parents expected to finish their degrees, but neither set of parents accounted for the beer consumption along the way. Today, Layne has Bachelor's degrees in Human Kinetics and Athletic Therapy and works as the Athletic Therapist for the Moose Jaw Warriors. He's engaged to his fiancée Taylor.",
+    },
   ];
 
   return (
@@ -168,7 +196,7 @@ export default function WeddingPartyPage() {
         viewport={{ once: true, margin: '-80px' }}
         className="py-16 md:py-24 px-6"
       >
-        <div className="max-w-5xl mx-auto">
+        <div className="max-w-6xl mx-auto">
           <motion.h2
             variants={fadeInUp}
             className="font-display text-4xl md:text-5xl text-center mb-14 text-heading"
@@ -177,30 +205,32 @@ export default function WeddingPartyPage() {
             Groomsmen
           </motion.h2>
 
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+          <div className="grid md:grid-cols-2 gap-6 md:gap-8">
             {groomsmen.map((person, index) => (
               <motion.div
                 key={person.name}
-                initial={{ opacity: 0, y: 20 }}
+                initial={{ opacity: 0, y: 25 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: '-50px' }}
-                transition={{ duration: 0.5, delay: index * 0.08 }}
+                transition={{ duration: 0.6, delay: index * 0.08 }}
               >
-                <div className="bg-white rounded-2xl p-6 md:p-8 border border-card-border text-center h-full hover:shadow-md transition-shadow duration-500">
-                  {/* Monogram circle */}
-                  <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-blush flex items-center justify-center">
-                    <span className="font-display text-2xl text-heading" style={{ fontWeight: 400 }}>
-                      {person.name.split(' ').map(n => n[0]).join('')}
-                    </span>
+                <div className="bg-white rounded-2xl p-8 md:p-10 border border-card-border h-full hover:shadow-md transition-shadow duration-500">
+                  {/* Name & Role */}
+                  <div className="mb-5">
+                    <h3
+                      className="font-display text-2xl md:text-3xl text-heading"
+                      style={{ fontWeight: 400 }}
+                    >
+                      {person.name}
+                    </h3>
+                    <p className="text-gold text-[13px] font-medium tracking-wide mt-1">
+                      {person.role}
+                    </p>
                   </div>
-                  <h3
-                    className="font-display text-xl text-heading mb-1"
-                    style={{ fontWeight: 400 }}
-                  >
-                    {person.name}
-                  </h3>
-                  <p className="text-gold text-[13px] font-medium tracking-wide">
-                    {person.role}
+
+                  {/* Bio */}
+                  <p className="text-body leading-relaxed text-[15px]">
+                    {person.bio}
                   </p>
                 </div>
               </motion.div>
