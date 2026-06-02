@@ -1,6 +1,12 @@
-# CLAUDE.md
+# AGENTS.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+## Venture Context
+- **Venture:** Wedding (💍) — COLLABORATIVE ONLY, never do wedding work autonomously
+- **GitHub:** jonahduckworth/wedding
+- **Server:** 5.78.128.113 | Panel: Dokploy
+- **Domain:** samandjonah.com
+
+This file provides guidance to Codex (Codex.ai/code) when working with code in this repository.
 
 ## Project Overview
 
