@@ -111,6 +111,20 @@ docker-compose down
 docker-compose down -v
 ```
 
+### Verification Bundles
+```bash
+# Frontend build check
+cd frontend && npm run build
+
+# Backend test check
+cd api && cargo test
+
+# Full local smoke check when Docker is available
+docker-compose up --build
+```
+
+For registry contribution/status updates, prefer the app/API route that recalculates totals instead of ad hoc SQL. Re-read the item/contribution state after the write.
+
 ## Architecture
 
 ### Frontend Architecture
