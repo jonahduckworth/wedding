@@ -9,6 +9,10 @@ pub const ONE_MONTH_REMINDER_TEMPLATE: &str = "one_month_reminder";
 pub const ONE_MONTH_REMINDER_NAME: &str = "One Month Reminder - July 2026";
 pub const ONE_MONTH_REMINDER_SUBJECT: &str = "One month to go! Sam & Jonah's wedding";
 
+fn one_month_reminder_idempotency_key(campaign_id: Uuid, invite_id: Uuid) -> String {
+    format!("one_month_reminder_{}_{}", campaign_id, invite_id)
+}
+
 #[derive(Debug, Serialize)]
 struct ResendEmail {
     from: String,
@@ -175,6 +179,10 @@ impl EmailService {
     ) -> Result<Uuid, String> {
         let email_send_id = Uuid::new_v4();
         let html = self.render_one_month_reminder(invite);
+        let idempotency_key = one_month_reminder_idempotency_key(
+            campaign_id,
+            invite.invite.id,
+        );
 
         let recipient_emails: Vec<String> = invite.guests.iter()
             .filter(|guest| {
@@ -221,6 +229,7 @@ impl EmailService {
             .post("https://api.resend.com/emails")
             .header("Authorization", format!("Bearer {}", self.resend_api_key))
             .header("Content-Type", "application/json")
+            .header("Idempotency-Key", &idempotency_key)
             .json(&email_payload)
             .send()
             .await
@@ -238,12 +247,15 @@ impl EmailService {
             .map_err(|e| format!("Failed to parse Resend response: {}", e))?;
 
         sqlx::query(
-            "INSERT INTO email_sends (id, campaign_id, invite_id, sent_at)
-             VALUES ($1, $2, $3, NOW())"
+            "INSERT INTO email_sends (id, campaign_id, invite_id, sent_at, reminder_key)
+             VALUES ($1, $2, $3, NOW(), $4)
+             ON CONFLICT (reminder_key) WHERE reminder_key IS NOT NULL
+             DO UPDATE SET reminder_key = EXCLUDED.reminder_key"
         )
         .bind(email_send_id)
         .bind(campaign_id)
         .bind(invite.invite.id)
+        .bind(&idempotency_key)
         .execute(&self.db)
         .await
         .map_err(|e| format!("Failed to record email send: {}", e))?;
@@ -345,5 +357,23 @@ impl EmailService {
         } else {
             Ok(sent_count)
         }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::one_month_reminder_idempotency_key;
+    use uuid::Uuid;
+
+    #[test]
+    fn reminder_idempotency_key_is_stable_per_campaign_and_invite() {
+        let campaign_id = Uuid::parse_str("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa").unwrap();
+        let invite_id = Uuid::parse_str("bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb").unwrap();
+
+        let first = one_month_reminder_idempotency_key(campaign_id, invite_id);
+        let retry = one_month_reminder_idempotency_key(campaign_id, invite_id);
+
+        assert_eq!(first, retry);
+        assert!(first.len() <= 256);
     }
 }

@@ -1913,23 +1913,11 @@ async fn admin_one_month_reminder_preview(
 }
 
 async fn get_or_create_one_month_campaign(db: &PgPool) -> Result<EmailCampaign, String> {
-    if let Some(campaign) = sqlx::query_as::<_, EmailCampaign>(
-        "SELECT * FROM email_campaigns
-         WHERE template_type = $1
-         ORDER BY created_at
-         LIMIT 1"
-    )
-    .bind(ONE_MONTH_REMINDER_TEMPLATE)
-    .fetch_optional(db)
-    .await
-    .map_err(|e| format!("Failed to fetch one-month reminder campaign: {}", e))?
-    {
-        return Ok(campaign);
-    }
-
     sqlx::query_as::<_, EmailCampaign>(
         "INSERT INTO email_campaigns (name, subject, template_type)
          VALUES ($1, $2, $3)
+         ON CONFLICT (template_type) WHERE template_type = 'one_month_reminder'
+         DO UPDATE SET template_type = EXCLUDED.template_type
          RETURNING *"
     )
     .bind(ONE_MONTH_REMINDER_NAME)

@@ -58,6 +58,7 @@ pub struct EmailSend {
     pub sent_at: Option<time::OffsetDateTime>,
     pub opened_at: Option<time::OffsetDateTime>,
     pub opened_count: i32,
+    pub reminder_key: Option<String>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, FromRow)]
