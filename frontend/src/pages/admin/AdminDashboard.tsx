@@ -6,6 +6,7 @@ import EmailCampaigns from './EmailCampaigns';
 import RegistryManagement from './RegistryManagement';
 import RsvpManagement from './RsvpManagement';
 import InvitationSending from './InvitationSending';
+import OneMonthReminder from './OneMonthReminder';
 import AdminAuth, { useAdminUser, adminLogout } from '../../components/AdminAuth';
 
 export default function AdminDashboard() {
@@ -78,6 +79,12 @@ function AdminDashboardContent() {
                 Invitation Emails
               </Link>
               <Link
+                to="/admin/one-month-reminder"
+                className="block px-4 py-2 rounded hover:bg-gray-100"
+              >
+                1 Month Reminder
+              </Link>
+              <Link
                 to="/admin/registry"
                 className="block px-4 py-2 rounded hover:bg-gray-100"
               >
@@ -95,6 +102,7 @@ function AdminDashboardContent() {
               <Route path="emails" element={<EmailCampaigns />} />
               <Route path="rsvps" element={<RsvpManagement />} />
               <Route path="invitations" element={<InvitationSending />} />
+              <Route path="one-month-reminder" element={<OneMonthReminder />} />
               <Route path="registry" element={<RegistryManagement />} />
             </Routes>
           </main>

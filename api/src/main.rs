@@ -4,7 +4,7 @@ use axum::{
     extract::DefaultBodyLimit,
 };
 use std::net::SocketAddr;
-use tower_http::cors::{Any, CorsLayer};
+use tower_http::cors::CorsLayer;
 use tower_http::services::ServeDir;
 use axum::http::{Method, header};
 use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
@@ -84,8 +84,13 @@ async fn main() {
     };
 
     // Set up CORS - be explicit about allowed methods and headers for multipart uploads
+    let cors_origin = std::env::var("CORS_ORIGIN")
+        .or_else(|_| std::env::var("FRONTEND_URL"))
+        .unwrap_or_else(|_| "https://samandjonah.com".to_string())
+        .parse::<header::HeaderValue>()
+        .expect("CORS_ORIGIN must be a valid origin");
     let cors = CorsLayer::new()
-        .allow_origin(Any)
+        .allow_origin(cors_origin)
         .allow_methods([
             Method::GET,
             Method::POST,
