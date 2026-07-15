@@ -77,6 +77,26 @@ async fn main() {
         .execute(&db)
         .await;
 
+    // Legacy duplicate migration numbers can prevent sqlx from reaching newer
+    // migrations. The reminder flow depends on these constraints for safe,
+    // idempotent sends, so ensure them explicitly before accepting traffic.
+    eprintln!("Ensuring one-month reminder schema exists...");
+    let reminder_schema = [
+        "ALTER TABLE email_sends ADD COLUMN IF NOT EXISTS reminder_key VARCHAR(255)",
+        "CREATE UNIQUE INDEX IF NOT EXISTS idx_email_campaigns_one_month_reminder \
+            ON email_campaigns (template_type) \
+            WHERE template_type = 'one_month_reminder'",
+        "CREATE UNIQUE INDEX IF NOT EXISTS idx_email_sends_reminder_key \
+            ON email_sends (reminder_key) \
+            WHERE reminder_key IS NOT NULL",
+    ];
+    for sql in &reminder_schema {
+        if let Err(e) = sqlx::query(sql).execute(&db).await {
+            tracing::error!("Failed to ensure one-month reminder schema: {}", e);
+            std::process::exit(1);
+        }
+    }
+
     // Create app state
     let state = routes::AppState {
         db,
