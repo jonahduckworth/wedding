@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
 const apiUrl = window.location.hostname === 'localhost'
@@ -48,6 +48,10 @@ export default function OneMonthReminder() {
   const [showPreview, setShowPreview] = useState(false);
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [lastResult, setLastResult] = useState<SendResult | null>(null);
+  const previewDialogRef = useRef<HTMLDivElement>(null);
+  const previewCloseRef = useRef<HTMLButtonElement>(null);
+  const confirmationDialogRef = useRef<HTMLDivElement>(null);
+  const confirmationCancelRef = useRef<HTMLButtonElement>(null);
   const queryClient = useQueryClient();
 
   const statusQuery = useQuery<ReminderStatus>({
@@ -76,6 +80,51 @@ export default function OneMonthReminder() {
       queryClient.invalidateQueries({ queryKey: ['one-month-reminder-status'] });
     },
   });
+
+  useEffect(() => {
+    if (!showPreview && !showConfirmation) return;
+
+    const dialog = showPreview ? previewDialogRef.current : confirmationDialogRef.current;
+    const initialFocus = showPreview ? previewCloseRef.current : confirmationCancelRef.current;
+    const previouslyFocused = document.activeElement as HTMLElement | null;
+    const focusableSelector = [
+      'button:not([disabled])',
+      'a[href]',
+      'iframe',
+      'input:not([disabled])',
+      '[tabindex]:not([tabindex="-1"])',
+    ].join(',');
+
+    initialFocus?.focus();
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        if (showPreview) setShowPreview(false);
+        else setShowConfirmation(false);
+        return;
+      }
+
+      if (event.key !== 'Tab' || !dialog) return;
+      const focusable = Array.from(dialog.querySelectorAll<HTMLElement>(focusableSelector));
+      if (focusable.length === 0) return;
+
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+      previouslyFocused?.focus();
+    };
+  }, [showConfirmation, showPreview]);
 
   const recipients = statusQuery.data?.recipients ?? [];
   const sentRecipients = recipients.filter((recipient) => recipient.sent_at);
@@ -342,11 +391,12 @@ export default function OneMonthReminder() {
       </section>
 
       {showPreview && (
-        <div className="fixed inset-0 bg-black/60 flex items-center justify-center p-4 z-50" role="dialog" aria-modal="true" aria-labelledby="reminder-preview-title">
+        <div ref={previewDialogRef} className="fixed inset-0 bg-black/60 flex items-center justify-center p-4 z-50" role="dialog" aria-modal="true" aria-labelledby="reminder-preview-title">
           <div className="bg-white rounded-xl shadow-2xl max-w-4xl w-full max-h-[92vh] overflow-y-auto">
             <div className="p-5 border-b border-gray-200 flex items-center justify-between gap-4">
               <h3 id="reminder-preview-title" className="text-2xl font-display font-bold text-primary">Email Preview</h3>
               <button
+                ref={previewCloseRef}
                 type="button"
                 onClick={() => setShowPreview(false)}
                 aria-label="Close email preview"
@@ -367,7 +417,7 @@ export default function OneMonthReminder() {
       )}
 
       {showConfirmation && (
-        <div className="fixed inset-0 bg-black/60 flex items-center justify-center p-4 z-50" role="dialog" aria-modal="true" aria-labelledby="reminder-confirm-title">
+        <div ref={confirmationDialogRef} className="fixed inset-0 bg-black/60 flex items-center justify-center p-4 z-50" role="dialog" aria-modal="true" aria-labelledby="reminder-confirm-title">
           <div className="bg-white rounded-xl shadow-2xl max-w-lg w-full p-6">
             <h3 id="reminder-confirm-title" className="text-2xl font-display font-bold text-primary">Send reminder emails?</h3>
             <p className="text-gray-700 mt-3 leading-relaxed">
@@ -376,6 +426,7 @@ export default function OneMonthReminder() {
             </p>
             <div className="mt-6 flex justify-end gap-3">
               <button
+                ref={confirmationCancelRef}
                 type="button"
                 onClick={() => setShowConfirmation(false)}
                 disabled={sendMutation.isPending}
