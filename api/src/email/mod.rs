@@ -5,6 +5,10 @@ use sqlx::PgPool;
 use uuid::Uuid;
 use serde::{Deserialize, Serialize};
 
+pub const ONE_MONTH_REMINDER_TEMPLATE: &str = "one_month_reminder";
+pub const ONE_MONTH_REMINDER_NAME: &str = "One Month Reminder - July 2026";
+pub const ONE_MONTH_REMINDER_SUBJECT: &str = "One month to go! Sam & Jonah's wedding";
+
 #[derive(Debug, Serialize)]
 struct ResendEmail {
     from: String,
@@ -59,6 +63,13 @@ impl EmailService {
             &self.venue_map_url,
             &self.hotel_info_url,
         )
+    }
+
+    /// Render the one-month reminder for confirmed attendees only.
+    pub fn render_one_month_reminder(&self, invite: &InviteWithGuests) -> String {
+        let guest_names: Vec<String> = invite.guests.iter().map(|g| g.name.clone()).collect();
+
+        templates::one_month_reminder_html(&guest_names, &self.frontend_url)
     }
 
     /// Send save-the-date email via Resend API
@@ -151,6 +162,98 @@ impl EmailService {
         .execute(&self.db)
         .await
         .map_err(|e| format!("Failed to record email send: {}", e))?;
+
+        Ok(email_send_id)
+    }
+
+    /// Send the one-month reminder to the confirmed attendees on an invite.
+    pub async fn send_one_month_reminder(
+        &self,
+        campaign_id: Uuid,
+        invite: &InviteWithGuests,
+        subject: &str,
+    ) -> Result<Uuid, String> {
+        let email_send_id = Uuid::new_v4();
+        let html = self.render_one_month_reminder(invite);
+
+        let recipient_emails: Vec<String> = invite.guests.iter()
+            .filter(|guest| {
+                let is_valid = guest.email.contains('@') && guest.email.split('@').nth(1).map_or(false, |domain| domain.contains('.'));
+                if !is_valid {
+                    tracing::debug!("Skipping invalid email for {}: {}", guest.name, guest.email);
+                }
+                is_valid
+            })
+            .map(|guest| guest.email.clone())
+            .collect();
+
+        if recipient_emails.is_empty() {
+            return Err(format!(
+                "No valid email addresses found for attending guests on invite {}",
+                invite.invite.unique_code
+            ));
+        }
+
+        let email_payload = ResendEmail {
+            from: format!("Sam & Jonah <{}>", self.from_email),
+            to: recipient_emails.clone(),
+            subject: subject.to_string(),
+            html,
+            tags: Some(vec![
+                ResendTag {
+                    name: "campaign_id".to_string(),
+                    value: campaign_id.to_string(),
+                },
+                ResendTag {
+                    name: "invite_id".to_string(),
+                    value: invite.invite.id.to_string(),
+                },
+                ResendTag {
+                    name: "template".to_string(),
+                    value: ONE_MONTH_REMINDER_TEMPLATE.to_string(),
+                },
+            ]),
+            reply_to: Some(vec![self.from_email.clone()]),
+        };
+
+        let client = reqwest::Client::new();
+        let response = client
+            .post("https://api.resend.com/emails")
+            .header("Authorization", format!("Bearer {}", self.resend_api_key))
+            .header("Content-Type", "application/json")
+            .json(&email_payload)
+            .send()
+            .await
+            .map_err(|e| format!("Failed to send email via Resend: {}", e))?;
+
+        if !response.status().is_success() {
+            let status = response.status();
+            let error_body = response.text().await.unwrap_or_else(|_| "Unknown error".to_string());
+            return Err(format!("Resend API error ({}): {}", status, error_body));
+        }
+
+        let resend_response: ResendResponse = response
+            .json()
+            .await
+            .map_err(|e| format!("Failed to parse Resend response: {}", e))?;
+
+        sqlx::query(
+            "INSERT INTO email_sends (id, campaign_id, invite_id, sent_at)
+             VALUES ($1, $2, $3, NOW())"
+        )
+        .bind(email_send_id)
+        .bind(campaign_id)
+        .bind(invite.invite.id)
+        .execute(&self.db)
+        .await
+        .map_err(|e| format!("Failed to record email send: {}", e))?;
+
+        tracing::info!(
+            "Sent one-month reminder to {} (invite: {}, resend_id: {})",
+            recipient_emails.join(", "),
+            invite.invite.unique_code,
+            resend_response.id
+        );
 
         Ok(email_send_id)
     }

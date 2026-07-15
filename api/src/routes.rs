@@ -14,7 +14,10 @@ use std::sync::Arc;
 use tokio::sync::Mutex;
 use std::time::Instant;
 
-use crate::email::EmailService;
+use crate::email::{
+    EmailService, ONE_MONTH_REMINDER_NAME, ONE_MONTH_REMINDER_SUBJECT,
+    ONE_MONTH_REMINDER_TEMPLATE,
+};
 use crate::models::{
     EmailCampaign, EmailSend, Guest, Invite, InviteWithGuests, Rsvp,
     HoneymoonCategory, HoneymoonItem, RegistryContribution,
@@ -144,6 +147,18 @@ pub struct SendCampaignResponse {
     pub message: String,
 }
 
+#[derive(Debug, Serialize)]
+pub struct OneMonthReminderRecipient {
+    pub invite: InviteWithGuests,
+    pub sent_at: Option<time::OffsetDateTime>,
+}
+
+#[derive(Debug, Serialize)]
+pub struct OneMonthReminderStatus {
+    pub subject: String,
+    pub recipients: Vec<OneMonthReminderRecipient>,
+}
+
 pub fn admin_routes() -> Router<AppState> {
     Router::new()
         .route("/guests", get(list_guests).post(create_guest))
@@ -165,6 +180,10 @@ pub fn admin_routes() -> Router<AppState> {
         // Invitation email routes
         .route("/invitations/send", post(admin_send_invitations))
         .route("/invitations/status", get(admin_invitation_status))
+        // One-month reminder routes
+        .route("/reminders/one-month/status", get(admin_one_month_reminder_status))
+        .route("/reminders/one-month/preview", get(admin_one_month_reminder_preview))
+        .route("/reminders/one-month/send", post(admin_send_one_month_reminders))
         // Registry admin routes
         .route("/registry/categories", get(admin_list_categories).post(admin_create_category))
         .route("/registry/categories/:id", axum::routing::put(admin_update_category).delete(admin_delete_category))
@@ -1790,6 +1809,257 @@ async fn admin_invitation_status(
     Ok(Json(result))
 }
 
+// ============ ONE-MONTH REMINDER ROUTES ============
+
+async fn attending_invites(db: &PgPool) -> Result<Vec<InviteWithGuests>, StatusCode> {
+    let invites = sqlx::query_as::<_, Invite>(
+        "SELECT DISTINCT i.*
+         FROM invites i
+         INNER JOIN guests g ON g.invite_id = i.id
+         INNER JOIN rsvps r ON r.guest_id = g.id
+         WHERE g.removed = false AND r.attending = true
+         ORDER BY i.created_at"
+    )
+    .fetch_all(db)
+    .await
+    .map_err(|e| {
+        tracing::error!("Failed to fetch one-month reminder recipients: {}", e);
+        StatusCode::INTERNAL_SERVER_ERROR
+    })?;
+
+    let mut result = Vec::with_capacity(invites.len());
+    for invite in invites {
+        // Only confirmed attendees are included. Declined guests on the same
+        // invite must not receive or be named in this reminder.
+        let guests = sqlx::query_as::<_, Guest>(
+            "SELECT g.*
+             FROM guests g
+             INNER JOIN rsvps r ON r.guest_id = g.id
+             WHERE g.invite_id = $1 AND g.removed = false AND r.attending = true
+             ORDER BY g.name"
+        )
+        .bind(invite.id)
+        .fetch_all(db)
+        .await
+        .map_err(|e| {
+            tracing::error!("Failed to fetch attendees for invite {}: {}", invite.id, e);
+            StatusCode::INTERNAL_SERVER_ERROR
+        })?;
+
+        if !guests.is_empty() {
+            result.push(InviteWithGuests { invite, guests });
+        }
+    }
+
+    Ok(result)
+}
+
+async fn admin_one_month_reminder_status(
+    State(state): State<AppState>,
+) -> Result<Json<OneMonthReminderStatus>, StatusCode> {
+    let invites = attending_invites(&state.db).await?;
+    let mut recipients = Vec::with_capacity(invites.len());
+
+    for invite in invites {
+        let sent_at = sqlx::query_scalar::<_, Option<time::OffsetDateTime>>(
+            "SELECT MAX(es.sent_at)
+             FROM email_sends es
+             INNER JOIN email_campaigns ec ON ec.id = es.campaign_id
+             WHERE es.invite_id = $1 AND ec.template_type = $2"
+        )
+        .bind(invite.invite.id)
+        .bind(ONE_MONTH_REMINDER_TEMPLATE)
+        .fetch_one(&state.db)
+        .await
+        .map_err(|e| {
+            tracing::error!("Failed to fetch one-month reminder status: {}", e);
+            StatusCode::INTERNAL_SERVER_ERROR
+        })?;
+
+        recipients.push(OneMonthReminderRecipient { invite, sent_at });
+    }
+
+    Ok(Json(OneMonthReminderStatus {
+        subject: ONE_MONTH_REMINDER_SUBJECT.to_string(),
+        recipients,
+    }))
+}
+
+async fn admin_one_month_reminder_preview(
+    State(state): State<AppState>,
+) -> Result<Html<String>, StatusCode> {
+    let sample_invite = attending_invites(&state.db).await?.into_iter().next();
+    let frontend_url = std::env::var("FRONTEND_URL")
+        .unwrap_or_else(|_| "https://samandjonah.com".to_string());
+
+    let html = if let Some(invite) = sample_invite {
+        let email_service = EmailService::new(
+            state.db.clone(),
+            frontend_url,
+            String::new(),
+            String::new(),
+            String::new(),
+            String::new(),
+        );
+        email_service.render_one_month_reminder(&invite)
+    } else {
+        crate::email::templates::one_month_reminder_html(
+            &["Alex".to_string()],
+            &frontend_url,
+        )
+    };
+
+    Ok(Html(html))
+}
+
+async fn get_or_create_one_month_campaign(db: &PgPool) -> Result<EmailCampaign, String> {
+    if let Some(campaign) = sqlx::query_as::<_, EmailCampaign>(
+        "SELECT * FROM email_campaigns
+         WHERE template_type = $1
+         ORDER BY created_at
+         LIMIT 1"
+    )
+    .bind(ONE_MONTH_REMINDER_TEMPLATE)
+    .fetch_optional(db)
+    .await
+    .map_err(|e| format!("Failed to fetch one-month reminder campaign: {}", e))?
+    {
+        return Ok(campaign);
+    }
+
+    sqlx::query_as::<_, EmailCampaign>(
+        "INSERT INTO email_campaigns (name, subject, template_type)
+         VALUES ($1, $2, $3)
+         RETURNING *"
+    )
+    .bind(ONE_MONTH_REMINDER_NAME)
+    .bind(ONE_MONTH_REMINDER_SUBJECT)
+    .bind(ONE_MONTH_REMINDER_TEMPLATE)
+    .fetch_one(db)
+    .await
+    .map_err(|e| format!("Failed to create one-month reminder campaign: {}", e))
+}
+
+async fn admin_send_one_month_reminders(
+    State(state): State<AppState>,
+    Json(req): Json<SendInvitationRequest>,
+) -> Result<Json<SendInvitationResponse>, StatusCode> {
+    let frontend_url = std::env::var("FRONTEND_URL")
+        .unwrap_or_else(|_| "https://samandjonah.com".to_string());
+    let resend_api_key = std::env::var("RESEND_API_KEY")
+        .map_err(|_| {
+            tracing::error!("RESEND_API_KEY environment variable not set");
+            StatusCode::INTERNAL_SERVER_ERROR
+        })?;
+    let from_email = std::env::var("FROM_EMAIL")
+        .unwrap_or_else(|_| "contact@samandjonah.com".to_string());
+
+    let campaign = get_or_create_one_month_campaign(&state.db)
+        .await
+        .map_err(|e| {
+            tracing::error!("{}", e);
+            StatusCode::INTERNAL_SERVER_ERROR
+        })?;
+    let email_service = EmailService::new(
+        state.db.clone(),
+        frontend_url,
+        resend_api_key,
+        from_email,
+        String::new(),
+        String::new(),
+    );
+
+    let mut sent_count = 0;
+    let mut errors = Vec::new();
+
+    for invite_id in &req.invite_ids {
+        let already_sent = sqlx::query_scalar::<_, bool>(
+            "SELECT EXISTS (
+                SELECT 1
+                FROM email_sends es
+                WHERE es.campaign_id = $1 AND es.invite_id = $2
+             )"
+        )
+        .bind(campaign.id)
+        .bind(invite_id)
+        .fetch_one(&state.db)
+        .await
+        .map_err(|e| {
+            tracing::error!("Failed to check reminder send status: {}", e);
+            StatusCode::INTERNAL_SERVER_ERROR
+        })?;
+
+        if already_sent {
+            errors.push(format!("Reminder already sent for invite {}", invite_id));
+            continue;
+        }
+
+        let invite = sqlx::query_as::<_, Invite>("SELECT * FROM invites WHERE id = $1")
+            .bind(invite_id)
+            .fetch_optional(&state.db)
+            .await
+            .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
+
+        let Some(invite) = invite else {
+            errors.push(format!("Invite {} not found", invite_id));
+            continue;
+        };
+
+        let guests = sqlx::query_as::<_, Guest>(
+            "SELECT g.*
+             FROM guests g
+             INNER JOIN rsvps r ON r.guest_id = g.id
+             WHERE g.invite_id = $1 AND g.removed = false AND r.attending = true
+             ORDER BY g.name"
+        )
+        .bind(invite.id)
+        .fetch_all(&state.db)
+        .await
+        .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
+
+        if guests.is_empty() {
+            errors.push(format!("Invite {} has no confirmed attendees", invite.unique_code));
+            continue;
+        }
+
+        let unique_code = invite.unique_code.clone();
+        let recipient = InviteWithGuests { invite, guests };
+        match email_service
+            .send_one_month_reminder(campaign.id, &recipient, &campaign.subject)
+            .await
+        {
+            Ok(_) => sent_count += 1,
+            Err(e) => {
+                tracing::error!("Failed to send one-month reminder to {}: {}", unique_code, e);
+                errors.push(format!("{}: {}", unique_code, e));
+            }
+        }
+    }
+
+    sqlx::query(
+        "UPDATE email_campaigns
+         SET sent_count = (
+             SELECT COUNT(*)::INT FROM email_sends WHERE campaign_id = $1
+         ),
+         sent_at = CASE WHEN $2 > 0 THEN COALESCE(sent_at, NOW()) ELSE sent_at END
+         WHERE id = $1"
+    )
+    .bind(campaign.id)
+    .bind(sent_count as i32)
+    .execute(&state.db)
+    .await
+    .map_err(|e| {
+        tracing::error!("Failed to update one-month reminder campaign: {}", e);
+        StatusCode::INTERNAL_SERVER_ERROR
+    })?;
+
+    Ok(Json(SendInvitationResponse {
+        success: errors.is_empty(),
+        sent_count,
+        errors,
+    }))
+}
+
 // Get registry stats (admin)
 async fn admin_registry_stats(State(state): State<AppState>) -> Result<Json<RegistryStats>, StatusCode> {
     let total_confirmed: Decimal = sqlx::query_scalar::<_, Decimal>(
@@ -1829,4 +2099,3 @@ async fn admin_registry_stats(State(state): State<AppState>) -> Result<Json<Regi
         item_count,
     }))
 }
-
