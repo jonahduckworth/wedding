@@ -58,7 +58,7 @@ export default function TravelPage() {
       title: 'Golf',
       image: '/travel/golf.jpg',
       description:
-        'Try out one of our courses, or our versions of Top Golf (LaunchPad, Golf Future) for golf games, drinks, and food.',
+        'Try out one of our courses, or our versions of Top Golf (LaunchPad, Golf Fanatics) for golf games, drinks, and food.',
     },
     {
       title: 'Studio Bell',
