@@ -12,7 +12,9 @@ wedding work, send messages, or mutate live data autonomously.
 - Stack: React 19, React Router 7, Rsbuild, TypeScript, TanStack Query, Rust,
   Axum, SQLx, PostgreSQL 16, Resend, Docker Compose, and Dokploy.
 - `main` is the production branch. Frontend and API deploy as separate Docker
-  applications; database migrations are a separate production operation.
+  applications. API startup automatically runs embedded SQLx migrations and
+  additional schema fixes, so an ordinary API deploy/start can mutate the
+  production schema.
 
 ## Hard Rules
 
@@ -61,5 +63,6 @@ Local Compose exposes the frontend at `http://localhost:3000`, the API at
   API path that recalculates them rather than ad hoc SQL.
 - Email changes: use previews or non-delivering tests first; verify recipient
   scope immediately before any authorized send.
-- Deployment work: verify commit, environment variables by name only, migration
-  state, health endpoints, and rollback path before changing production.
+- Deployment work: verify commit, environment variables by name only, pending
+  embedded migrations/startup schema fixes, health endpoints, database backup,
+  and rollback path before changing production.
