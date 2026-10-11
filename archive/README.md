@@ -98,6 +98,27 @@ independent review also ran 28 ad hoc synthetic HTTP checks; those ad hoc probes
 are not part of the checked-in test suite. Final dependency audits reported zero
 known vulnerabilities at verification time. These are point-in-time results.
 
+Local verification on 2026-10-11 extended this checkpoint: the actual PostgreSQL
+15.18 logical backup restored successfully into an isolated PostgreSQL 15.17
+container. All nine table counts and complete-row digests matched, along with
+foreign keys and extensions; all 32 upload paths and content hashes matched.
+Real node-postgres integration read all eight collections and refused an owner
+role. Business writes, DDL, temporary tables, role creation, custom functions,
+and PostgreSQL large-object creation/truncation were denied by grants even with
+transaction read-only disabled. The dedicated-database provisioning template
+now revokes large-object write functions, and startup checks those grants.
+
+The Docker image built with the pinned official Node 24 digest and started as
+the unprivileged node user with a read-only root, dropped capabilities,
+no-new-privileges, 512 MiB memory, one CPU, and read-only uploads. Two synthetic
+account slots read the restored history; anonymous access and HTTP mutations
+were denied. All eight runnable Chromium suites passed, including mobile
+navigation; seven DOM suites, strict TypeScript, and backend tests passed too.
+Dependency audits reported zero known vulnerabilities. Private backup artifacts
+and test evidence are retained outside the repository on encrypted local storage.
+These local checks do not establish live HTTPS cookies, target proxy controls,
+real account credentials, DNS cutover, or deployment success.
+
 The tests use only invented `.test` users and in-memory synthetic records. They
 exercise old-route denial, authorization, wrong/third-user logins, session
 expiry/replacement/logout, CSRF, pagination, rate limits, private file paths,
@@ -113,9 +134,9 @@ No Rust logic is used by the new runtime. The only legacy backend change removes
 credential-bearing connection logging. Rust toolchain verification is still
 required if that preserved backend is ever built again.
 
-`archive/Dockerfile` is a draft root-context build, with an unprivileged runtime
-containing only archive code and the public build. Docker itself has not been
-run here. Pin reviewed base-image digests before production. Run with a
+`archive/Dockerfile` is a root-context build, with an unprivileged runtime
+containing only archive code and the public build. Its official Node 24 base
+digest is pinned and the local build/startup drill passed. Run with a
 read-only root filesystem, dropped Linux capabilities, no-new-privileges,
 bounded memory/CPU, private uploads mounted read-only and a private database
 network. Do not use the root legacy Compose file or expose database port 5432.
