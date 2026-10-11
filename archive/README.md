@@ -92,7 +92,7 @@ npm run check
 npm test
 ```
 
-Backend verification: 12 synthetic tests passed. Frontend verification: build,
+Backend verification: 13 synthetic tests passed. Frontend verification: build,
 strict TypeScript checks and seven production-bundle DOM suites passed. The
 independent review also ran 28 ad hoc synthetic HTTP checks; those ad hoc probes
 are not part of the checked-in test suite. Final dependency audits reported zero
@@ -125,7 +125,7 @@ expiry/replacement/logout, CSRF, pagination, rate limits, private file paths,
 no public database reads and read-only SQL contracts. They do not replace
 integration tests against a restored PostgreSQL 15 snapshot.
 
-Chromium could not launch in this cloud runtime because local socket creation
+At the original cloud checkpoint, Chromium could not launch because socket creation
 was denied (EPERM). The Playwright suite is supplied but has not passed here.
 DOM tests do not verify visual layout or browser-enforced CSP, HTTPS cookies or
 proxy routing.

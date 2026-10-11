@@ -35,10 +35,10 @@ async function fixture(t) {
   }});
   await new Promise((r) => server.listen(0, '127.0.0.1', r));
   t.after(async () => { await new Promise((r) => server.close(r)); await rm(root, { recursive: true }); });
-  function request(url, { method = 'GET', data, cookie, headers = {} } = {}) {
+  function request(url, { method = 'GET', data, cookie, agent, headers = {} } = {}) {
     return new Promise((resolve, reject) => {
-      const req = http.request({ host: '127.0.0.1', port: server.address().port, path: url, method,
-        headers: { Host: 'wedding.jdbuilds.ca', ...(data === undefined ? {} : { 'Content-Type': 'application/json', Origin: origin }), ...(cookie ? { Cookie: cookie } : {}), ...headers } }, (res) => {
+      const req = http.request({ host: '127.0.0.1', port: server.address().port, path: url, method, agent,
+        headers: { Host: 'wedding.jdbuilds.ca', ...(data === undefined ? {} : { 'Content-Type': 'application/json', 'Content-Length': Buffer.byteLength(JSON.stringify(data)), Origin: origin }), ...(cookie ? { Cookie: cookie } : {}), ...headers } }, (res) => {
         const chunks = []; res.on('data', (c) => chunks.push(c)); res.on('end', () => {
           const text = Buffer.concat(chunks).toString(); let json; try { json = JSON.parse(text); } catch {}
           resolve({ status: res.statusCode, headers: res.headers, text, json });
@@ -81,6 +81,20 @@ test('every legacy method is closed, including public registry reads and trackin
     }
   }
   assert.deepEqual(calls, []);
+});
+
+test('denied request bodies do not reset a reused HTTP connection', async (t) => {
+  const { request } = await fixture(t);
+  const agent = new http.Agent({ keepAlive: true, maxSockets: 1 });
+  t.after(() => agent.destroy());
+  for (const [url, method, status, headers] of [
+    ['/api/archive/records/guests', 'DELETE', 405, {}],
+    ['/api/registry/contributions', 'POST', 410, {}],
+    ['/api/archive/login', 'POST', 403, { Origin: 'https://example.test' }],
+  ]) {
+    assert.equal((await request(url, { method, data: { fixture: true }, headers, agent })).status, status);
+    assert.equal((await request('/api/archive/login', { method: 'POST', data: { email: users[0].email, password: PASSWORD }, agent })).status, 200);
+  }
 });
 
 test('wrong password and a third identity are indistinguishable and issue no session', async (t) => {
