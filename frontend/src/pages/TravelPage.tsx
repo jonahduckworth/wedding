@@ -14,8 +14,8 @@ export default function TravelPage() {
   const hotels = [
     {
       name: 'Alt Hotel East Village',
-      description: 'We have a discounted rate at this hotel!',
-      link: 'https://reservation.germainhotels.com/ibe/details.aspx?propertyid=17539&nights=1&checkin=08/14/2026&group=2604SAMAND&lang=en-us&adults=1&childAges=',
+      description: 'Our wedding hotel block (now closed).',
+      link: null as string | null,
       highlight: true,
     },
     {
@@ -44,7 +44,7 @@ export default function TravelPage() {
     },
     {
       title: 'Breweries',
-      image: 'https://images.unsplash.com/photo-1535958636474-b021ee887b13?w=800&h=600&fit=crop',
+      image: '/activities/breweries.webp',
       description:
         'There are lots of breweries in the area. Cold Garden is our old stomping grounds, but our current favourite is Highline Brewing.',
     },
@@ -68,12 +68,12 @@ export default function TravelPage() {
     },
     {
       title: 'Calgary Zoo',
-      image: 'https://images.unsplash.com/photo-1574950333594-f3e9a9446d0f?w=800&h=600&fit=crop',
+      image: '/activities/zoo.webp',
       description: 'The Calgary Zoo is located right in Inglewood.',
     },
     {
       title: 'Calgary Tower',
-      image: 'https://images.unsplash.com/photo-1606688323650-7c1e51d7959f?w=800&h=600&fit=crop',
+      image: '/activities/tower.webp',
       description:
         'Have drinks in the rotating restaurant with panoramic views of the city.',
     },

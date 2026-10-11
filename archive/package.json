@@ -1,0 +1,13 @@
+{
+  "name": "wedding-readonly-archive",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "engines": { "node": ">=24 <25" },
+  "scripts": {
+    "start": "node src/start.mjs",
+    "test": "node --test test/*.test.mjs",
+    "check": "node --check src/app.mjs && node --check src/auth.mjs && node --check src/database.mjs && node --check src/start.mjs"
+  },
+  "dependencies": { "pg": "8.16.3" }
+}

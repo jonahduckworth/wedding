@@ -1,3 +1,5 @@
+> Archive staging: the read-only replacement is documented in [archive/README.md](archive/README.md). The legacy setup and deployment instructions below can write data and run migrations. Do not use them for the archive. Nothing has been deployed.
+
 # Sam & Jonah Wedding Application
 
 Full-stack wedding application for managing guests, RSVPs, email campaigns, and a honeymoon registry.

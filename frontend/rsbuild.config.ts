@@ -8,6 +8,7 @@ export default defineConfig({
   },
   output: {
     assetPrefix: '/',
+    sourceMap: { js: false, css: false },
     copy: [
       { from: 'public', to: '.' }
     ],

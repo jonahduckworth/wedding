@@ -6,7 +6,10 @@
   "scripts": {
     "dev": "rsbuild dev",
     "build": "rsbuild build",
-    "preview": "rsbuild preview"
+    "preview": "rsbuild preview",
+    "typecheck": "tsc --noEmit",
+    "test:archive": "node --test tests/archive.test.mjs",
+    "test:archive:dom": "node --test tests/archive-dom.test.mjs"
   },
   "keywords": [],
   "author": "",
@@ -27,6 +30,8 @@
     "@types/react": "^19.2.2",
     "@types/react-dom": "^19.2.1",
     "autoprefixer": "^10.4.21",
+    "jsdom": "27.2.0",
+    "playwright": "1.57.0",
     "postcss": "^8.5.6",
     "tailwindcss": "^4.1.14",
     "typescript": "^5.9.3"

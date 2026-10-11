@@ -26,7 +26,7 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: 22
+          node-version: 24
           cache: npm
           cache-dependency-path: frontend/package-lock.json
 
@@ -35,6 +35,39 @@ jobs:
 
       - name: Build
         run: npm run build
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Archive DOM tests
+        run: npm run test:archive:dom
+
+      - name: Install synthetic browser test runtime
+        run: npx playwright install --with-deps chromium
+
+      - name: Archive browser tests
+        run: npm run test:archive
+
+  archive:
+    name: Archive checks
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    defaults:
+      run:
+        working-directory: archive
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: archive/package-lock.json
+      - name: Install locked dependencies
+        run: npm ci --ignore-scripts
+      - name: Syntax checks
+        run: npm run check
+      - name: Synthetic archive tests
+        run: npm test
 
   api:
     name: API test
