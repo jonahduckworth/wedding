@@ -33,7 +33,7 @@ export default function FAQPage() {
     {
       question: 'How do I RSVP?',
       answer:
-        'Invitations have been sent out! Please check your email for your unique RSVP link. If you haven\'t received yours, please reach out to us at contact@samandjonah.com.',
+        'RSVPs are closed. This website is a preserved archive of our August 15, 2026 wedding.',
     },
     {
       question: 'Can I bring my plus one?',
@@ -53,7 +53,7 @@ export default function FAQPage() {
     {
       question: 'Will you accept gifts?',
       answer:
-        'You are too kind! In lieu of gifts, please consider contributing to our honeymoon fund! We are heading to Italy and Portugal in September 2026. We have set up a Honeymoon Registry for guests who would like to contribute to something specific. There will also be a card box at the venue if you prefer to bring a card on the day.',
+        'Our honeymoon registry is now closed and no longer accepts contributions. Thank you for your generosity and for celebrating with us.',
     },
   ];
 
@@ -95,7 +95,7 @@ export default function FAQPage() {
             transition={{ delay: 0.4 }}
             className="text-body text-lg mt-6"
           >
-            Your questions answered
+            Original wedding information, preserved for the archive
           </motion.p>
         </div>
       </section>
@@ -122,6 +122,8 @@ export default function FAQPage() {
                   onClick={() =>
                     setOpenIndex(openIndex === index ? null : index)
                   }
+                  aria-expanded={openIndex === index}
+                  aria-controls={`faq-answer-${index}`}
                   className="w-full text-left p-6 md:p-7 flex items-center justify-between gap-4 group"
                 >
                   <h3
@@ -157,6 +159,7 @@ export default function FAQPage() {
                       animate={{ height: 'auto', opacity: 1 }}
                       exit={{ height: 0, opacity: 0 }}
                       transition={{ duration: 0.3, ease: 'easeInOut' }}
+                      id={`faq-answer-${index}`}
                       className="overflow-hidden"
                     >
                       <div className="px-6 md:px-7 pb-6 md:pb-7 text-body leading-relaxed">
@@ -186,17 +189,12 @@ export default function FAQPage() {
               className="font-display text-3xl md:text-4xl text-heading mb-4"
               style={{ fontWeight: 300 }}
             >
-              Still Have Questions?
+              A Little Piece of Our Day
             </h2>
-            <p className="text-body leading-relaxed mb-8">
-              We're happy to help! Feel free to reach out to us directly.
+            <p className="text-body leading-relaxed">
+              These details are preserved as part of our wedding archive.
+              RSVPs and registry contributions are closed.
             </p>
-            <a
-              href="mailto:contact@samandjonah.com"
-              className="inline-block bg-berry text-white px-8 py-3 rounded-full text-[13px] font-medium uppercase tracking-[0.1em] hover:bg-berry-light transition-colors"
-            >
-              Contact Us
-            </a>
           </div>
         </div>
       </motion.section>

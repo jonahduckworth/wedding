@@ -2,7 +2,6 @@ import { motion } from "framer-motion";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import Layout from "../components/Layout";
-import Countdown from "../components/Countdown";
 
 export default function HomePage() {
   const [heroLoaded, setHeroLoaded] = useState(false);
@@ -77,7 +76,7 @@ export default function HomePage() {
               className="text-white/90 text-[15px] tracking-[0.35em] uppercase mb-5 font-medium"
               style={{ fontFamily: "var(--font-body)" }}
             >
-              We're getting married
+              Our wedding, remembered
             </motion.p>
             <motion.h1
               variants={fadeInUp}
@@ -127,9 +126,11 @@ export default function HomePage() {
           ═══════════════════════════════════════════ */}
       <section className="py-12 md:py-16 border-b border-card-border">
         <div className="max-w-4xl mx-auto px-6">
-          <Countdown compact />
-          <p className="text-center text-subtle text-sm mt-4 tracking-wider">
-            until we say "I do"
+          <p className="font-display text-3xl md:text-4xl text-center text-heading">
+            August 15, 2026
+          </p>
+          <p className="text-center text-body text-sm mt-4 tracking-wider">
+            Our wedding website, preserved with love. RSVPs and contributions are closed.
           </p>
         </div>
       </section>
@@ -152,12 +153,12 @@ export default function HomePage() {
             className="font-display text-4xl md:text-5xl text-heading mb-8"
             style={{ fontWeight: 300 }}
           >
-            Join Us for Our Celebration
+            Remembering Our Celebration
           </h2>
           <p className="text-body text-lg leading-relaxed mb-10">
-            We are thrilled to celebrate our love story and marriage with all of
-            our favourite people. Explore our website to learn more about our
-            journey, wedding details, and how you can be part of our adventure.
+            This website preserves our love story and the details of our wedding
+            celebration with our favourite people. Explore our journey and the
+            places and people that made this chapter special.
           </p>
           <div className="flex items-center justify-center gap-4">
             <div className="w-16 h-px bg-gold/30" />
@@ -323,14 +324,13 @@ export default function HomePage() {
                 RSVP
               </h3>
               <p className="text-body mb-8">
-                We can't wait to celebrate with you. Please let us know if you
-                can join us.
+                RSVPs are now closed. Thank you to everyone who celebrated with us.
               </p>
               <Link
                 to="/rsvp"
                 className="inline-block bg-berry text-white px-8 py-3 rounded-full text-[13px] font-medium uppercase tracking-[0.1em] hover:bg-berry-light transition-colors"
               >
-                RSVP Now
+                RSVPs are closed
               </Link>
             </div>
 
@@ -343,14 +343,13 @@ export default function HomePage() {
                 Honeymoon Registry
               </h3>
               <p className="text-body mb-8">
-                Help us create magical memories in Italy and Portugal this
-                September.
+                Our honeymoon registry is now closed. Thank you for your generosity.
               </p>
               <Link
                 to="/registry"
                 className="inline-block border-2 border-berry text-berry px-8 py-3 rounded-full text-[13px] font-medium uppercase tracking-[0.1em] hover:bg-berry hover:text-white transition-colors"
               >
-                View Registry
+                Registry is closed
               </Link>
             </div>
           </div>

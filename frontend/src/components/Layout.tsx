@@ -32,7 +32,7 @@ export default function Layout({ children }: LayoutProps) {
     { path: '/party', label: 'Wedding Party' },
     { path: '/details', label: 'Details' },
     { path: '/travel', label: 'Travel' },
-    { path: '/registry', label: 'Registry' },
+    { path: '/registry', label: 'Registry (closed)' },
     { path: '/faq', label: 'FAQ' },
   ];
 
@@ -52,6 +52,9 @@ export default function Layout({ children }: LayoutProps) {
             : 'bg-cream/95 backdrop-blur-md shadow-[0_1px_0_rgba(0,0,0,0.06)]'
         }`}
       >
+        <div className="bg-berry-dark text-white text-center text-[11px] px-4 py-1.5 tracking-wide">
+          Wedding archive · August 15, 2026 · RSVPs and contributions are closed
+        </div>
         <nav className="max-w-7xl mx-auto px-6 lg:px-8 py-4">
           <div className="flex items-center justify-between">
             {/* Logo */}
@@ -106,7 +109,7 @@ export default function Layout({ children }: LayoutProps) {
                   : 'border-berry text-berry hover:bg-berry hover:text-white'
               }`}
             >
-              RSVP
+              RSVP closed
             </Link>
 
             {/* Mobile Hamburger */}
@@ -116,6 +119,7 @@ export default function Layout({ children }: LayoutProps) {
                 isTransparent ? 'text-white' : 'text-heading'
               }`}
               aria-label="Toggle menu"
+              aria-expanded={mobileMenuOpen}
             >
               <svg
                 width="24"
@@ -173,7 +177,7 @@ export default function Layout({ children }: LayoutProps) {
             </button>
 
             <div className="flex flex-col items-center justify-center h-full gap-7">
-              {[...navLinks, { path: '/rsvp', label: 'RSVP' }].map(
+              {[...navLinks, { path: '/rsvp', label: 'RSVP closed' }].map(
                 (link, index) => (
                   <motion.div
                     key={link.path}
@@ -239,11 +243,11 @@ export default function Layout({ children }: LayoutProps) {
               Registry
             </Link>
             <Link to="/rsvp" className="hover:text-gold-light transition-colors">
-              RSVP
+              RSVP closed
             </Link>
           </div>
 
-          <p className="text-white/20 text-xs tracking-wider">Made with love</p>
+          <p className="text-white/20 text-xs tracking-wider">Made with love · Preserved as a wedding archive</p>
         </div>
       </footer>
     </div>

@@ -32,7 +32,7 @@ async fn main() {
     let database_url = std::env::var("DATABASE_URL")
         .expect("DATABASE_URL must be set");
 
-    eprintln!("Connecting to database: {}...", &database_url[..database_url.find('@').unwrap_or(20)]);
+    eprintln!("Connecting to database...");
 
     let db = match sqlx::postgres::PgPoolOptions::new()
         .max_connections(5)
@@ -43,10 +43,10 @@ async fn main() {
             eprintln!("Successfully connected to database!");
             pool
         }
-        Err(e) => {
+        Err(_) => {
             eprintln!("FATAL: Failed to connect to database!");
-            eprintln!("Error: {}", e);
-            eprintln!("Database URL (redacted): {}", &database_url[..database_url.find('@').unwrap_or(20)]);
+            eprintln!("Connection failed; check the private database configuration.");
+
             std::process::exit(1);
         }
     };

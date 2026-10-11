@@ -1,0 +1,51 @@
+.archive-shell { min-height: 100vh; color: #382a31; background: #faf7f2; font-size: 14px; }
+.archive-shell h1 { font-size: clamp(2.3rem, 4vw, 3.8rem); margin: 0 0 20px; }
+.archive-shell h2 { font-size: 1.65rem; margin-bottom: 12px; }
+.archive-shell p { margin-bottom: 18px; }
+.archive-shell a { color: #7b2350; text-underline-offset: 3px; }
+.archive-shell a:hover { text-decoration: underline; }
+.archive-shell button { border: 1px solid #7b2350; border-radius: 8px; padding: 9px 16px; cursor: pointer; color: #7b2350; font-weight: 500; }
+.archive-shell button:disabled { cursor: wait; opacity: .55; }
+.archive-shell :focus-visible { outline: 3px solid #b98356; outline-offset: 3px; }
+.archive-header { padding: 22px clamp(20px, 4vw, 56px); border-bottom: 1px solid #e1d9d3; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 20px; background: white; }
+.archive-brand { font-family: var(--font-display); font-size: 30px; }
+.archive-header p { margin: 0; font-size: 12px; }
+.archive-account { display: flex; flex-wrap: wrap; align-items: center; gap: 16px; }
+.archive-workspace { display: grid; grid-template-columns: 185px minmax(0, 1fr); max-width: 1500px; margin: 0 auto; padding: 38px clamp(20px, 4vw, 56px); gap: 38px; }
+.archive-nav { display: flex; flex-direction: column; gap: 5px; }
+.archive-nav a { padding: 10px 14px; border-radius: 8px; }
+.archive-nav a.active { background: #7b2350; color: white; }
+.archive-main { min-width: 0; }
+.archive-eyebrow { text-transform: uppercase; letter-spacing: .15em; color: #7b2350; font-size: 11px; font-weight: 500; }
+.archive-notice { margin: 24px 0; border: 1px solid #e1d9d3; background: white; padding: 24px; border-radius: 12px; }
+.archive-notice p:last-child { margin-bottom: 0; }
+.archive-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(195px, 1fr)); gap: 16px; margin-top: 32px; }
+.archive-cards a { background: white; border: 1px solid #e1d9d3; padding: 24px; border-radius: 12px; }
+.archive-cards span { font-size: 12px; }
+.archive-auth { max-width: 470px; margin: 64px auto; padding: 32px; background: white; border: 1px solid #e1d9d3; border-radius: 16px; }
+.archive-auth h1 { font-size: 2.6rem; }
+.archive-auth form { display: flex; flex-direction: column; margin: 28px 0; }
+.archive-auth label { font-weight: 500; margin-bottom: 6px; }
+.archive-auth input { width: 100%; border: 1px solid #b9aaa7; border-radius: 8px; padding: 12px; background: #fff; margin-bottom: 20px; }
+.archive-auth button[type=submit] { background: #7b2350; color: white; }
+.archive-error { color: #9b2537; }
+.archive-title-row { display: flex; align-items: start; justify-content: space-between; gap: 20px; }
+.archive-count { font-weight: 500; }
+.archive-hint { font-size: 12px; color: #69595e; margin-top: 20px; }
+.archive-table-scroll { width: 100%; overflow-x: auto; background: white; border: 1px solid #e1d9d3; border-radius: 12px; }
+.archive-shell table { width: 100%; text-align: left; border-collapse: collapse; }
+.archive-shell th, .archive-shell td { padding: 14px 16px; border-bottom: 1px solid #e1d9d3; vertical-align: top; min-width: 140px; max-width: 340px; overflow-wrap: anywhere; }
+.archive-shell th { font-weight: 500; }
+.archive-shell thead { background: #f3ebe5; font-size: 12px; }
+.archive-shell tbody tr:last-child td, .archive-shell tbody tr:last-child th { border-bottom: 0; }
+.archive-pagination { display: flex; justify-content: space-between; gap: 24px; margin: 24px 0; }
+.archive-json { max-width: 100%; overflow: auto; white-space: pre-wrap; overflow-wrap: anywhere; font: 13px/1.7 ui-monospace, monospace; background: white; border: 1px solid #e1d9d3; padding: 24px; border-radius: 12px; }
+.archive-sr-only { position: absolute; width: 1px; height: 1px; padding: 0; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; }
+.archive-loading { margin: 48px; }
+@media (max-width: 760px) {
+  .archive-workspace { grid-template-columns: minmax(0, 1fr); gap: 28px; padding: 24px 20px; }
+  .archive-nav { flex-direction: row; flex-wrap: wrap; font-size: 12px; }
+  .archive-nav a { padding: 8px 10px; }
+  .archive-auth { margin: 32px 20px; padding: 24px; }
+  .archive-title-row { flex-wrap: wrap; }
+}
